@@ -4,7 +4,7 @@
 }
 
 .dashboard-hero::after {
-  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.28), transparent 32%);
+  background: radial-gradient(circle at top right, rgba(0, 159, 212, 0.06), transparent 30%);
   content: '';
   inset: 0;
   pointer-events: none;
@@ -17,7 +17,7 @@
 }
 
 .dashboard-eyebrow {
-  color: rgba(255, 255, 255, 0.76);
+  color: var(--ib-teal-dark);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -25,18 +25,17 @@
 }
 
 .dashboard-meta {
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--ib-muted);
   font-size: 0.85rem;
 }
 
 .dashboard-secondary-btn {
-  border: 1px solid rgba(255, 255, 255, 0.35);
   color: var(--ib-navy);
   font-weight: 700;
 }
 
 .dashboard-primary-btn {
-  box-shadow: 0 10px 24px rgba(10, 36, 99, 0.18);
+  box-shadow: var(--ib-shadow-sm);
 }
 
 .dashboard-kpi-card {
