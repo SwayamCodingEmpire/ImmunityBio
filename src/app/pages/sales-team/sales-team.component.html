@@ -8,23 +8,13 @@
     </div>
   </div>
 
-  <!-- Sub-tabs: Rep Profiles | Targets & Achievements -->
-  <ul class="nav nav-tabs mb-4 border-bottom border-2">
-    <li class="nav-item">
-      <a class="nav-link fw-bold" [class.active]="activeTab === 'profiles'" [class.text-dark]="activeTab !== 'profiles'" [style.color]="activeTab === 'profiles' ? '#0A2463' : ''" (click)="activeTab = 'profiles'" style="cursor: pointer;">Representative Profiles</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link fw-bold" [class.active]="activeTab === 'targets'" [class.text-dark]="activeTab !== 'targets'" [style.color]="activeTab === 'targets' ? '#0A2463' : ''" (click)="activeTab = 'targets'" style="cursor: pointer;">Targets &amp; Achievements</a>
-    </li>
-  </ul>
-
   <!-- Tab: Representative Profiles -->
   <div *ngIf="activeTab === 'profiles'">
     <div class="card border-0 shadow-sm rounded-4">
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.83rem;">
-            <thead style="background-color: #2F5597; color: white;">
+            <thead class="ib-table-header">
               <tr>
                 <th scope="col" class="py-2 px-3">Name</th>
                 <th scope="col" class="py-2">Position / Location</th>
@@ -75,7 +65,7 @@
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.84rem;">
-            <thead style="background-color: #2F5597; color: white;">
+            <thead class="ib-table-header">
               <tr>
                 <th scope="col" class="py-2 px-3" rowspan="2">Representative</th>
                 <th scope="col" class="py-2" rowspan="2">Area</th>
@@ -83,7 +73,7 @@
                 <th scope="col" class="py-2 text-center border-start border-light" colspan="3">Q2 2026</th>
                 <th scope="col" class="py-2 text-center border-start border-light" colspan="3">YTD</th>
               </tr>
-              <tr style="background-color: #3a65b5;">
+              <tr class="ib-table-subhead">
                 <th class="py-1 text-center">Target</th>
                 <th class="py-1 text-center">Achieved</th>
                 <th class="py-1 text-center">%</th>

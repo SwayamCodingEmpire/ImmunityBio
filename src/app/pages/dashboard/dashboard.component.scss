@@ -1,0 +1,53 @@
+.dashboard-hero {
+  overflow: hidden;
+  position: relative;
+}
+
+.dashboard-hero::after {
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.28), transparent 32%);
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.dashboard-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-eyebrow {
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.dashboard-meta {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.85rem;
+}
+
+.dashboard-secondary-btn {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: var(--ib-navy);
+  font-weight: 700;
+}
+
+.dashboard-primary-btn {
+  box-shadow: 0 10px 24px rgba(10, 36, 99, 0.18);
+}
+
+.dashboard-kpi-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-kpi-card:hover {
+  box-shadow: var(--ib-shadow-md);
+  transform: translateY(-2px);
+}
+
+.dashboard-ytd-row {
+  background-color: #e7f7ee;
+}

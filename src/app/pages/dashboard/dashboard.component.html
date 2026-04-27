@@ -1,34 +1,38 @@
 <div class="container-fluid">
-
-  <!-- Header -->
   <div class="row mb-3">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <div>
-        <h2 class="h4 fw-bold mb-0" style="color: #6A0DAD;">Anktiva Commercial &amp; Patient Access Portal</h2>
-        <p class="text-muted small mb-0">Report Date: 04/20/2026 &nbsp;|&nbsp; Week Start Date: 04/18/2026</p>
-      </div>
-      <div class="d-flex gap-2">
-        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise me-1"></i>Update</button>
-        <button class="btn btn-sm btn-primary"><i class="bi bi-envelope me-1"></i>Create Email</button>
+    <div class="col-12">
+      <div class="ib-page-hero dashboard-hero d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 p-4">
+        <div>
+          <p class="dashboard-eyebrow mb-2">ImmunityBio Commercial Intelligence</p>
+          <h2 class="h3 fw-bold mb-1 text-white">ANKTIVA Commercial &amp; Patient Access Portal</h2>
+          <p class="dashboard-meta mb-0">Report Date: April 20, 2026 | Week Start Date: April 18, 2026</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-light dashboard-secondary-btn">
+            <i class="bi bi-arrow-clockwise me-1"></i>Update
+          </button>
+          <button class="btn btn-sm btn-primary dashboard-primary-btn">
+            <i class="bi bi-envelope me-1"></i>Create Email
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- YESTERDAY KPI cards matching Image 2 -->
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <p class="text-uppercase fw-bold small text-muted mb-2">YESTERDAY</p>
+      <p class="text-uppercase fw-bold small text-muted mb-2">Yesterday</p>
     </div>
     <div class="col-md-3">
-      <div class="card border-0 shadow-sm rounded-3 h-100" style="border-left: 4px solid #6A0DAD !important; border-left-style: solid !important;">
+      <div class="card border-0 shadow-sm rounded-3 h-100 ib-kpi-accent dashboard-kpi-card">
         <div class="card-body py-3">
           <p class="text-muted mb-1 small fw-bold">ICS Sales</p>
-          <h4 class="fw-bold mb-0" style="color: #6A0DAD;">{{ kpis.daily_revenue | currency:'USD':'symbol':'1.0-0' }}</h4>
+          <h4 class="fw-bold mb-0 ib-text-accent">{{ kpis.daily_revenue | currency:'USD':'symbol':'1.0-0' }}</h4>
         </div>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card border-0 shadow-sm rounded-3 h-100">
+      <div class="card border-0 shadow-sm rounded-3 h-100 dashboard-kpi-card">
         <div class="card-body py-3">
           <p class="text-muted mb-1 small fw-bold">IB Care Enrollments</p>
           <h4 class="fw-bold mb-0">1</h4>
@@ -36,7 +40,7 @@
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card border-0 shadow-sm rounded-3 h-100">
+      <div class="card border-0 shadow-sm rounded-3 h-100 dashboard-kpi-card">
         <div class="card-body py-3">
           <p class="text-muted mb-1 small fw-bold">Accredo Enrollments</p>
           <h4 class="fw-bold mb-0">0</h4>
@@ -44,7 +48,7 @@
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card border-0 shadow-sm rounded-3 h-100">
+      <div class="card border-0 shadow-sm rounded-3 h-100 dashboard-kpi-card">
         <div class="card-body py-3">
           <p class="text-muted mb-1 small fw-bold">YTD Revenue</p>
           <h4 class="fw-bold mb-0 text-success">{{ kpis.ytd_revenue | currency:'USD':'symbol':'1.0-0' }}</h4>
@@ -53,12 +57,11 @@
     </div>
   </div>
 
-  <!-- WEEKLY SALES Table (Image 2 exact format) -->
   <div class="row g-3 mb-3">
     <div class="col-lg-7">
       <div class="card border-0 shadow-sm rounded-3">
         <div class="card-body p-0">
-          <div class="px-3 py-2" style="background-color: #2F5597; color: white; border-radius: .4rem .4rem 0 0;">
+          <div class="px-3 py-2 ib-table-header">
             <span class="fw-bold small">WEEKLY SALES</span>
           </div>
           <div class="table-responsive">
@@ -88,9 +91,9 @@
                   <td class="px-2 fw-bold">Sales $</td>
                   <td class="text-end">{{ 823400 | currency:'USD':'symbol':'1.0-0' }}</td>
                   <td class="text-end">{{ 1432000 | currency:'USD':'symbol':'1.0-0' }}</td>
-                  <td class="text-end text-muted">$—</td>
-                  <td class="text-end text-muted">$—</td>
-                  <td class="text-end text-muted">$—</td>
+                  <td class="text-end text-muted">$-</td>
+                  <td class="text-end text-muted">$-</td>
+                  <td class="text-end text-muted">$-</td>
                   <td class="text-end fw-bold text-success">{{ 2255400 | currency:'USD':'symbol':'1.0-0' }}</td>
                 </tr>
                 <tr>
@@ -109,10 +112,9 @@
       </div>
     </div>
 
-    <!-- Territory Performance (right side) -->
     <div class="col-lg-5">
       <div class="card border-0 shadow-sm rounded-3 h-100">
-        <div class="px-3 py-2" style="background-color: #2F5597; color: white; border-radius: .4rem .4rem 0 0;">
+        <div class="px-3 py-2 ib-table-header">
           <span class="fw-bold small">TERRITORY PERFORMANCE</span>
         </div>
         <div class="card-body p-0">
@@ -141,15 +143,14 @@
     </div>
   </div>
 
-  <!-- YEARLY SALES BREAKDOWN Table (Image 2 exact structure) -->
   <div class="card border-0 shadow-sm rounded-3 mb-3">
-    <div class="px-3 py-2" style="background-color: #2F5597; color: white; border-radius: .4rem .4rem 0 0;">
+    <div class="px-3 py-2 ib-table-header">
       <span class="fw-bold small">YEARLY SALES BREAKDOWN</span>
     </div>
     <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-sm table-bordered mb-0" style="font-size: 0.81rem;">
-          <thead style="background-color: #4472C4; color: white;">
+          <thead class="ib-table-subhead">
             <tr>
               <th class="py-1 px-2" rowspan="2">Qtr</th>
               <th class="py-1" rowspan="2">Period</th>
@@ -157,7 +158,7 @@
               <th class="py-1 text-center" colspan="3">Field Sales</th>
               <th class="py-1 text-center" colspan="2">Enrollments</th>
             </tr>
-            <tr style="background-color: #5a84c8;">
+            <tr class="ib-table-subhead">
               <th class="py-1 text-center">Shipped</th>
               <th class="py-1 text-center">Pending</th>
               <th class="py-1 text-center">Total Units</th>
@@ -181,8 +182,7 @@
               <td class="text-center">{{ row.ibCare }}</td>
               <td class="text-center">{{ row.accredo }}</td>
             </tr>
-            <!-- YTD Total Row -->
-            <tr class="fw-bold" style="background-color: #E2EFDA;">
+            <tr class="fw-bold dashboard-ytd-row">
               <td class="px-2">YTD</td>
               <td class="fw-bold">TOTAL</td>
               <td class="text-center">1777</td>
@@ -200,15 +200,14 @@
     </div>
   </div>
 
-  <!-- REP Performance Table (Image 2 bottom section) -->
   <div class="card border-0 shadow-sm rounded-3">
-    <div class="px-3 py-2" style="background-color: #2F5597; color: white; border-radius: .4rem .4rem 0 0;">
+    <div class="px-3 py-2 ib-table-header">
       <span class="fw-bold small">TERRITORY &amp; REP PERFORMANCE</span>
     </div>
     <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-sm table-bordered mb-0" style="font-size: 0.81rem;">
-          <thead style="background-color: #4472C4; color: white;">
+          <thead class="ib-table-subhead">
             <tr>
               <th class="py-1 px-2" rowspan="2">Territory</th>
               <th class="py-1" rowspan="2">Sales Rep</th>
@@ -216,7 +215,7 @@
               <th class="py-1 text-center" colspan="2">Current Quarter</th>
               <th class="py-1 text-center" colspan="2">YTD</th>
             </tr>
-            <tr style="background-color: #5a84c8;">
+            <tr class="ib-table-subhead">
               <th class="py-1 text-center">Enrollm.</th>
               <th class="py-1 text-center">Units Ordered</th>
               <th class="py-1 text-center">Enrollm.</th>
@@ -227,7 +226,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let row of repPerformance" [class.fw-bold]="row.territory !== ''">
-              <td class="px-2" [class.text-white]="row.territory !== ''" [class.fw-bold]="row.territory !== ''" [style.background-color]="row.territory !== '' ? '#2F5597' : ''">{{ row.territory }}</td>
+              <td class="px-2" [class.ib-territory-cell]="row.territory !== ''" [class.fw-bold]="row.territory !== ''">{{ row.territory }}</td>
               <td>{{ row.rep }}</td>
               <td class="text-center">{{ row.cwEnroll }}</td>
               <td class="text-center">{{ row.cwUnits }}</td>
@@ -241,5 +240,4 @@
       </div>
     </div>
   </div>
-
 </div>

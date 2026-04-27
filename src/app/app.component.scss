@@ -1,0 +1,13 @@
+.container-fluid {
+  background: transparent;
+}
+
+.row.vh-100 {
+  background: transparent;
+}
+
+.ib-main-surface {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(248, 250, 252, 0.92) 100%),
+    radial-gradient(circle at top right, rgba(0, 159, 212, 0.12), transparent 30%);
+}

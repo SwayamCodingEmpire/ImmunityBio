@@ -13,26 +13,13 @@
     </div>
   </div>
 
-  <!-- Sub-tabs: Territories | Sales Rep Assignment | Territory Performance -->
-  <ul class="nav nav-tabs mb-4 border-bottom border-2">
-    <li class="nav-item">
-      <a class="nav-link fw-bold" [class.active]="activeTab === 'territories'" [class.text-dark]="activeTab !== 'territories'" [style.color]="activeTab === 'territories' ? '#0A2463' : ''" (click)="activeTab = 'territories'" style="cursor: pointer;">Territories</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link fw-bold" [class.active]="activeTab === 'assignment'" [class.text-dark]="activeTab !== 'assignment'" [style.color]="activeTab === 'assignment' ? '#0A2463' : ''" (click)="activeTab = 'assignment'" style="cursor: pointer;">Sales Rep Assignment</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link fw-bold" [class.active]="activeTab === 'performance'" [class.text-dark]="activeTab !== 'performance'" [style.color]="activeTab === 'performance' ? '#0A2463' : ''" (click)="activeTab = 'performance'" style="cursor: pointer;">Territory Performance</a>
-    </li>
-  </ul>
-
   <!-- Tab: Territories (master list) -->
   <div *ngIf="activeTab === 'territories'">
     <div class="card border-0 shadow-sm rounded-4">
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.85rem;">
-            <thead style="background-color: #2F5597; color: white;">
+            <thead class="ib-table-header">
               <tr>
                 <th scope="col" class="py-2 px-3">Territory ID</th>
                 <th scope="col" class="py-2">Territory Name</th>
@@ -64,7 +51,7 @@
   <!-- Tab: Sales Rep Assignment (Image 6 structure) -->
   <div *ngIf="activeTab === 'assignment'">
     <div *ngFor="let territory of territories" class="card border-0 shadow-sm rounded-4 mb-4">
-      <div class="card-header border-0 py-3 px-4" style="background-color: #2F5597; border-radius: 1rem 1rem 0 0;">
+      <div class="card-header border-0 py-3 px-4 ib-table-header" style="border-radius: 1rem 1rem 0 0;">
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <h6 class="mb-0 text-white fw-bold">{{ territory.name }}</h6>
@@ -112,7 +99,7 @@
     <div class="row g-4">
       <div class="col-md-6" *ngFor="let territory of territories">
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-          <div class="position-absolute top-0 start-0 w-100" style="height: 4px; background-color: #6A0DAD;"></div>
+          <div class="position-absolute top-0 start-0 w-100" style="height: 4px; background-color: var(--ib-navy);"></div>
           <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start mb-3">
               <div>
@@ -125,7 +112,7 @@
               <div class="col-6">
                 <div class="p-2 rounded-3 bg-light text-center">
                   <p class="small text-muted mb-0">Product</p>
-                  <p class="fw-bold small mb-0" style="color: #6A0DAD;">{{ territory.product }}</p>
+                  <p class="fw-bold small mb-0 ib-text-accent">{{ territory.product }}</p>
                 </div>
               </div>
               <div class="col-6">
@@ -137,10 +124,10 @@
             </div>
             <div class="d-flex justify-content-between mb-1">
               <small class="text-muted fw-bold">Revenue Progress to Target</small>
-              <small class="fw-bold" style="color: #6A0DAD;">{{ ((territory.revenue / 20000000) * 100).toFixed(0) }}%</small>
+              <small class="fw-bold ib-text-accent">{{ ((territory.revenue / 20000000) * 100).toFixed(0) }}%</small>
             </div>
             <div class="progress" style="height: 8px;">
-              <div class="progress-bar" role="progressbar" [style.width]="((territory.revenue / 20000000) * 100) + '%'" style="background-color: #6A0DAD;"></div>
+              <div class="progress-bar" role="progressbar" [style.width]="((territory.revenue / 20000000) * 100) + '%'" style="background-color: var(--ib-navy);"></div>
             </div>
           </div>
         </div>

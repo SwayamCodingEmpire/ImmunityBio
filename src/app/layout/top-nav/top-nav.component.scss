@@ -1,0 +1,74 @@
+.top-nav-shell {
+  background:
+    linear-gradient(90deg, rgba(10, 36, 99, 0.96) 0%, rgba(20, 73, 160, 0.94) 58%, rgba(0, 159, 212, 0.9) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 40px rgba(10, 36, 99, 0.14);
+}
+
+.top-nav-title {
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.top-nav-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.top-nav-search {
+  width: 260px;
+
+  .input-group-text,
+  .form-control {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+  }
+
+  .input-group-text i {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .form-control {
+    font-size: 0.86rem;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.62);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.12);
+    }
+  }
+}
+
+.top-nav-user {
+  color: #ffffff !important;
+}
+
+.top-nav-avatar {
+  border: 2px solid rgba(255, 255, 255, 0.55);
+}
+
+.top-nav-user-name {
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+}
+
+.top-nav-user-org {
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.68rem;
+}
+
+.top-nav-menu {
+  border: 1px solid var(--ib-border);
+  border-radius: var(--ib-radius-md);
+  box-shadow: var(--ib-shadow-md);
+}

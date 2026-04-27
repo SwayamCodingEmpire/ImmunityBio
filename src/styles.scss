@@ -2,22 +2,46 @@
    ImmunityBio Brand Theme
    Primary: #0A2463 (Deep Navy)
    Accent:  #009FD4 (ImmunityBio Teal-Blue)
-   Background: #FFFFFF (White)
    =================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@400;600;700;800&display=swap');
+@use "styles/shared-ui";
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
 
 /* CSS Custom Properties */
 :root {
-  --ib-navy:      #0A2463;
-  --ib-teal:      #009FD4;
+  --ib-navy: #0A2463;
+  --ib-navy-light: #1E3A8A;
+  --ib-navy-soft: #1449A0;
+  --ib-teal: #009FD4;
   --ib-teal-dark: #007BAA;
-  --ib-navy-light:#1E3A8A;
-  --ib-bg:        #F8FAFC;
-  --ib-white:     #FFFFFF;
-  --ib-border:    #E2E8F0;
-  --ib-text:      #1E293B;
-  --ib-muted:     #64748B;
+  --ib-brand-gradient: linear-gradient(135deg, #0A2463 0%, #1449A0 55%, #009FD4 100%);
+  --ib-brand-gradient-soft: linear-gradient(180deg, rgba(10, 36, 99, 0.06) 0%, rgba(0, 159, 212, 0.03) 100%);
+  --ib-bg: #F8FAFC;
+  --ib-white: #FFFFFF;
+  --ib-surface-muted: #F1F5F9;
+  --ib-border: #E2E8F0;
+  --ib-text: #1E293B;
+  --ib-muted: #64748B;
+  --ib-muted-soft: #94A3B8;
+
+  --ib-success: #15803D;
+  --ib-success-bg: #DCFCE7;
+  --ib-warning: #B45309;
+  --ib-warning-bg: #FEF3C7;
+  --ib-danger: #B91C1C;
+  --ib-danger-bg: #FEE2E2;
+  --ib-info: #1E3A8A;
+  --ib-info-bg: #DBEAFE;
+
+  --ib-radius-sm: 6px;
+  --ib-radius-md: 8px;
+  --ib-radius-lg: 12px;
+  --ib-radius-xl: 16px;
+
+  --ib-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --ib-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --ib-shadow-lg: 0 20px 60px rgba(10, 36, 99, 0.16);
+  --ib-focus-ring: 0 0 0 0.2rem rgba(0, 159, 212, 0.18);
 }
 
 /* Global Reset */
@@ -27,7 +51,9 @@
 
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: var(--ib-bg);
+  background:
+    radial-gradient(circle at top right, rgba(0, 159, 212, 0.14), transparent 24%),
+    linear-gradient(180deg, #fdfefe 0%, var(--ib-bg) 48%, #eef5fb 100%);
   color: var(--ib-text);
   font-size: 14px;
   line-height: 1.6;
@@ -39,9 +65,9 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
 }
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: var(--ib-teal); border-radius: 4px; }
+html {
+  @include shared-ui.compact-scrollbar;
+}
 
 /* ===== MAIN CONTENT BACKGROUND ===== */
 main {
@@ -52,33 +78,25 @@ main {
 .card {
   border: 1px solid var(--ib-border) !important;
   background: var(--ib-white);
+  border-radius: var(--ib-radius-md);
+  box-shadow: var(--ib-shadow-sm);
 }
 
 /* ===== TABLES ===== */
-/* Override all dark-navy table headers throughout the app */
-thead[style*="background-color: #2F5597"],
-thead[style*="background-color: #3a65b5"],
-thead[style*="background-color: #4472C4"],
-thead[style*="background-color: #5a84c8"] {
+.ib-table-header {
   background-color: var(--ib-navy) !important;
-  color: #ffffff !important;
+  color: var(--ib-white) !important;
+  border-radius: 0.4rem 0.4rem 0 0;
 }
 
-[style*="background-color: #2F5597"] {
+.ib-table-subhead {
+  background-color: var(--ib-navy-soft) !important;
+  color: var(--ib-white) !important;
+}
+
+.ib-territory-cell {
   background-color: var(--ib-navy) !important;
-  color: #ffffff !important;
-}
-[style*="background-color: #3a65b5"] {
-  background-color: var(--ib-navy-light) !important;
-  color: #ffffff !important;
-}
-[style*="background-color: #4472C4"] {
-  background-color: #1449A0 !important;
-  color: #ffffff !important;
-}
-[style*="background-color: #5a84c8"] {
-  background-color: #1E5BB8 !important;
-  color: #ffffff !important;
+  color: var(--ib-white) !important;
 }
 
 .table-hover tbody tr:hover {
@@ -86,26 +104,31 @@ thead[style*="background-color: #5a84c8"] {
 }
 
 /* ===== BUTTONS ===== */
-/* Replace purple (#6A0DAD) buttons with ImmunityBio navy */
-[style*="background-color: #6A0DAD"],
-[style*="border-color: #6A0DAD"] {
-  background-color: var(--ib-navy) !important;
-  border-color: var(--ib-navy) !important;
-  color: #ffffff !important;
+.ib-text-accent {
+  color: var(--ib-navy) !important;
+}
+
+.ib-kpi-accent {
+  border-left: 4px solid var(--ib-navy) !important;
+  border-left-style: solid !important;
 }
 
 .btn-primary {
-  background-color: var(--ib-navy) !important;
+  background: linear-gradient(135deg, var(--ib-navy) 0%, var(--ib-navy-light) 100%) !important;
   border-color: var(--ib-navy) !important;
-  color: #ffffff !important;
+  color: var(--ib-white) !important;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   letter-spacing: 0.3px;
+  box-shadow: var(--ib-shadow-sm);
+  transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: var(--ib-teal) !important;
-    border-color: var(--ib-teal) !important;
-    color: #ffffff !important;
+    background: linear-gradient(135deg, var(--ib-teal-dark) 0%, var(--ib-teal) 100%) !important;
+    border-color: var(--ib-teal-dark) !important;
+    color: var(--ib-white) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--ib-shadow-md);
   }
 }
 
@@ -116,22 +139,11 @@ thead[style*="background-color: #5a84c8"] {
   font-weight: 700;
 }
 
-/* ===== TEXT COLOR OVERRIDES ===== */
-[style*="color: #6A0DAD"] {
-  color: var(--ib-navy) !important;
-}
-
-/* ===== PROGRESS BAR ===== */
-.progress-bar[style*="background-color: #6A0DAD"],
-.progress-bar[style*="background-color: '#6A0DAD'"] {
-  background-color: var(--ib-teal) !important;
-}
-
 /* ===== FORM CONTROLS ===== */
 .form-control:focus,
 .form-select:focus {
   border-color: var(--ib-teal);
-  box-shadow: 0 0 0 0.2rem rgba(0, 159, 212, 0.15);
+  box-shadow: var(--ib-focus-ring);
 }
 
 /* ===== BADGE ===== */
@@ -145,4 +157,23 @@ thead[style*="background-color: #5a84c8"] {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   color: var(--ib-navy);
+}
+
+.ib-main-surface {
+  background-color: var(--ib-bg);
+}
+
+.ib-page-hero {
+  background: var(--ib-brand-gradient);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--ib-radius-xl);
+  box-shadow: var(--ib-shadow-lg);
+  color: var(--ib-white);
+}
+
+.ib-surface-panel {
+  background: var(--ib-white);
+  border: 1px solid var(--ib-border);
+  border-radius: var(--ib-radius-lg);
+  box-shadow: var(--ib-shadow-sm);
 }
