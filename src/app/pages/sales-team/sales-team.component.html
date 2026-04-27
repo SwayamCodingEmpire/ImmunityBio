@@ -1,19 +1,22 @@
 <div class="container-fluid position-relative">
-  <div class="row mb-4">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <h2 class="h4 fw-bold">Sales Team</h2>
-      <button class="btn btn-primary shadow-sm" (click)="showForm = true" *ngIf="activeTab === 'profiles'">
+  <div class="ib-page-header">
+    <div>
+      <p class="ib-page-header__eyebrow">Field Operations</p>
+      <h2 class="ib-page-header__title">Sales Team</h2>
+      <p class="ib-page-header__subtitle">Unified team roster and target tracking with consistent table presentation.</p>
+    </div>
+    <div class="ib-page-header__actions">
+      <button class="btn btn-primary" (click)="showForm = true" *ngIf="activeTab === 'profiles'">
         <i class="bi bi-person-plus"></i> Add Team Member
       </button>
     </div>
   </div>
 
-  <!-- Tab: Representative Profiles -->
   <div *ngIf="activeTab === 'profiles'">
-    <div class="card border-0 shadow-sm rounded-4">
+    <div class="ib-section-card">
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.83rem;">
+          <table class="table table-hover table-sm align-middle mb-0 ib-data-table">
             <thead class="ib-table-header">
               <tr>
                 <th scope="col" class="py-2 px-3">Name</th>
@@ -32,24 +35,16 @@
               <tr *ngFor="let member of team">
                 <td class="px-3 fw-bold">{{ member.name }}</td>
                 <td class="text-muted">{{ member.position }}</td>
-                <td><span class="badge bg-light border text-dark">{{ member.areaId }}</span></td>
+                <td><span class="ib-chip">{{ member.areaId }}</span></td>
                 <td>{{ member.area }}</td>
-                <td><span class="badge bg-light text-dark border">{{ member.product }}</span></td>
-                <td class="text-center">
-                  <span class="badge" [ngClass]="member.allTeamMark === 'Y' ? 'bg-success' : 'bg-secondary'">{{ member.allTeamMark }}</span>
-                </td>
-                <td class="text-center">
-                  <span class="badge" [ngClass]="member.glbNcl === 'Y' ? 'bg-primary' : 'bg-light text-muted border'">{{ member.glbNcl }}</span>
-                </td>
-                <td class="text-center">
-                  <span class="badge" [ngClass]="member.leadershipTeam === 'Y' ? 'bg-warning text-dark' : 'bg-light text-muted border'">{{ member.leadershipTeam }}</span>
-                </td>
-                <td class="text-center">
-                  <span class="badge" [ngClass]="member.ariTeam === 'Y' ? 'bg-info' : 'bg-light text-muted border'">{{ member.ariTeam }}</span>
-                </td>
+                <td><span class="ib-chip">{{ member.product }}</span></td>
+                <td class="text-center"><span class="ib-status-badge" [ngClass]="member.allTeamMark === 'Y' ? 'ib-status-badge--success' : 'ib-status-badge--neutral'">{{ member.allTeamMark }}</span></td>
+                <td class="text-center"><span class="ib-status-badge" [ngClass]="member.glbNcl === 'Y' ? 'ib-status-badge--info' : 'ib-status-badge--neutral'">{{ member.glbNcl }}</span></td>
+                <td class="text-center"><span class="ib-status-badge" [ngClass]="member.leadershipTeam === 'Y' ? 'ib-status-badge--warning' : 'ib-status-badge--neutral'">{{ member.leadershipTeam }}</span></td>
+                <td class="text-center"><span class="ib-status-badge" [ngClass]="member.ariTeam === 'Y' ? 'ib-status-badge--info' : 'ib-status-badge--neutral'">{{ member.ariTeam }}</span></td>
                 <td class="px-3 text-end">
-                  <button class="btn btn-sm btn-link text-primary p-0 me-2" (click)="editMember(member)"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-link text-danger p-0" (click)="deleteMember(member.name)"><i class="bi bi-trash"></i></button>
+                  <button class="ib-icon-btn me-2" (click)="editMember(member)"><i class="bi bi-pencil"></i></button>
+                  <button class="ib-icon-btn ib-icon-btn--danger" (click)="deleteMember(member.name)"><i class="bi bi-trash"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -59,12 +54,11 @@
     </div>
   </div>
 
-  <!-- Tab: Targets & Achievements -->
   <div *ngIf="activeTab === 'targets'">
-    <div class="card border-0 shadow-sm rounded-4">
+    <div class="ib-section-card">
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.84rem;">
+          <table class="table table-hover table-sm align-middle mb-0 ib-data-table">
             <thead class="ib-table-header">
               <tr>
                 <th scope="col" class="py-2 px-3" rowspan="2">Representative</th>
@@ -92,21 +86,21 @@
                 <td class="text-center">{{ t.q1Target }}</td>
                 <td class="text-center fw-bold">{{ t.q1Achieved }}</td>
                 <td class="text-center">
-                  <span class="badge" [ngClass]="(t.q1Achieved / t.q1Target * 100) >= 100 ? 'bg-success' : (t.q1Achieved / t.q1Target * 100) >= 80 ? 'bg-primary' : 'bg-danger'">
+                  <span class="ib-status-badge" [ngClass]="(t.q1Achieved / t.q1Target * 100) >= 100 ? 'ib-status-badge--success' : (t.q1Achieved / t.q1Target * 100) >= 80 ? 'ib-status-badge--info' : 'ib-status-badge--danger'">
                     {{ (t.q1Achieved / t.q1Target * 100).toFixed(0) }}%
                   </span>
                 </td>
                 <td class="text-center border-start">{{ t.q2Target }}</td>
                 <td class="text-center fw-bold">{{ t.q2Achieved }}</td>
                 <td class="text-center">
-                  <span class="badge" [ngClass]="(t.q2Achieved / t.q2Target * 100) >= 100 ? 'bg-success' : (t.q2Achieved / t.q2Target * 100) >= 50 ? 'bg-warning text-dark' : 'bg-danger'">
+                  <span class="ib-status-badge" [ngClass]="(t.q2Achieved / t.q2Target * 100) >= 100 ? 'ib-status-badge--success' : (t.q2Achieved / t.q2Target * 100) >= 50 ? 'ib-status-badge--warning' : 'ib-status-badge--danger'">
                     {{ (t.q2Achieved / t.q2Target * 100).toFixed(0) }}%
                   </span>
                 </td>
                 <td class="text-center border-start">{{ t.ytdTarget }}</td>
                 <td class="text-center fw-bold">{{ t.ytdAchieved }}</td>
                 <td class="text-center">
-                  <span class="badge" [ngClass]="(t.ytdAchieved / t.ytdTarget * 100) >= 100 ? 'bg-success' : (t.ytdAchieved / t.ytdTarget * 100) >= 70 ? 'bg-primary' : 'bg-danger'">
+                  <span class="ib-status-badge" [ngClass]="(t.ytdAchieved / t.ytdTarget * 100) >= 100 ? 'ib-status-badge--success' : (t.ytdAchieved / t.ytdTarget * 100) >= 70 ? 'ib-status-badge--info' : 'ib-status-badge--danger'">
                     {{ (t.ytdAchieved / t.ytdTarget * 100).toFixed(0) }}%
                   </span>
                 </td>
@@ -118,68 +112,69 @@
     </div>
   </div>
 
-  <!-- Add/Edit Form Overlay -->
-  <div *ngIf="showForm" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-start z-3" style="background: rgba(0,0,0,0.5); padding-top: 4rem; min-height: 100vh;">
-    <div class="card border-0 shadow-lg rounded-4 w-100" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
-      <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center rounded-top-4">
-        <h5 class="fw-bold mb-0">{{ editingName ? 'Edit Team Member' : 'Add Team Member' }}</h5>
+  <div *ngIf="showForm" class="ib-modal-overlay">
+    <div class="ib-modal-shell" style="max-width: 600px;">
+      <div class="ib-modal-header">
+        <h5 class="ib-modal-title">{{ editingName ? 'Edit Team Member' : 'Add Team Member' }}</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="closeForm()"></button>
       </div>
-      <div class="card-body p-4">
+      <div class="ib-modal-body">
         <form (ngSubmit)="addMember()" #teamForm="ngForm">
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Full Name</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newMember.name" name="name" required [disabled]="!!editingName">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Position / Location</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newMember.position" name="position" required placeholder="e.g. Boston, MA">
+          <div class="ib-form-section mb-4">
+            <p class="ib-form-section__title">Representative Details</p>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Full Name</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newMember.name" name="name" required [disabled]="!!editingName">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Position / Location</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newMember.position" name="position" required placeholder="e.g. Boston, MA">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Area ID</label>
+                <input type="text" class="form-control bg-light fw-bold" [(ngModel)]="newMember.areaId" name="areaId" required placeholder="e.g. EA101">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Area / Territory</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newMember.area" name="area" required placeholder="e.g. East">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Product</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newMember.product" name="product" required>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="form-label fw-bold small text-muted">All Team Mark</label>
+                <select class="form-select bg-light" [(ngModel)]="newMember.allTeamMark" name="allTeamMark">
+                  <option value="Y">Y</option><option value="N">N</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="form-label fw-bold small text-muted">GLB-NCL</label>
+                <select class="form-select bg-light" [(ngModel)]="newMember.glbNcl" name="glbNcl">
+                  <option value="Y">Y</option><option value="N">N</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="form-label fw-bold small text-muted">Leadership Team</label>
+                <select class="form-select bg-light" [(ngModel)]="newMember.leadershipTeam" name="leadershipTeam">
+                  <option value="Y">Y</option><option value="N">N</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="form-label fw-bold small text-muted">ARI Team</label>
+                <select class="form-select bg-light" [(ngModel)]="newMember.ariTeam" name="ariTeam">
+                  <option value="Y">Y</option><option value="N">N</option>
+                </select>
+              </div>
             </div>
           </div>
-          <div class="row g-3 mb-3">
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">Area ID</label>
-              <input type="text" class="form-control bg-light fw-bold" [(ngModel)]="newMember.areaId" name="areaId" required placeholder="e.g. EA101">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">Area / Territory</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newMember.area" name="area" required placeholder="e.g. East">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">Product</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newMember.product" name="product" required>
-            </div>
-          </div>
-          <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-              <label class="form-label fw-bold small text-muted">All Team Mark</label>
-              <select class="form-select bg-light" [(ngModel)]="newMember.allTeamMark" name="allTeamMark">
-                <option value="Y">Y</option><option value="N">N</option>
-              </select>
-            </div>
-            <div class="col-6 col-md-3">
-              <label class="form-label fw-bold small text-muted">GLB-NCL</label>
-              <select class="form-select bg-light" [(ngModel)]="newMember.glbNcl" name="glbNcl">
-                <option value="Y">Y</option><option value="N">N</option>
-              </select>
-            </div>
-            <div class="col-6 col-md-3">
-              <label class="form-label fw-bold small text-muted">Leadership Team</label>
-              <select class="form-select bg-light" [(ngModel)]="newMember.leadershipTeam" name="leadershipTeam">
-                <option value="Y">Y</option><option value="N">N</option>
-              </select>
-            </div>
-            <div class="col-6 col-md-3">
-              <label class="form-label fw-bold small text-muted">ARI Team</label>
-              <select class="form-select bg-light" [(ngModel)]="newMember.ariTeam" name="ariTeam">
-                <option value="Y">Y</option><option value="N">N</option>
-              </select>
-            </div>
-          </div>
+
           <div class="d-flex justify-content-end gap-2 border-top pt-3">
-            <button type="button" class="btn btn-light" (click)="closeForm()">Cancel</button>
-            <button type="submit" class="btn btn-primary" [disabled]="!teamForm.valid">{{ editingName ? 'Update Member' : 'Save Member' }}</button>
+            <button type="button" class="btn ib-btn-secondary" (click)="closeForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!teamForm.valid">
+              {{ editingName ? 'Update Member' : 'Save Member' }}
+            </button>
           </div>
         </form>
       </div>

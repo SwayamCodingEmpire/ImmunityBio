@@ -1,18 +1,22 @@
 <div class="container-fluid position-relative">
-  <div class="row mb-4">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <h2 class="h4 fw-bold">Patient Management</h2>
-      <button class="btn btn-primary shadow-sm" (click)="showForm = true">
+  <div class="ib-page-header">
+    <div>
+      <p class="ib-page-header__eyebrow">Patient Access</p>
+      <h2 class="ib-page-header__title">Patient Management</h2>
+      <p class="ib-page-header__subtitle">Track enrollment, fulfillment, and care status in a compact table-first workflow.</p>
+    </div>
+    <div class="ib-page-header__actions">
+      <button class="btn btn-primary" (click)="showForm = true">
         <i class="bi bi-person-plus"></i> Add New Patient
       </button>
     </div>
   </div>
 
-  <div class="card border-0 shadow-sm rounded-4 mb-4">
+  <div class="ib-section-card mb-4">
     <div class="card-body p-0">
       <div class="table-responsive">
-        <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.83rem;">
-          <thead style="background-color: #0A2463; color: white;">
+        <table class="table table-hover table-sm align-middle mb-0 ib-data-table">
+          <thead class="ib-table-header">
             <tr>
               <th scope="col" class="py-2 px-3">Patient ID</th>
               <th scope="col" class="py-2">Hub Assigned</th>
@@ -24,33 +28,35 @@
               <th scope="col" class="py-2">Status</th>
               <th scope="col" class="py-2">Ship Date</th>
               <th scope="col" class="py-2 text-center">Qty</th>
-              <th scope="col" class="py-2 px-3 text-end" style="white-space: nowrap;">Actions</th>
+              <th scope="col" class="py-2 px-3 text-end">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let patient of patients">
               <td class="px-3 fw-bold text-primary">{{ patient.id }}</td>
-              <td><span class="badge bg-light border text-dark">{{ patient.hubAssigned }}</span></td>
+              <td><span class="ib-chip">{{ patient.hubAssigned }}</span></td>
               <td class="fw-bold">{{ patient.name }}</td>
               <td class="text-muted">{{ patient.doctor }}</td>
               <td class="text-muted"><i class="bi bi-hospital me-1"></i>{{ patient.facility }}</td>
               <td>{{ patient.dateOfDx }}</td>
-              <td><span class="badge bg-light text-dark border">{{ patient.product }}</span><br><small class="text-muted">NDC: {{ patient.ndc }}</small></td>
               <td>
-                <span class="badge" 
-                  [ngClass]="{
-                    'bg-secondary': patient.status === 'Referral',
-                    'bg-warning text-dark': patient.status === 'Insurance Auth',
-                    'bg-success': patient.status === 'First Dose'
+                <span class="ib-chip">{{ patient.product }}</span><br>
+                <small class="ib-field-note">NDC: {{ patient.ndc }}</small>
+              </td>
+              <td>
+                <span class="ib-status-badge" [ngClass]="{
+                    'ib-status-badge--neutral': patient.status === 'Referral',
+                    'ib-status-badge--warning': patient.status === 'Insurance Auth',
+                    'ib-status-badge--success': patient.status === 'First Dose'
                   }">
                   {{ patient.status }}
                 </span>
               </td>
-              <td>{{ patient.shipDate || '—' }}</td>
+              <td>{{ patient.shipDate || '-' }}</td>
               <td class="text-center">{{ patient.qty }}</td>
               <td class="px-3 text-end" style="white-space: nowrap;">
-                <button class="btn btn-sm btn-light text-primary me-1" (click)="editPatient(patient)"><i class="bi bi-pencil"></i></button>
-                <button class="btn btn-sm btn-light text-danger" (click)="deletePatient(patient.id)"><i class="bi bi-trash"></i></button>
+                <button class="ib-icon-btn me-1" (click)="editPatient(patient)"><i class="bi bi-pencil"></i></button>
+                <button class="ib-icon-btn ib-icon-btn--danger" (click)="deletePatient(patient.id)"><i class="bi bi-trash"></i></button>
               </td>
             </tr>
           </tbody>
@@ -59,70 +65,75 @@
     </div>
   </div>
 
-  <!-- Add/Edit Patient Form Overlay -->
-  <div *ngIf="showForm" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-start z-3" style="background: rgba(0,0,0,0.5); padding-top: 4rem; min-height: 100vh;">
-    <div class="card border-0 shadow-lg rounded-4 w-100" style="max-width: 650px; max-height: 90vh; overflow-y: auto;">
-      <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center rounded-top-4">
-        <h5 class="fw-bold mb-0">{{ editingPatientId ? 'Edit Patient' : 'Add New Patient' }}</h5>
+  <div *ngIf="showForm" class="ib-modal-overlay">
+    <div class="ib-modal-shell" style="max-width: 650px;">
+      <div class="ib-modal-header">
+        <h5 class="ib-modal-title">{{ editingPatientId ? 'Edit Patient' : 'Add New Patient' }}</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="closeForm()"></button>
       </div>
-      <div class="card-body p-4">
+      <div class="ib-modal-body">
         <form (ngSubmit)="addPatient()" #patientForm="ngForm">
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Patient Name</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.name" name="name" required placeholder="e.g. John Doe">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Hub Assigned</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.hubAssigned" name="hubAssigned" placeholder="e.g. 32750468">
-            </div>
-          </div>
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Physician Name</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.doctor" name="doctor" required placeholder="e.g. JAYARAMAN KRISHNA">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Date of Dx</label>
-              <input type="date" class="form-control bg-light" [(ngModel)]="newPatient.dateOfDx" name="dateOfDx">
-            </div>
-          </div>
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Facility / Pharmacy</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.facility" name="facility" required placeholder="e.g. ACCREDO HEALTH GROUP INC.">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Prescribed Product</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.product" name="product" required>
+          <div class="ib-form-section mb-3">
+            <p class="ib-form-section__title">Patient Information</p>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Patient Name</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.name" name="name" required placeholder="e.g. John Doe">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Hub Assigned</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.hubAssigned" name="hubAssigned" placeholder="e.g. 32750468">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Physician Name</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.doctor" name="doctor" required placeholder="e.g. JAYARAMAN KRISHNA">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Date of Dx</label>
+                <input type="date" class="form-control bg-light" [(ngModel)]="newPatient.dateOfDx" name="dateOfDx">
+              </div>
             </div>
           </div>
-          <div class="row g-3 mb-3">
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">NDC</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.ndc" name="ndc" placeholder="e.g. 61640103001">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">Ship Date</label>
-              <input type="date" class="form-control bg-light" [(ngModel)]="newPatient.shipDate" name="shipDate">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">Quantity</label>
-              <input type="number" class="form-control bg-light" [(ngModel)]="newPatient.qty" name="qty" min="1" value="1">
+
+          <div class="ib-form-section mb-4">
+            <p class="ib-form-section__title">Fulfillment Details</p>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Facility / Pharmacy</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.facility" name="facility" required placeholder="e.g. ACCREDO HEALTH GROUP INC.">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Prescribed Product</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.product" name="product" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">NDC</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newPatient.ndc" name="ndc" placeholder="e.g. 61640103001">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Ship Date</label>
+                <input type="date" class="form-control bg-light" [(ngModel)]="newPatient.shipDate" name="shipDate">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Quantity</label>
+                <input type="number" class="form-control bg-light" [(ngModel)]="newPatient.qty" name="qty" min="1" value="1">
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-bold small text-muted">Enrollment Status</label>
+                <select class="form-select bg-light" [(ngModel)]="newPatient.status" name="status">
+                  <option value="Referral">Referral</option>
+                  <option value="Insurance Auth">Insurance Auth</option>
+                  <option value="First Dose">First Dose</option>
+                </select>
+              </div>
             </div>
           </div>
-          <div class="mb-4">
-            <label class="form-label fw-bold small text-muted">Enrollment Status</label>
-            <select class="form-select bg-light" [(ngModel)]="newPatient.status" name="status">
-              <option value="Referral">Referral</option>
-              <option value="Insurance Auth">Insurance Auth</option>
-              <option value="First Dose">First Dose</option>
-            </select>
-          </div>
+
           <div class="d-flex justify-content-end gap-2 border-top pt-3">
-            <button type="button" class="btn btn-light" (click)="closeForm()">Cancel</button>
-            <button type="submit" class="btn btn-primary" [disabled]="!patientForm.valid">{{ editingPatientId ? 'Update Patient' : 'Save Patient' }}</button>
+            <button type="button" class="btn ib-btn-secondary" (click)="closeForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!patientForm.valid">
+              {{ editingPatientId ? 'Update Patient' : 'Save Patient' }}
+            </button>
           </div>
         </form>
       </div>

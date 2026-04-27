@@ -1,15 +1,17 @@
 <div class="sidebar-shell d-flex flex-column pt-4 bg-white min-vh-100">
   <a routerLink="/" class="d-flex align-items-center mb-4 px-4 text-decoration-none flex-shrink-0">
-    <div class="d-flex flex-column">
-      <span class="sidebar-brand">ImmunityBio</span>
-      <span class="sidebar-brand-subtitle">Commercial Portal</span>
-    </div>
+    <img src="https://immunitybio.com/wp-content/smush-webp/2022/08/ImmunityBio-Logo-2024-Color-Screen-042424.png.webp"
+         alt="ImmunityBio Logo"
+         class="sidebar-logo mb-1"
+         style="height: 40px; width: auto; object-fit: contain;" />
   </a>
 
-  <div class="sidebar-product-badge mx-3 mb-4 px-3 py-2 rounded-3 flex-shrink-0">
+  
+
+  <!-- <div class="sidebar-product-badge mx-3 mb-4 px-3 py-2 rounded-3 flex-shrink-0">
     <p class="text-white-50 small mb-0 sidebar-badge-label">Active Product</p>
     <p class="text-white fw-bold mb-0 sidebar-badge-value">Anktiva 400mcg/0.4mL</p>
-  </div>
+  </div> -->
 
   <!-- <p class="sidebar-section-title text-uppercase fw-bold small mb-2 px-4 flex-shrink-0">Main Menu</p> -->
 
@@ -22,15 +24,23 @@
           } @else {
             <li class="nav-item">
               @if (item.children?.length) {
-                <a
-                  (click)="toggleMenu(item.label)"
-                  class="nav-link"
-                  [class.active]="expandedMenu === item.label || isMenuActive(item)">
-                  <i [class]="item.icon"></i>
-                  <span class="nav-text">{{ item.label }}</span>
-                  <i
-                    [class]="expandedMenu === item.label ? 'bi bi-chevron-down ms-auto' : 'bi bi-chevron-right ms-auto'"></i>
-                </a>
+                <div
+                  class="nav-link nav-link--menu"
+                  [class.active]="expandedMenu === item.label || isMenuActive(item)"
+                  (click)="toggleMenu(item.label)">
+                  <div class="nav-link-main">
+                    <i [class]="item.icon"></i>
+                    <span class="nav-text">{{ item.label }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="nav-link-toggle ms-auto"
+                    (click)="toggleMenu(item.label); $event.stopPropagation()"
+                    [attr.aria-label]="'Toggle ' + item.label">
+                    <i
+                      [class]="expandedMenu === item.label ? 'bi bi-chevron-down' : 'bi bi-chevron-right'"></i>
+                  </button>
+                </div>
                 @if (expandedMenu === item.label) {
                   <ul class="submenu">
                     @for (child of item.children; track child.label) {

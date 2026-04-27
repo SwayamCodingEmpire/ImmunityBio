@@ -1,20 +1,22 @@
 <div class="container-fluid position-relative">
-  <div class="row mb-4">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <h2 class="h4 fw-bold">Order Management</h2>
-      <button class="btn btn-primary shadow-sm"
-        (click)="showForm = true" *ngIf="activeTab === 'view-orders'">
+  <div class="ib-page-header">
+    <div>
+      <p class="ib-page-header__eyebrow">Commercial Operations</p>
+      <h2 class="ib-page-header__title">Order Management</h2>
+      <p class="ib-page-header__subtitle">Manage orders and monitor fulfillment with a consistent operational data layout.</p>
+    </div>
+    <div class="ib-page-header__actions">
+      <button class="btn btn-primary" (click)="showForm = true" *ngIf="activeTab === 'view-orders'">
         <i class="bi bi-plus-lg"></i> Add New Order
       </button>
     </div>
   </div>
 
-  <!-- Route-driven content: Add/View/Edit Order -->
   <div *ngIf="activeTab === 'view-orders'">
-    <div class="card border-0 shadow-sm rounded-4">
+    <div class="ib-section-card">
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.83rem;">
+          <table class="table table-hover table-sm align-middle ib-data-table">
             <thead class="ib-table-header">
               <tr>
                 <th scope="col" class="py-2 px-3">Order No.</th>
@@ -36,29 +38,27 @@
               <tr *ngFor="let order of recentOrders">
                 <td class="px-3 fw-bold text-primary">{{ order.orderNo }}</td>
                 <td>{{ order.date | date:'MM/dd/yyyy' }}</td>
-                <td><span class="badge bg-secondary">{{ order.impType }}</span></td>
+                <td><span class="ib-chip">{{ order.impType }}</span></td>
                 <td>{{ order.impTypeName }}</td>
                 <td class="fw-bold">{{ order.facility }}</td>
-                <td><span class="badge bg-light text-dark border">{{ order.product }}</span></td>
+                <td><span class="ib-chip">{{ order.product }}</span></td>
                 <td class="text-center">{{ order.units }}</td>
                 <td>{{ order.unitPrice | currency:'USD' }}</td>
                 <td class="fw-bold text-success">{{ order.total | currency:'USD' }}</td>
                 <td class="text-muted small">{{ order.invoiceNo }}</td>
-                <td class="text-muted small">{{ order.poNumber || '—' }}</td>
+                <td class="text-muted small">{{ order.poNumber || '-' }}</td>
                 <td>
-                  <span class="badge rounded-pill px-2 py-1" [ngClass]="{
-                      'bg-success text-white': order.status === 'Shipped',
-                      'bg-warning text-dark': order.status === 'Pending',
-                      'bg-danger text-white': order.status === 'Credit Hold'
+                  <span class="ib-status-badge" [ngClass]="{
+                      'ib-status-badge--success': order.status === 'Shipped',
+                      'ib-status-badge--warning': order.status === 'Pending',
+                      'ib-status-badge--danger': order.status === 'Credit Hold'
                     }">
                     {{ order.status }}
                   </span>
                 </td>
                 <td class="px-3 text-end" style="white-space: nowrap;">
-                  <button class="btn btn-sm btn-light text-primary me-1" (click)="editOrder(order)"><i
-                      class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-light text-danger" (click)="deleteOrder(order.id)"><i
-                      class="bi bi-trash"></i></button>
+                  <button class="ib-icon-btn me-1" (click)="editOrder(order)"><i class="bi bi-pencil"></i></button>
+                  <button class="ib-icon-btn ib-icon-btn--danger" (click)="deleteOrder(order.id)"><i class="bi bi-trash"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -68,114 +68,139 @@
     </div>
   </div>
 
-  <!-- Route-driven content: Order Tracking -->
   <div *ngIf="activeTab === 'tracking'">
-    <div class="card border-0 shadow-sm rounded-4">
-      <div class="card-body py-4 px-4">
-        <h5 class="fw-bold mb-4"><i class="bi bi-truck me-2 ib-text-accent"></i>Live Order Tracking</h5>
-        <div class="row g-3">
-          <div class="col-md-6" *ngFor="let order of recentOrders">
-            <div class="card border-0 bg-light rounded-3">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                  <div>
-                    <p class="fw-bold mb-0">{{ order.orderNo }}</p>
-                    <small class="text-muted">{{ order.facility }}</small>
+    <div class="ib-section-card">
+      <div class="card-body p-0">
+        <div class="ib-table-toolbar">
+          <h5 class="ib-section-card__title"><i class="bi bi-truck me-2 ib-text-accent"></i>Live Order Tracking</h5>
+          <span class="ib-table-toolbar__meta">Tracking view for {{ recentOrders.length }} orders</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle mb-0 ib-data-table order-tracking-table">
+            <thead class="ib-table-header">
+              <tr>
+                <th scope="col" class="py-2 px-3">Order No.</th>
+                <th scope="col" class="py-2">Facility</th>
+                <th scope="col" class="py-2">Order Date</th>
+                <th scope="col" class="py-2">Invoice No.</th>
+                <th scope="col" class="py-2">PO Number</th>
+                <th scope="col" class="py-2">Status</th>
+                <th scope="col" class="py-2">Tracking Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of recentOrders">
+                <td class="px-3 fw-bold text-primary">{{ order.orderNo }}</td>
+                <td class="fw-bold">{{ order.facility }}</td>
+                <td>{{ order.date | date:'MM/dd/yyyy' }}</td>
+                <td class="text-muted small">{{ order.invoiceNo || 'Pending' }}</td>
+                <td class="text-muted small">{{ order.poNumber || 'N/A' }}</td>
+                <td>
+                  <span class="ib-status-badge" [ngClass]="{
+                      'ib-status-badge--success': order.status === 'Shipped',
+                      'ib-status-badge--warning': order.status === 'Pending',
+                      'ib-status-badge--danger': order.status === 'Credit Hold'
+                    }">
+                    {{ order.status }}
+                  </span>
+                </td>
+                <td class="tracking-progress-cell">
+                  <div class="ib-progress order-tracking-progress">
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      [style.width]="order.status === 'Shipped' ? '100%' : order.status === 'Pending' ? '40%' : '10%'"
+                      [ngClass]="{
+                        'ib-progress-bar--success': order.status === 'Shipped',
+                        'ib-progress-bar--warning': order.status === 'Pending',
+                        'ib-progress-bar--danger': order.status === 'Credit Hold'
+                      }">
+                    </div>
                   </div>
-                  <span class="badge"
-                    [ngClass]="{'bg-success text-white': order.status === 'Shipped', 'bg-warning text-dark': order.status === 'Pending', 'bg-danger text-white': order.status === 'Credit Hold'}">{{
-                    order.status }}</span>
-                </div>
-                <div class="progress mb-2" style="height: 8px;">
-                  <div class="progress-bar" role="progressbar"
-                    [style.width]="order.status === 'Shipped' ? '100%' : order.status === 'Pending' ? '40%' : '10%'"
-                    [ngClass]="{'bg-success': order.status === 'Shipped', 'bg-warning': order.status === 'Pending', 'bg-danger': order.status === 'Credit Hold'}">
-                  </div>
-                </div>
-                <small class="text-muted">Invoice: {{ order.invoiceNo || 'Pending' }} &bull; PO: {{ order.poNumber ||
-                  'N/A' }}</small>
-              </div>
-            </div>
-          </div>
+                  <small class="text-muted d-inline-block mt-1">
+                    {{ order.status === 'Shipped' ? 'Delivered' : order.status === 'Pending' ? 'Processing' : 'On Hold' }}
+                  </small>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Add/Edit Order Form Overlay -->
-  <div *ngIf="showForm"
-    class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-start z-3"
-    style="background: rgba(0,0,0,0.5); padding-top: 4rem; min-height: 100vh;">
-    <div class="card border-0 shadow-lg rounded-4 w-100" style="max-width: 650px; max-height: 90vh; overflow-y: auto;">
-      <div
-        class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center rounded-top-4">
-        <h5 class="fw-bold mb-0">{{ editingOrderId ? 'Edit Order' : 'Add New Order' }}</h5>
+  <div *ngIf="showForm" class="ib-modal-overlay">
+    <div class="ib-modal-shell" style="max-width: 650px;">
+      <div class="ib-modal-header">
+        <h5 class="ib-modal-title">{{ editingOrderId ? 'Edit Order' : 'Add New Order' }}</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="closeForm()"></button>
       </div>
-      <div class="card-body p-4">
+      <div class="ib-modal-body">
         <form (ngSubmit)="addOrder()" #orderForm="ngForm">
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">IMP Type Code</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.impType" name="impType"
-                placeholder="e.g. F1, H1, Tcc">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">IMP Type Name</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.impTypeName" name="impTypeName"
-                placeholder="e.g. Physician">
-            </div>
-          </div>
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Facility / Ship To Name</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.facility" name="facility" required
-                placeholder="e.g. Memorial Oncology Center">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Item Name (Product)</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.product" name="product" required>
+          <div class="ib-form-section mb-3">
+            <p class="ib-form-section__title">Order Details</p>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">IMP Type Code</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.impType" name="impType" placeholder="e.g. F1, H1, Tcc">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">IMP Type Name</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.impTypeName" name="impTypeName" placeholder="e.g. Physician">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Facility / Ship To Name</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.facility" name="facility" required placeholder="e.g. Memorial Oncology Center">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Item Name (Product)</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.product" name="product" required>
+              </div>
             </div>
           </div>
-          <div class="row g-3 mb-3">
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">Ordered Qty</label>
-              <input type="number" class="form-control bg-light" [(ngModel)]="newOrder.units" name="units" min="1"
-                required (change)="updateTotal()">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">Unit Price</label>
-              <input type="text" class="form-control bg-light text-muted" value="$35,800.00" disabled>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-bold small text-muted">Delivery Amount</label>
-              <input type="text" class="form-control bg-light text-success fw-bold"
-                [value]="newOrder.total | currency:'USD'" disabled>
+
+          <div class="ib-form-section mb-3">
+            <p class="ib-form-section__title">Pricing</p>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Ordered Qty</label>
+                <input type="number" class="form-control bg-light" [(ngModel)]="newOrder.units" name="units" min="1" required (change)="updateTotal()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Unit Price</label>
+                <input type="text" class="form-control bg-light text-muted" value="$35,800.00" disabled>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Delivery Amount</label>
+                <input type="text" class="form-control bg-light text-success fw-bold" [value]="newOrder.total | currency:'USD'" disabled>
+              </div>
             </div>
           </div>
-          <div class="row g-3 mb-3">
+
+          <div class="row g-3 mb-4">
             <div class="col-md-6">
               <label class="form-label fw-bold small text-muted">Invoice No.</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.invoiceNo" name="invoiceNo"
-                placeholder="e.g. 10836192">
+              <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.invoiceNo" name="invoiceNo" placeholder="e.g. 10836192">
             </div>
             <div class="col-md-6">
               <label class="form-label fw-bold small text-muted">PO Number</label>
               <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.poNumber" name="poNumber">
             </div>
+            <div class="col-md-12">
+              <label class="form-label fw-bold small text-muted">Status</label>
+              <select class="form-select bg-light" [(ngModel)]="newOrder.status" name="status">
+                <option value="Pending">Pending</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Credit Hold">Credit Hold</option>
+              </select>
+            </div>
           </div>
-          <div class="mb-4">
-            <label class="form-label fw-bold small text-muted">Status</label>
-            <select class="form-select bg-light" [(ngModel)]="newOrder.status" name="status">
-              <option value="Pending">Pending</option>
-              <option value="Shipped">Shipped</option>
-              <option value="Credit Hold">Credit Hold</option>
-            </select>
-          </div>
+
           <div class="d-flex justify-content-end gap-2 border-top pt-3">
-            <button type="button" class="btn btn-light" (click)="closeForm()">Cancel</button>
-            <button type="submit" class="btn btn-primary"
-              [disabled]="!orderForm.valid">{{ editingOrderId ? 'Update Order' : 'Save Order' }}</button>
+            <button type="button" class="btn ib-btn-secondary" (click)="closeForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!orderForm.valid">
+              {{ editingOrderId ? 'Update Order' : 'Save Order' }}
+            </button>
           </div>
         </form>
       </div>
