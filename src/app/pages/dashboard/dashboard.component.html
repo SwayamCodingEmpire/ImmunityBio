@@ -1,0 +1,245 @@
+<div class="container-fluid">
+
+  <!-- Header -->
+  <div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="h4 fw-bold mb-0" style="color: #6A0DAD;">Anktiva Commercial &amp; Patient Access Portal</h2>
+        <p class="text-muted small mb-0">Report Date: 04/20/2026 &nbsp;|&nbsp; Week Start Date: 04/18/2026</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise me-1"></i>Update</button>
+        <button class="btn btn-sm btn-primary"><i class="bi bi-envelope me-1"></i>Create Email</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- YESTERDAY KPI cards matching Image 2 -->
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <p class="text-uppercase fw-bold small text-muted mb-2">YESTERDAY</p>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100" style="border-left: 4px solid #6A0DAD !important; border-left-style: solid !important;">
+        <div class="card-body py-3">
+          <p class="text-muted mb-1 small fw-bold">ICS Sales</p>
+          <h4 class="fw-bold mb-0" style="color: #6A0DAD;">{{ kpis.daily_revenue | currency:'USD':'symbol':'1.0-0' }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100">
+        <div class="card-body py-3">
+          <p class="text-muted mb-1 small fw-bold">IB Care Enrollments</p>
+          <h4 class="fw-bold mb-0">1</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100">
+        <div class="card-body py-3">
+          <p class="text-muted mb-1 small fw-bold">Accredo Enrollments</p>
+          <h4 class="fw-bold mb-0">0</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100">
+        <div class="card-body py-3">
+          <p class="text-muted mb-1 small fw-bold">YTD Revenue</p>
+          <h4 class="fw-bold mb-0 text-success">{{ kpis.ytd_revenue | currency:'USD':'symbol':'1.0-0' }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY SALES Table (Image 2 exact format) -->
+  <div class="row g-3 mb-3">
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-body p-0">
+          <div class="px-3 py-2" style="background-color: #2F5597; color: white; border-radius: .4rem .4rem 0 0;">
+            <span class="fw-bold small">WEEKLY SALES</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered mb-0" style="font-size: 0.82rem;">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-1 px-2"></th>
+                  <th class="text-center py-1">Fri/Sat/Sun</th>
+                  <th class="text-center py-1">Mon</th>
+                  <th class="text-center py-1">Tue</th>
+                  <th class="text-center py-1">Wed</th>
+                  <th class="text-center py-1">Thu</th>
+                  <th class="text-center py-1 fw-bold">TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of weeklySales" [class.fw-bold]="row.label === 'TOTAL'" [class.table-light]="row.label === 'TOTAL'">
+                  <td class="px-2">{{ row.label }}</td>
+                  <td class="text-center">{{ row.fri }}</td>
+                  <td class="text-center">{{ row.mon }}</td>
+                  <td class="text-center">{{ row.tue }}</td>
+                  <td class="text-center">{{ row.wed }}</td>
+                  <td class="text-center">{{ row.thu }}</td>
+                  <td class="text-center fw-bold">{{ row.total }}</td>
+                </tr>
+                <tr>
+                  <td class="px-2 fw-bold">Sales $</td>
+                  <td class="text-end">{{ 823400 | currency:'USD':'symbol':'1.0-0' }}</td>
+                  <td class="text-end">{{ 1432000 | currency:'USD':'symbol':'1.0-0' }}</td>
+                  <td class="text-end text-muted">$—</td>
+                  <td class="text-end text-muted">$—</td>
+                  <td class="text-end text-muted">$—</td>
+                  <td class="text-end fw-bold text-success">{{ 2255400 | currency:'USD':'symbol':'1.0-0' }}</td>
+                </tr>
+                <tr>
+                  <td class="px-2 fw-bold">Enrollments</td>
+                  <td class="text-center">1</td>
+                  <td class="text-center">1</td>
+                  <td class="text-center">0</td>
+                  <td class="text-center">0</td>
+                  <td class="text-center">0</td>
+                  <td class="text-center fw-bold">2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Territory Performance (right side) -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm rounded-3 h-100">
+        <div class="px-3 py-2" style="background-color: #2F5597; color: white; border-radius: .4rem .4rem 0 0;">
+          <span class="fw-bold small">TERRITORY PERFORMANCE</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered mb-0" style="font-size: 0.82rem;">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-1 px-2">Territory</th>
+                  <th class="py-1">Director</th>
+                  <th class="text-end py-1">YTD Revenue</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (t of territories; track t.id) {
+                  <tr>
+                    <td class="px-2 fw-bold">{{ t.name }}</td>
+                    <td class="small text-muted">{{ t.director }}</td>
+                    <td class="text-end fw-bold text-success">{{ t.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YEARLY SALES BREAKDOWN Table (Image 2 exact structure) -->
+  <div class="card border-0 shadow-sm rounded-3 mb-3">
+    <div class="px-3 py-2" style="background-color: #2F5597; color: white; border-radius: .4rem .4rem 0 0;">
+      <span class="fw-bold small">YEARLY SALES BREAKDOWN</span>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered mb-0" style="font-size: 0.81rem;">
+          <thead style="background-color: #4472C4; color: white;">
+            <tr>
+              <th class="py-1 px-2" rowspan="2">Qtr</th>
+              <th class="py-1" rowspan="2">Period</th>
+              <th class="py-1 text-center" colspan="3">Company Sales</th>
+              <th class="py-1 text-center" colspan="3">Field Sales</th>
+              <th class="py-1 text-center" colspan="2">Enrollments</th>
+            </tr>
+            <tr style="background-color: #5a84c8;">
+              <th class="py-1 text-center">Shipped</th>
+              <th class="py-1 text-center">Pending</th>
+              <th class="py-1 text-center">Total Units</th>
+              <th class="py-1 text-center">ICS Units</th>
+              <th class="py-1 text-end">ICS Sales $</th>
+              <th class="py-1 text-end">Accredo Sales $</th>
+              <th class="py-1 text-center">IB Care</th>
+              <th class="py-1 text-center">Accredo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of quarterlyBreakdown" [class.fw-bold]="row.isTotal" [class.table-light]="row.isTotal">
+              <td class="px-2 fw-bold small">{{ row.quarter }}</td>
+              <td class="small">{{ row.period }}</td>
+              <td class="text-center">{{ row.shipped }}</td>
+              <td class="text-center">{{ row.pending }}</td>
+              <td class="text-center fw-bold">{{ row.totalUnits }}</td>
+              <td class="text-center">{{ row.icsUnits }}</td>
+              <td class="text-end">{{ row.icsSales | currency:'USD':'symbol':'1.0-0' }}</td>
+              <td class="text-end">{{ row.accredoSales | currency:'USD':'symbol':'1.0-0' }}</td>
+              <td class="text-center">{{ row.ibCare }}</td>
+              <td class="text-center">{{ row.accredo }}</td>
+            </tr>
+            <!-- YTD Total Row -->
+            <tr class="fw-bold" style="background-color: #E2EFDA;">
+              <td class="px-2">YTD</td>
+              <td class="fw-bold">TOTAL</td>
+              <td class="text-center">1777</td>
+              <td class="text-center">22</td>
+              <td class="text-center fw-bold">1799</td>
+              <td class="text-center">1505</td>
+              <td class="text-end text-success">{{ 53879000 | currency:'USD':'symbol':'1.0-0' }}</td>
+              <td class="text-end text-success">{{ 8055000 | currency:'USD':'symbol':'1.0-0' }}</td>
+              <td class="text-center">255</td>
+              <td class="text-center">34</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- REP Performance Table (Image 2 bottom section) -->
+  <div class="card border-0 shadow-sm rounded-3">
+    <div class="px-3 py-2" style="background-color: #2F5597; color: white; border-radius: .4rem .4rem 0 0;">
+      <span class="fw-bold small">TERRITORY &amp; REP PERFORMANCE</span>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered mb-0" style="font-size: 0.81rem;">
+          <thead style="background-color: #4472C4; color: white;">
+            <tr>
+              <th class="py-1 px-2" rowspan="2">Territory</th>
+              <th class="py-1" rowspan="2">Sales Rep</th>
+              <th class="py-1 text-center" colspan="2">Current Week</th>
+              <th class="py-1 text-center" colspan="2">Current Quarter</th>
+              <th class="py-1 text-center" colspan="2">YTD</th>
+            </tr>
+            <tr style="background-color: #5a84c8;">
+              <th class="py-1 text-center">Enrollm.</th>
+              <th class="py-1 text-center">Units Ordered</th>
+              <th class="py-1 text-center">Enrollm.</th>
+              <th class="py-1 text-center">Units Ordered</th>
+              <th class="py-1 text-center">Enrollm.</th>
+              <th class="py-1 text-center">Units Ordered</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of repPerformance" [class.fw-bold]="row.territory !== ''">
+              <td class="px-2" [class.text-white]="row.territory !== ''" [class.fw-bold]="row.territory !== ''" [style.background-color]="row.territory !== '' ? '#2F5597' : ''">{{ row.territory }}</td>
+              <td>{{ row.rep }}</td>
+              <td class="text-center">{{ row.cwEnroll }}</td>
+              <td class="text-center">{{ row.cwUnits }}</td>
+              <td class="text-center">{{ row.cqEnroll }}</td>
+              <td class="text-center fw-bold">{{ row.cqUnits }}</td>
+              <td class="text-center">{{ row.ytdEnroll }}</td>
+              <td class="text-center fw-bold text-success">{{ row.ytdUnits }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

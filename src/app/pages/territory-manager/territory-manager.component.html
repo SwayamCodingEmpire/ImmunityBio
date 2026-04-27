@@ -1,0 +1,190 @@
+<div class="container-fluid position-relative">
+  <div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h2 class="h4 fw-bold">Territory Management</h2>
+      <div>
+        <button class="btn btn-outline-secondary shadow-sm me-2" *ngIf="activeTab === 'territories'">
+          <i class="bi bi-download"></i> Export
+        </button>
+        <button class="btn btn-primary shadow-sm" (click)="showForm = true" *ngIf="activeTab === 'territories'">
+          <i class="bi bi-plus-lg"></i> Add Territory
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-tabs: Territories | Sales Rep Assignment | Territory Performance -->
+  <ul class="nav nav-tabs mb-4 border-bottom border-2">
+    <li class="nav-item">
+      <a class="nav-link fw-bold" [class.active]="activeTab === 'territories'" [class.text-dark]="activeTab !== 'territories'" [style.color]="activeTab === 'territories' ? '#0A2463' : ''" (click)="activeTab = 'territories'" style="cursor: pointer;">Territories</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link fw-bold" [class.active]="activeTab === 'assignment'" [class.text-dark]="activeTab !== 'assignment'" [style.color]="activeTab === 'assignment' ? '#0A2463' : ''" (click)="activeTab = 'assignment'" style="cursor: pointer;">Sales Rep Assignment</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link fw-bold" [class.active]="activeTab === 'performance'" [class.text-dark]="activeTab !== 'performance'" [style.color]="activeTab === 'performance' ? '#0A2463' : ''" (click)="activeTab = 'performance'" style="cursor: pointer;">Territory Performance</a>
+    </li>
+  </ul>
+
+  <!-- Tab: Territories (master list) -->
+  <div *ngIf="activeTab === 'territories'">
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.85rem;">
+            <thead style="background-color: #2F5597; color: white;">
+              <tr>
+                <th scope="col" class="py-2 px-3">Territory ID</th>
+                <th scope="col" class="py-2">Territory Name</th>
+                <th scope="col" class="py-2">Area Business Director</th>
+                <th scope="col" class="py-2">Product</th>
+                <th scope="col" class="py-2">Target Revenue</th>
+                <th scope="col" class="py-2 px-3 text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let territory of territories">
+                <td class="px-3 fw-bold"><span class="badge bg-light border text-dark">{{ territory.id }}</span></td>
+                <td class="fw-bold">{{ territory.name }}</td>
+                <td>{{ territory.director }}</td>
+                <td><span class="badge bg-light text-dark border">{{ territory.product }}</span></td>
+                <td class="fw-bold text-success">{{ territory.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="px-3 text-end">
+                  <button class="btn btn-sm btn-light text-primary me-1" (click)="editTerritory(territory)"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-light text-danger" (click)="deleteTerritory(territory.id)"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Sales Rep Assignment (Image 6 structure) -->
+  <div *ngIf="activeTab === 'assignment'">
+    <div *ngFor="let territory of territories" class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-header border-0 py-3 px-4" style="background-color: #2F5597; border-radius: 1rem 1rem 0 0;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-0 text-white fw-bold">{{ territory.name }}</h6>
+            <small class="text-white-50">Area Business Director: {{ territory.director }} &nbsp;|&nbsp; ID: {{ territory.id }}</small>
+          </div>
+          <span class="badge bg-light text-dark">{{ territory.product }}</span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.85rem;">
+            <thead class="table-light">
+              <tr>
+                <th class="py-2 px-3">Name</th>
+                <th class="py-2">Position / Location</th>
+                <th class="py-2">Area ID</th>
+                <th class="py-2 text-center">All Team</th>
+                <th class="py-2 text-center">GLB-NCL</th>
+                <th class="py-2 text-center">Leadership</th>
+                <th class="py-2 text-center">ARI Team</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rep of getRepsByTerritory(territory.name)">
+                <td class="px-3 fw-bold">{{ rep.name }}</td>
+                <td class="text-muted">{{ rep.position }}</td>
+                <td><span class="badge bg-light border text-dark">{{ rep.areaId }}</span></td>
+                <td class="text-center"><span class="badge" [ngClass]="rep.allTeamMark === 'Y' ? 'bg-success' : 'bg-secondary'">{{ rep.allTeamMark }}</span></td>
+                <td class="text-center"><span class="badge" [ngClass]="rep.glbNcl === 'Y' ? 'bg-primary' : 'bg-light text-muted border'">{{ rep.glbNcl }}</span></td>
+                <td class="text-center"><span class="badge" [ngClass]="rep.leadershipTeam === 'Y' ? 'bg-warning text-dark' : 'bg-light text-muted border'">{{ rep.leadershipTeam }}</span></td>
+                <td class="text-center"><span class="badge" [ngClass]="rep.ariTeam === 'Y' ? 'bg-info' : 'bg-light text-muted border'">{{ rep.ariTeam }}</span></td>
+              </tr>
+              <tr *ngIf="getRepsByTerritory(territory.name).length === 0">
+                <td colspan="7" class="text-center text-muted py-3">No reps assigned to this territory.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Territory Performance -->
+  <div *ngIf="activeTab === 'performance'">
+    <div class="row g-4">
+      <div class="col-md-6" *ngFor="let territory of territories">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+          <div class="position-absolute top-0 start-0 w-100" style="height: 4px; background-color: #6A0DAD;"></div>
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h5 class="fw-bold mb-0">{{ territory.name }}</h5>
+                <small class="text-muted">{{ territory.director }}</small>
+              </div>
+              <span class="badge bg-light text-dark border">{{ territory.id }}</span>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <div class="p-2 rounded-3 bg-light text-center">
+                  <p class="small text-muted mb-0">Product</p>
+                  <p class="fw-bold small mb-0" style="color: #6A0DAD;">{{ territory.product }}</p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="p-2 rounded-3 bg-light text-center">
+                  <p class="small text-muted mb-0">YTD Revenue</p>
+                  <p class="fw-bold mb-0 text-success small">{{ territory.revenue | currency:'USD':'symbol':'1.0-0' }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+              <small class="text-muted fw-bold">Revenue Progress to Target</small>
+              <small class="fw-bold" style="color: #6A0DAD;">{{ ((territory.revenue / 20000000) * 100).toFixed(0) }}%</small>
+            </div>
+            <div class="progress" style="height: 8px;">
+              <div class="progress-bar" role="progressbar" [style.width]="((territory.revenue / 20000000) * 100) + '%'" style="background-color: #6A0DAD;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Territory Form Overlay -->
+  <div *ngIf="showForm" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-start z-3" style="background: rgba(0,0,0,0.5); padding-top: 5rem; min-height: 100vh;">
+    <div class="card border-0 shadow-lg rounded-4 w-100" style="max-width: 520px;">
+      <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center rounded-top-4">
+        <h5 class="fw-bold mb-0">{{ editingTerritoryId ? 'Edit Territory' : 'Add New Territory' }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeForm()"></button>
+      </div>
+      <div class="card-body p-4">
+        <form (ngSubmit)="addTerritory()" #terrForm="ngForm">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Territory ID</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="newTerritory.id" name="id" required [disabled]="!!editingTerritoryId" placeholder="e.g. EA1">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Territory Name</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="newTerritory.name" name="name" required placeholder="e.g. East">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Area Business Director</label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="newTerritory.director" name="director" required placeholder="e.g. Keith DeRuiter">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Prescribed Product</label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="newTerritory.product" name="product" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-bold small text-muted">Target Revenue ($)</label>
+            <input type="number" class="form-control bg-light" [(ngModel)]="newTerritory.revenue" name="revenue" required min="0">
+          </div>
+          <div class="d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="button" class="btn btn-light" (click)="closeForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!terrForm.valid">{{ editingTerritoryId ? 'Update Territory' : 'Save Territory' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

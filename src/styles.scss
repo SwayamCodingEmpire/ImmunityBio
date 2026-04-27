@@ -1,1 +1,148 @@
-/* You can add global styles to this file, and also import other style files */
+/* ===================================================
+   ImmunityBio Brand Theme
+   Primary: #0A2463 (Deep Navy)
+   Accent:  #009FD4 (ImmunityBio Teal-Blue)
+   Background: #FFFFFF (White)
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@400;600;700;800&display=swap');
+
+/* CSS Custom Properties */
+:root {
+  --ib-navy:      #0A2463;
+  --ib-teal:      #009FD4;
+  --ib-teal-dark: #007BAA;
+  --ib-navy-light:#1E3A8A;
+  --ib-bg:        #F8FAFC;
+  --ib-white:     #FFFFFF;
+  --ib-border:    #E2E8F0;
+  --ib-text:      #1E293B;
+  --ib-muted:     #64748B;
+}
+
+/* Global Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: var(--ib-bg);
+  color: var(--ib-text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Headings use Montserrat */
+h1, h2, h3, h4, h5, h6, .fw-bold {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: var(--ib-teal); border-radius: 4px; }
+
+/* ===== MAIN CONTENT BACKGROUND ===== */
+main {
+  background-color: var(--ib-bg) !important;
+}
+
+/* ===== CARDS ===== */
+.card {
+  border: 1px solid var(--ib-border) !important;
+  background: var(--ib-white);
+}
+
+/* ===== TABLES ===== */
+/* Override all dark-navy table headers throughout the app */
+thead[style*="background-color: #2F5597"],
+thead[style*="background-color: #3a65b5"],
+thead[style*="background-color: #4472C4"],
+thead[style*="background-color: #5a84c8"] {
+  background-color: var(--ib-navy) !important;
+  color: #ffffff !important;
+}
+
+[style*="background-color: #2F5597"] {
+  background-color: var(--ib-navy) !important;
+  color: #ffffff !important;
+}
+[style*="background-color: #3a65b5"] {
+  background-color: var(--ib-navy-light) !important;
+  color: #ffffff !important;
+}
+[style*="background-color: #4472C4"] {
+  background-color: #1449A0 !important;
+  color: #ffffff !important;
+}
+[style*="background-color: #5a84c8"] {
+  background-color: #1E5BB8 !important;
+  color: #ffffff !important;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 159, 212, 0.05) !important;
+}
+
+/* ===== BUTTONS ===== */
+/* Replace purple (#6A0DAD) buttons with ImmunityBio navy */
+[style*="background-color: #6A0DAD"],
+[style*="border-color: #6A0DAD"] {
+  background-color: var(--ib-navy) !important;
+  border-color: var(--ib-navy) !important;
+  color: #ffffff !important;
+}
+
+.btn-primary {
+  background-color: var(--ib-navy) !important;
+  border-color: var(--ib-navy) !important;
+  color: #ffffff !important;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  &:hover {
+    background-color: var(--ib-teal) !important;
+    border-color: var(--ib-teal) !important;
+    color: #ffffff !important;
+  }
+}
+
+/* ===== NAV TABS ===== */
+.nav-tabs .nav-link.active {
+  color: var(--ib-navy) !important;
+  border-bottom-color: var(--ib-navy) !important;
+  font-weight: 700;
+}
+
+/* ===== TEXT COLOR OVERRIDES ===== */
+[style*="color: #6A0DAD"] {
+  color: var(--ib-navy) !important;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar[style*="background-color: #6A0DAD"],
+.progress-bar[style*="background-color: '#6A0DAD'"] {
+  background-color: var(--ib-teal) !important;
+}
+
+/* ===== FORM CONTROLS ===== */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--ib-teal);
+  box-shadow: 0 0 0 0.2rem rgba(0, 159, 212, 0.15);
+}
+
+/* ===== BADGE ===== */
+.badge.bg-primary {
+  background-color: var(--ib-teal) !important;
+  color: #ffffff !important;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--ib-navy);
+}

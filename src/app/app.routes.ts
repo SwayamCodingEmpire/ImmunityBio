@@ -1,3 +1,19 @@
 import { Routes } from '@angular/router';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { SalesRegistryComponent } from './pages/sales-registry/sales-registry.component';
+import { PatientEnrollmentComponent } from './pages/patient-enrollment/patient-enrollment.component';
+import { OrderManagementComponent } from './pages/order-management/order-management.component';
+import { ProviderNetworkComponent } from './pages/provider-network/provider-network.component';
+import { TerritoryManagerComponent } from './pages/territory-manager/territory-manager.component';
+import { SalesTeamComponent } from './pages/sales-team/sales-team.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'sales-registry', component: SalesRegistryComponent },
+  { path: 'order-management', component: OrderManagementComponent },
+  { path: 'patient-enrollment', component: PatientEnrollmentComponent },
+  { path: 'provider-network', component: ProviderNetworkComponent },
+  { path: 'territory-manager', component: TerritoryManagerComponent },
+  { path: 'sales-team', component: SalesTeamComponent }
+];

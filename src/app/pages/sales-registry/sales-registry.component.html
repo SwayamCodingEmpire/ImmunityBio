@@ -1,0 +1,301 @@
+<div class="container-fluid position-relative">
+  <div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h2 class="h4 fw-bold">Sales Management</h2>
+      <button class="btn btn-primary shadow-sm" (click)="showForm = true" *ngIf="activeTab === 'daily-sales'">
+        <i class="bi bi-plus-lg"></i> Add Daily Sale
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content: Daily Sales -->
+  <div *ngIf="activeTab === 'daily-sales'">
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.83rem;">
+            <thead style="background-color: #2F5597; color: white;">
+              <tr>
+                <th scope="col" class="py-2 px-3" rowspan="2">Sales ID</th>
+                <th scope="col" class="py-2" rowspan="2">Date</th>
+                <th scope="col" class="py-2" rowspan="2">Territory</th>
+                <th scope="col" class="py-2" rowspan="2">Sales Rep</th>
+                <th scope="col" class="py-2" rowspan="2">Product</th>
+                <th scope="col" class="py-2 text-center border-start border-light" colspan="2">ICS (Direct)</th>
+                <th scope="col" class="py-2 text-center border-start border-light" colspan="2">Accredo (SP)</th>
+                <th scope="col" class="py-2 text-center border-start border-light" colspan="2">Total</th>
+                <th scope="col" class="py-2 text-end px-3 border-start border-light" rowspan="2">Actions</th>
+              </tr>
+              <tr style="background-color: #3a65b5;">
+                <th scope="col" class="py-1 text-center border-start border-light">Units</th>
+                <th scope="col" class="py-1 text-center">Sales $</th>
+                <th scope="col" class="py-1 text-center border-start border-light">Units</th>
+                <th scope="col" class="py-1 text-center">Sales $</th>
+                <th scope="col" class="py-1 text-center border-start border-light">Units</th>
+                <th scope="col" class="py-1 text-center">Sales $</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sale of dailySales">
+                <td class="px-3 fw-bold text-primary">{{ sale.id }}</td>
+                <td>{{ sale.date | date:'MM/dd/yyyy' }}</td>
+                <td>{{ sale.region }}</td>
+                <td>{{ sale.repName }}</td>
+                <td><span class="badge bg-light text-dark border">{{ sale.product }}</span></td>
+                <td class="text-center border-start">{{ sale.icsUnits }}</td>
+                <td class="text-end">{{ sale.icsSales | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="text-center border-start">{{ sale.accredoUnits }}</td>
+                <td class="text-end">{{ sale.accredoSales | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="text-center fw-bold border-start">{{ sale.units }}</td>
+                <td class="text-end fw-bold text-success">{{ sale.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="px-3 text-end border-start">
+                  <button class="btn btn-sm btn-light text-primary me-1" (click)="editDailySale(sale)"><i
+                      class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-light text-danger" (click)="deleteDailySale(sale.id)"><i
+                      class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Content: Sales Report -->
+  <div *ngIf="activeTab === 'sales-report'">
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-body">
+        <h5 class="mb-3 fw-bold">Filters</h5>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <select class="form-select bg-light">
+              <option>All Regions</option>
+              <option>East</option>
+              <option>North Central</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select class="form-select bg-light">
+              <option>All Products</option>
+              <option>Anktiva</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary w-100" (click)="generateReport()">Generate Report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!reportGenerated" class="card border-0 shadow-sm rounded-4">
+      <div class="card-body py-5 text-center text-muted">
+        <i class="bi bi-file-earmark-bar-graph display-4 mb-3 d-block" style="color: #6A0DAD; opacity: 0.5;"></i>
+        <h4>Sales Report</h4>
+        <p>Select filters and click generate to view the comprehensive report.</p>
+      </div>
+    </div>
+
+    <div *ngIf="reportGenerated" class="card border-0 shadow-sm rounded-4">
+      <div class="card-header bg-white border-bottom pt-4 pb-3 px-4">
+        <h5 class="fw-bold mb-0">Generated Sales Report</h5>
+        <p class="text-muted small mb-0">Filtered by: All Regions, All Products</p>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle mb-0">
+            <thead class="table-dark" style="background-color: #6A0DAD;">
+              <tr>
+                <th scope="col" class="py-3 px-4">Product</th>
+                <th scope="col" class="py-3">Region</th>
+                <th scope="col" class="py-3 text-center">Total Units</th>
+                <th scope="col" class="py-3 text-end px-4">Total Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of generatedReportData">
+                <td class="px-4 fw-bold">{{ data.product }}</td>
+                <td>{{ data.region }}</td>
+                <td class="text-center">{{ data.totalUnits }}</td>
+                <td class="text-end px-4 fw-bold text-success">{{ data.totalRevenue | currency:'USD' }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="table-light fw-bold">
+              <tr>
+                <td colspan="2" class="px-4 text-end">Grand Total:</td>
+                <td class="text-center">429</td>
+                <td class="text-end px-4 text-success">{{ 15358200 | currency:'USD' }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Content: Sales Performance -->
+  <div *ngIf="activeTab === 'performance'">
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-body py-4 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-trophy display-6 me-3 text-warning"></i>
+          <div>
+            <h5 class="fw-bold mb-0">Sales Performance Leaderboard</h5>
+            <p class="text-muted small mb-0">Representative & Territory-wise performance vs. Target (YTD)</p>
+          </div>
+        </div>
+        <div>
+          <select class="form-select bg-light border-0 fw-bold text-dark">
+            <option>Q2 2026</option>
+            <option>Q1 2026</option>
+            <option>YTD</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" style="font-size: 0.85rem;">
+            <thead style="background-color: #0A2463; color: white;">
+              <tr>
+                <th scope="col" class="py-3 px-4">Representative</th>
+                <th scope="col" class="py-3">Territory</th>
+                <th scope="col" class="py-3 text-center">Target (Units)</th>
+                <th scope="col" class="py-3 text-center">Achieved (Units)</th>
+                <th scope="col" class="py-3" style="width: 25%;">Progress to Target</th>
+                <th scope="col" class="py-3 px-4 text-end">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rep of performanceData">
+                <td class="px-4 fw-bold">{{ rep.repName }}</td>
+                <td class="text-muted">{{ rep.territory }}</td>
+                <td class="text-center">{{ rep.target }}</td>
+                <td class="text-center fw-bold">{{ rep.achieved }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                      <div class="progress-bar" role="progressbar" [style.width]="rep.percentage + '%'" [ngClass]="{
+                          'bg-success': rep.percentage >= 100, 
+                          'bg-primary': rep.percentage >= 80 && rep.percentage < 100, 
+                          'bg-danger': rep.percentage < 80
+                        }" [attr.aria-valuenow]="rep.percentage" aria-valuemin="0" aria-valuemax="100">
+                      </div>
+                    </div>
+                    <span class="small fw-bold" [ngClass]="{
+                        'text-success': rep.percentage >= 100, 
+                        'text-primary': rep.percentage >= 80 && rep.percentage < 100, 
+                        'text-danger': rep.percentage < 80
+                      }">
+                      {{ rep.percentage }}%
+                    </span>
+                  </div>
+                </td>
+                <td class="px-4 text-end">
+                  <span class="badge" [ngClass]="{
+                      'bg-success bg-opacity-10 text-success border border-success': rep.status === 'Exceeded', 
+                      'bg-primary bg-opacity-10 text-primary border border-primary': rep.status === 'On Track', 
+                      'bg-danger bg-opacity-10 text-danger border border-danger': rep.status === 'Needs Attention'
+                    }">
+                    {{ rep.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Sale Form Overlay -->
+  <div *ngIf="showForm"
+    class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-start z-3"
+    style="background: rgba(0,0,0,0.5); padding-top: 4rem; min-height: 100vh;">
+    <div class="card border-0 shadow-lg rounded-4 w-100" style="max-width: 620px; max-height: 90vh; overflow-y: auto;">
+      <div
+        class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center rounded-top-4">
+        <h5 class="fw-bold mb-0">{{ editingSalesId ? 'Edit Daily Sale Record' : 'Add Daily Sale Record' }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeForm()"></button>
+      </div>
+      <div class="card-body p-4">
+        <form (ngSubmit)="addDailySale()" #saleForm="ngForm">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Date</label>
+              <input type="date" class="form-control bg-light" [(ngModel)]="newSale.date" name="date" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Product</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="newSale.product" name="product" required>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Territory / Region</label>
+              <select class="form-select bg-light" [(ngModel)]="newSale.region" name="region">
+                <option value="East">East</option>
+                <option value="North Central">North Central</option>
+                <option value="South Central">South Central</option>
+                <option value="Southwest">Southwest</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Sales Rep Name</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="newSale.repName" name="repName" required
+                placeholder="e.g. Keith DeRuiter">
+            </div>
+          </div>
+          <div class="card bg-light border-0 rounded-3 p-3 mb-3">
+            <p class="fw-bold small text-muted mb-2">ICS (Direct Model) Units</p>
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label small text-muted">Units Ordered</label>
+                <input type="number" class="form-control" [(ngModel)]="newSale.icsUnits" name="icsUnits" min="0"
+                  required (change)="updateRevenue()">
+              </div>
+              <div class="col-6">
+                <label class="form-label small text-muted">ICS Sales ($35,800/unit)</label>
+                <input type="text" class="form-control text-success fw-bold"
+                  [value]="newSale.icsSales | currency:'USD':'symbol':'1.0-0'" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-light border-0 rounded-3 p-3 mb-3">
+            <p class="fw-bold small text-muted mb-2">Accredo (Specialty Pharmacy) Units</p>
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label small text-muted">Units Ordered</label>
+                <input type="number" class="form-control" [(ngModel)]="newSale.accredoUnits" name="accredoUnits" min="0"
+                  required (change)="updateRevenue()">
+              </div>
+              <div class="col-6">
+                <label class="form-label small text-muted">Accredo Sales ($35,800/unit)</label>
+                <input type="text" class="form-control text-success fw-bold"
+                  [value]="newSale.accredoSales | currency:'USD':'symbol':'1.0-0'" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 mb-4 p-2 rounded-3" style="background-color: #f0ebf8;">
+            <div class="col-4">
+              <label class="form-label fw-bold small" style="color: #6A0DAD;">Total Units</label>
+              <input type="text" class="form-control fw-bold" [value]="newSale.units" disabled>
+            </div>
+            <div class="col-8">
+              <label class="form-label fw-bold small" style="color: #6A0DAD;">Total Revenue</label>
+              <input type="text" class="form-control fw-bold text-success" [value]="newSale.revenue | currency:'USD'"
+                disabled>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="button" class="btn btn-light" (click)="closeForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!saleForm.valid">{{ editingSalesId ? 'Update Sale'
+              : 'Save Sale' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

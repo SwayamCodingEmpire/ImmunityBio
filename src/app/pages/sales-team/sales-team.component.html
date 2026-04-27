@@ -1,0 +1,198 @@
+<div class="container-fluid position-relative">
+  <div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h2 class="h4 fw-bold">Sales Team</h2>
+      <button class="btn btn-primary shadow-sm" (click)="showForm = true" *ngIf="activeTab === 'profiles'">
+        <i class="bi bi-person-plus"></i> Add Team Member
+      </button>
+    </div>
+  </div>
+
+  <!-- Sub-tabs: Rep Profiles | Targets & Achievements -->
+  <ul class="nav nav-tabs mb-4 border-bottom border-2">
+    <li class="nav-item">
+      <a class="nav-link fw-bold" [class.active]="activeTab === 'profiles'" [class.text-dark]="activeTab !== 'profiles'" [style.color]="activeTab === 'profiles' ? '#0A2463' : ''" (click)="activeTab = 'profiles'" style="cursor: pointer;">Representative Profiles</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link fw-bold" [class.active]="activeTab === 'targets'" [class.text-dark]="activeTab !== 'targets'" [style.color]="activeTab === 'targets' ? '#0A2463' : ''" (click)="activeTab = 'targets'" style="cursor: pointer;">Targets &amp; Achievements</a>
+    </li>
+  </ul>
+
+  <!-- Tab: Representative Profiles -->
+  <div *ngIf="activeTab === 'profiles'">
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.83rem;">
+            <thead style="background-color: #2F5597; color: white;">
+              <tr>
+                <th scope="col" class="py-2 px-3">Name</th>
+                <th scope="col" class="py-2">Position / Location</th>
+                <th scope="col" class="py-2">Area ID</th>
+                <th scope="col" class="py-2">Area</th>
+                <th scope="col" class="py-2">Product</th>
+                <th scope="col" class="py-2 text-center">All Team</th>
+                <th scope="col" class="py-2 text-center">GLB-NCL</th>
+                <th scope="col" class="py-2 text-center">Leadership</th>
+                <th scope="col" class="py-2 text-center">ARI Team</th>
+                <th scope="col" class="py-2 px-3 text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let member of team">
+                <td class="px-3 fw-bold">{{ member.name }}</td>
+                <td class="text-muted">{{ member.position }}</td>
+                <td><span class="badge bg-light border text-dark">{{ member.areaId }}</span></td>
+                <td>{{ member.area }}</td>
+                <td><span class="badge bg-light text-dark border">{{ member.product }}</span></td>
+                <td class="text-center">
+                  <span class="badge" [ngClass]="member.allTeamMark === 'Y' ? 'bg-success' : 'bg-secondary'">{{ member.allTeamMark }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge" [ngClass]="member.glbNcl === 'Y' ? 'bg-primary' : 'bg-light text-muted border'">{{ member.glbNcl }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge" [ngClass]="member.leadershipTeam === 'Y' ? 'bg-warning text-dark' : 'bg-light text-muted border'">{{ member.leadershipTeam }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge" [ngClass]="member.ariTeam === 'Y' ? 'bg-info' : 'bg-light text-muted border'">{{ member.ariTeam }}</span>
+                </td>
+                <td class="px-3 text-end">
+                  <button class="btn btn-sm btn-link text-primary p-0 me-2" (click)="editMember(member)"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-link text-danger p-0" (click)="deleteMember(member.name)"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Targets & Achievements -->
+  <div *ngIf="activeTab === 'targets'">
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.84rem;">
+            <thead style="background-color: #2F5597; color: white;">
+              <tr>
+                <th scope="col" class="py-2 px-3" rowspan="2">Representative</th>
+                <th scope="col" class="py-2" rowspan="2">Area</th>
+                <th scope="col" class="py-2 text-center" colspan="3">Q1 2026</th>
+                <th scope="col" class="py-2 text-center border-start border-light" colspan="3">Q2 2026</th>
+                <th scope="col" class="py-2 text-center border-start border-light" colspan="3">YTD</th>
+              </tr>
+              <tr style="background-color: #3a65b5;">
+                <th class="py-1 text-center">Target</th>
+                <th class="py-1 text-center">Achieved</th>
+                <th class="py-1 text-center">%</th>
+                <th class="py-1 text-center border-start border-light">Target</th>
+                <th class="py-1 text-center">Achieved</th>
+                <th class="py-1 text-center">%</th>
+                <th class="py-1 text-center border-start border-light">Target</th>
+                <th class="py-1 text-center">Achieved</th>
+                <th class="py-1 text-center">%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of targets">
+                <td class="px-3 fw-bold">{{ t.name }}</td>
+                <td class="text-muted">{{ t.area }}</td>
+                <td class="text-center">{{ t.q1Target }}</td>
+                <td class="text-center fw-bold">{{ t.q1Achieved }}</td>
+                <td class="text-center">
+                  <span class="badge" [ngClass]="(t.q1Achieved / t.q1Target * 100) >= 100 ? 'bg-success' : (t.q1Achieved / t.q1Target * 100) >= 80 ? 'bg-primary' : 'bg-danger'">
+                    {{ (t.q1Achieved / t.q1Target * 100).toFixed(0) }}%
+                  </span>
+                </td>
+                <td class="text-center border-start">{{ t.q2Target }}</td>
+                <td class="text-center fw-bold">{{ t.q2Achieved }}</td>
+                <td class="text-center">
+                  <span class="badge" [ngClass]="(t.q2Achieved / t.q2Target * 100) >= 100 ? 'bg-success' : (t.q2Achieved / t.q2Target * 100) >= 50 ? 'bg-warning text-dark' : 'bg-danger'">
+                    {{ (t.q2Achieved / t.q2Target * 100).toFixed(0) }}%
+                  </span>
+                </td>
+                <td class="text-center border-start">{{ t.ytdTarget }}</td>
+                <td class="text-center fw-bold">{{ t.ytdAchieved }}</td>
+                <td class="text-center">
+                  <span class="badge" [ngClass]="(t.ytdAchieved / t.ytdTarget * 100) >= 100 ? 'bg-success' : (t.ytdAchieved / t.ytdTarget * 100) >= 70 ? 'bg-primary' : 'bg-danger'">
+                    {{ (t.ytdAchieved / t.ytdTarget * 100).toFixed(0) }}%
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Form Overlay -->
+  <div *ngIf="showForm" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-start z-3" style="background: rgba(0,0,0,0.5); padding-top: 4rem; min-height: 100vh;">
+    <div class="card border-0 shadow-lg rounded-4 w-100" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center rounded-top-4">
+        <h5 class="fw-bold mb-0">{{ editingName ? 'Edit Team Member' : 'Add Team Member' }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeForm()"></button>
+      </div>
+      <div class="card-body p-4">
+        <form (ngSubmit)="addMember()" #teamForm="ngForm">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Full Name</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="newMember.name" name="name" required [disabled]="!!editingName">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Position / Location</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="newMember.position" name="position" required placeholder="e.g. Boston, MA">
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label fw-bold small text-muted">Area ID</label>
+              <input type="text" class="form-control bg-light fw-bold" [(ngModel)]="newMember.areaId" name="areaId" required placeholder="e.g. EA101">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold small text-muted">Area / Territory</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="newMember.area" name="area" required placeholder="e.g. East">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold small text-muted">Product</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="newMember.product" name="product" required>
+            </div>
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+              <label class="form-label fw-bold small text-muted">All Team Mark</label>
+              <select class="form-select bg-light" [(ngModel)]="newMember.allTeamMark" name="allTeamMark">
+                <option value="Y">Y</option><option value="N">N</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label fw-bold small text-muted">GLB-NCL</label>
+              <select class="form-select bg-light" [(ngModel)]="newMember.glbNcl" name="glbNcl">
+                <option value="Y">Y</option><option value="N">N</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label fw-bold small text-muted">Leadership Team</label>
+              <select class="form-select bg-light" [(ngModel)]="newMember.leadershipTeam" name="leadershipTeam">
+                <option value="Y">Y</option><option value="N">N</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label fw-bold small text-muted">ARI Team</label>
+              <select class="form-select bg-light" [(ngModel)]="newMember.ariTeam" name="ariTeam">
+                <option value="Y">Y</option><option value="N">N</option>
+              </select>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="button" class="btn btn-light" (click)="closeForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!teamForm.valid">{{ editingName ? 'Update Member' : 'Save Member' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

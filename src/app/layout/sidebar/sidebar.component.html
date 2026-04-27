@@ -1,0 +1,136 @@
+<div class="d-flex flex-column pt-4 bg-white min-vh-100" style="border-right: 1px solid #E2E8F0;">
+  <!-- ImmunityBio Logo / Brand -->
+  <a routerLink="/" class="d-flex align-items-center mb-4 px-4 text-decoration-none flex-shrink-0">
+    <div class="d-flex flex-column">
+      <span
+        style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.1rem; color: #0A2463; letter-spacing: -0.5px; line-height: 1.1;">ImmunityBio</span>
+      <span
+        style="font-size: 0.65rem; color: #009FD4; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;">Commercial
+        Portal</span>
+    </div>
+  </a>
+
+  <!-- Anktiva product badge -->
+  <div class="mx-3 mb-4 px-3 py-2 rounded-3 flex-shrink-0"
+    style="background: linear-gradient(135deg, #0A2463 0%, #1449A0 100%);">
+    <p class="text-white-50 small mb-0" style="font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">
+      Active Product</p>
+    <p class="text-white fw-bold mb-0" style="font-size: 0.82rem; font-family: 'Montserrat', sans-serif;">Anktiva®
+      400mcg/0.4mL</p>
+  </div>
+
+  <p class="text-uppercase fw-bold small mb-2 px-4 flex-shrink-0"
+    style="letter-spacing: 1.2px; color: #94A3B8; font-size: 0.65rem;">Main Menu</p>
+
+  <ul class="nav flex-column mb-auto w-100 gap-1 px-2" style="overflow-x: hidden;">
+    <li class="nav-item w-100 flex-shrink-0">
+      <a routerLink="/dashboard" routerLinkActive="active-nav-item"
+        class="nav-link d-flex align-items-center px-3 py-2 rounded-3 sidebar-nav-link text-decoration-none">
+        <i class="fs-5 bi-grid me-3"></i> <span>Dashboard</span>
+      </a>
+    </li>
+
+    <!-- Sales Management with Submenu -->
+    <li class="nav-item w-100 flex-shrink-0">
+      <a style="cursor: pointer;" routerLink="/sales-registry"
+        class="nav-link d-flex align-items-center justify-content-between px-3 py-2 rounded-3 sidebar-nav-link text-decoration-none"
+        (click)="toggleMenu('sales', $event)">
+        <div><i class="fs-5 bi-bar-chart-steps me-3"></i> <span>Sales Management</span></div>
+        <i class="bi" [ngClass]="expandedMenus['sales'] ? 'bi-chevron-down' : 'bi-chevron-right'"
+          style="font-size: 0.8rem;"></i>
+      </a>
+      <div class="submenu px-3" *ngIf="expandedMenus['sales']">
+        <ul class="nav flex-column ms-4 border-start border-2 ps-2 my-1" style="border-color: #E2E8F0 !important;">
+          <li class="nav-item"><a routerLink="/sales-registry" [queryParams]="{tab: 'daily-sales'}"
+              class="nav-link py-1 text-muted small submenu-link">Daily Sales</a></li>
+          <li class="nav-item"><a routerLink="/sales-registry" [queryParams]="{tab: 'sales-report'}"
+              class="nav-link py-1 text-muted small submenu-link">Sales Report</a></li>
+          <li class="nav-item"><a routerLink="/sales-registry" [queryParams]="{tab: 'performance'}"
+              class="nav-link py-1 text-muted small submenu-link">Sales Performance</a></li>
+        </ul>
+      </div>
+    </li>
+
+    <!-- Order Management with Submenu -->
+    <li class="nav-item w-100 flex-shrink-0">
+      <a style="cursor: pointer;" routerLink="/order-management"
+        class="nav-link d-flex align-items-center justify-content-between px-3 py-2 rounded-3 sidebar-nav-link text-decoration-none"
+        (click)="toggleMenu('orders', $event)">
+        <div><i class="fs-5 bi-cart3 me-3"></i> <span>Order Management</span></div>
+        <i class="bi" [ngClass]="expandedMenus['orders'] ? 'bi-chevron-down' : 'bi-chevron-right'"
+          style="font-size: 0.8rem;"></i>
+      </a>
+      <div class="submenu px-3" *ngIf="expandedMenus['orders']">
+        <ul class="nav flex-column ms-4 border-start border-2 ps-2 my-1" style="border-color: #E2E8F0 !important;">
+          <li class="nav-item"><a routerLink="/order-management" [queryParams]="{tab: 'view-orders'}"
+              class="nav-link py-1 text-muted small submenu-link">Add/View/Edit Order</a></li>
+          <li class="nav-item"><a routerLink="/order-management" [queryParams]="{tab: 'tracking'}"
+              class="nav-link py-1 text-muted small submenu-link">Order Tracking</a></li>
+        </ul>
+      </div>
+    </li>
+
+    <li class="nav-item w-100 mt-3">
+      <p class="text-uppercase fw-bold small mb-1 px-3"
+        style="letter-spacing: 1.2px; color: #94A3B8; font-size: 0.65rem;">Network</p>
+    </li>
+    <li class="nav-item w-100 flex-shrink-0">
+      <a routerLink="/patient-enrollment" routerLinkActive="active-nav-item"
+        class="nav-link d-flex align-items-center px-3 py-2 rounded-3 sidebar-nav-link text-decoration-none">
+        <i class="fs-5 bi-person-hearts me-3"></i> <span>Patient Management</span>
+      </a>
+    </li>
+    <li class="nav-item w-100 flex-shrink-0">
+      <a routerLink="/provider-network" routerLinkActive="active-nav-item"
+        class="nav-link d-flex align-items-center px-3 py-2 rounded-3 sidebar-nav-link text-decoration-none">
+        <i class="fs-5 bi-hospital me-3"></i> <span>Physician Management</span>
+      </a>
+    </li>
+
+    <!-- Territory Management with Submenu -->
+    <li class="nav-item w-100 flex-shrink-0">
+      <a style="cursor: pointer;" routerLink="/territory-manager"
+        class="nav-link d-flex align-items-center justify-content-between px-3 py-2 rounded-3 sidebar-nav-link text-decoration-none"
+        (click)="toggleMenu('territory', $event)">
+        <div><i class="fs-5 bi-map me-3"></i> <span>Territory Management</span></div>
+        <i class="bi" [ngClass]="expandedMenus['territory'] ? 'bi-chevron-down' : 'bi-chevron-right'"
+          style="font-size: 0.8rem;"></i>
+      </a>
+      <div class="submenu px-3" *ngIf="expandedMenus['territory']">
+        <ul class="nav flex-column ms-4 border-start border-2 ps-2 my-1" style="border-color: #E2E8F0 !important;">
+          <li class="nav-item"><a routerLink="/territory-manager" [queryParams]="{tab: 'territories'}"
+              class="nav-link py-1 text-muted small submenu-link">Territories</a></li>
+          <li class="nav-item"><a routerLink="/territory-manager" [queryParams]="{tab: 'assignment'}"
+              class="nav-link py-1 text-muted small submenu-link">Sales Rep Assignment</a></li>
+          <li class="nav-item"><a routerLink="/territory-manager" [queryParams]="{tab: 'performance'}"
+              class="nav-link py-1 text-muted small submenu-link">Territory Performance</a></li>
+        </ul>
+      </div>
+    </li>
+
+    <!-- Sales Team with Submenu -->
+    <li class="nav-item w-100 flex-shrink-0">
+      <a style="cursor: pointer;" routerLink="/sales-team"
+        class="nav-link d-flex align-items-center justify-content-between px-3 py-2 rounded-3 sidebar-nav-link text-decoration-none"
+        (click)="toggleMenu('team', $event)">
+        <div><i class="fs-5 bi-people me-3"></i> <span>Sales Team</span></div>
+        <i class="bi" [ngClass]="expandedMenus['team'] ? 'bi-chevron-down' : 'bi-chevron-right'"
+          style="font-size: 0.8rem;"></i>
+      </a>
+      <div class="submenu px-3" *ngIf="expandedMenus['team']">
+        <ul class="nav flex-column ms-4 border-start border-2 ps-2 my-1" style="border-color: #E2E8F0 !important;">
+          <li class="nav-item"><a routerLink="/sales-team" [queryParams]="{tab: 'profiles'}"
+              class="nav-link py-1 text-muted small submenu-link">Representative Profiles</a></li>
+          <li class="nav-item"><a routerLink="/sales-team" [queryParams]="{tab: 'targets'}"
+              class="nav-link py-1 text-muted small submenu-link">Targets &amp; Achievements</a></li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+
+  <!-- Footer -->
+  <div class="px-4 py-3 mt-auto flex-shrink-0" style="border-top: 1px solid #E2E8F0;">
+    <p class="text-muted mb-0" style="font-size: 0.7rem;">© 2026 ImmunityBio, Inc.</p>
+    <p class="mb-0" style="font-size: 0.65rem; color: #009FD4; font-weight: 600;">Confidential — Internal Use Only</p>
+  </div>
+</div>
