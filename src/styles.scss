@@ -81,25 +81,13 @@ main {
   box-shadow: var(--ib-shadow-sm);
 }
 
-/* ===== TABLES ===== */
-.ib-table-header {
-  background-color: var(--ib-navy) !important;
-  color: var(--ib-white) !important;
-  border-radius: 0.4rem 0.4rem 0 0;
-}
-
-.ib-table-subhead {
-  background-color: var(--ib-navy-soft) !important;
-  color: var(--ib-white) !important;
-}
-
 .ib-territory-cell {
   background-color: var(--ib-navy) !important;
   color: var(--ib-white) !important;
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 159, 212, 0.05) !important;
+  background-color: rgba(15, 23, 42, 0.025) !important;
 }
 
 /* ===== BUTTONS ===== */
@@ -187,7 +175,7 @@ main {
 }
 
 .ib-page-header__eyebrow {
-  color: var(--ib-teal-dark);
+  color: #64748b;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.9px;
@@ -328,10 +316,10 @@ main {
 }
 
 .ib-chip {
-  background: #f8fbff;
-  border: 1px solid #dbe7f5;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 999px;
-  color: var(--ib-navy);
+  color: #475569;
   display: inline-flex;
   font-size: 0.74rem;
   font-weight: 600;
@@ -397,8 +385,8 @@ main {
 }
 
 .ib-icon-btn:hover {
-  background: #eef5fb;
-  border-color: #c9d9ea;
+  background: #f1f5f9;
+  border-color: #d1d9e4;
 }
 
 .ib-btn-secondary {
@@ -409,8 +397,8 @@ main {
 }
 
 .ib-btn-secondary:hover {
-  background: #f8fbff;
-  border-color: #c9d9ea;
+  background: #f8fafc;
+  border-color: #d1d9e4;
   color: var(--ib-navy);
 }
 
@@ -420,8 +408,8 @@ main {
 }
 
 .ib-form-section {
-  background: #fbfdff;
-  border: 1px solid #e8eef5;
+  background: #ffffff;
+  border: 1px solid #edf2f7;
   border-radius: 12px;
   padding: 1rem;
 }
