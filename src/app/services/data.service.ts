@@ -224,6 +224,14 @@ export class DataService {
     { id: 'SLS-104', date: '2026-04-23', product: 'Anktiva 400mcg/0.4mL', region: 'Southwest', repName: 'Alexandra Maddalozzo', icsUnits: 2, accredoUnits: 3, units: 5, icsSales: 71600, accredoSales: 107400, revenue: 179000 }
   ];
 
+  private salesTargets: any[] = [
+    { name: 'Keith DeRuiter', territory: 'East', q1Target: 75, q1Achieved: 69, q2Target: 80, q2Achieved: 26, ytdTarget: 310, ytdAchieved: 95 },
+    { name: 'Lisa Volomino', territory: 'East', q1Target: 50, q1Achieved: 61, q2Target: 55, q2Achieved: 8, ytdTarget: 210, ytdAchieved: 69 },
+    { name: 'Chuck Gaetano', territory: 'North Central', q1Target: 80, q1Achieved: 60, q2Target: 85, q2Achieved: 12, ytdTarget: 330, ytdAchieved: 72 },
+    { name: 'Amanda Rippy', territory: 'North Central', q1Target: 65, q1Achieved: 40, q2Target: 70, q2Achieved: 5, ytdTarget: 270, ytdAchieved: 45 },
+    { name: 'Alexandra Maddalozzo', territory: 'Southwest', q1Target: 60, q1Achieved: 42, q2Target: 65, q2Achieved: 9, ytdTarget: 250, ytdAchieved: 51 }
+  ];
+
   constructor() { }
 
   getKpis() { return this.kpis; }
@@ -239,6 +247,8 @@ export class DataService {
   getDailySales() { return this.dailySales; }
   addDailySale(sale: any) { this.dailySales.unshift(sale); }
   deleteDailySale(id: string) { this.dailySales = this.dailySales.filter(s => s.id !== id); }
+
+  getSalesTargets() { return this.salesTargets; }
 
   getPatients() { return this.patients; }
   addPatient(patient: any) { this.patients.push(patient); }

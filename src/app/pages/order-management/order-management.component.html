@@ -1,62 +1,171 @@
 <div class="container-fluid position-relative">
   <div class="ib-page-header">
     <div>
-      <p class="ib-page-header__eyebrow">Commercial Operations</p>
+      <!-- <p class="ib-page-header__eyebrow">Commercial Operations</p> -->
       <h2 class="ib-page-header__title">Order Management</h2>
-      <p class="ib-page-header__subtitle">Manage orders and monitor fulfillment with a consistent operational data layout.</p>
+      <!-- <p class="ib-page-header__subtitle">Operational order control center for fulfillment visibility, revenue tracking, and shipment readiness.</p> -->
     </div>
     <div class="ib-page-header__actions">
-      <button class="btn btn-primary" (click)="showForm = true" *ngIf="activeTab === 'view-orders'">
-        <i class="bi bi-plus-lg"></i> Add New Order
+      <input #importOrdersInput type="file" class="d-none" accept=".csv,.xlsx,.xls" (change)="onImportFileSelected($event)" />
+      <button class="btn ib-btn-secondary" (click)="openImportPicker()" *ngIf="activeTab === 'directory'">
+        <i class="bi bi-upload me-1"></i>Import Orders
+      </button>
+      <button class="btn ib-btn-secondary" (click)="exportOrders()" *ngIf="activeTab === 'directory'">
+        <i class="bi bi-download me-1"></i>Export CSV
+      </button>
+      <button class="btn btn-primary" (click)="activeTab = 'create-order'" *ngIf="activeTab !== 'create-order'">
+        <i class="bi bi-plus-lg"></i> Create Order
       </button>
     </div>
   </div>
 
-  <div *ngIf="activeTab === 'view-orders'">
+  <div *ngIf="activeTab === 'directory'">
+    <div *ngIf="lastImportMessage" class="alert alert-info border-0 shadow-sm mb-4">
+      {{ lastImportMessage }}
+    </div>
+
+    <div class="orders-kpi-grid mb-4">
+      <div class="card border-0 shadow-sm orders-kpi-card orders-kpi-card--accent">
+        <div class="card-body">
+          <p class="orders-kpi-card__label">Total Orders</p>
+          <h4 class="orders-kpi-card__value">{{ orderKpis.totalOrders }}</h4>
+        </div>
+      </div>
+      <div class="card border-0 shadow-sm orders-kpi-card">
+        <div class="card-body">
+          <p class="orders-kpi-card__label">Shipped</p>
+          <h4 class="orders-kpi-card__value">{{ orderKpis.shippedOrders }}</h4>
+        </div>
+      </div>
+      <div class="card border-0 shadow-sm orders-kpi-card">
+        <div class="card-body">
+          <p class="orders-kpi-card__label">Pending</p>
+          <h4 class="orders-kpi-card__value">{{ orderKpis.pendingOrders }}</h4>
+        </div>
+      </div>
+      <div class="card border-0 shadow-sm orders-kpi-card">
+        <div class="card-body">
+          <p class="orders-kpi-card__label">Cancelled / Hold</p>
+          <h4 class="orders-kpi-card__value">{{ orderKpis.cancelledOrders }}</h4>
+        </div>
+      </div>
+      <div class="card border-0 shadow-sm orders-kpi-card">
+        <div class="card-body">
+          <p class="orders-kpi-card__label">Total Units</p>
+          <h4 class="orders-kpi-card__value">{{ orderKpis.totalUnits }}</h4>
+        </div>
+      </div>
+      <div class="card border-0 shadow-sm orders-kpi-card">
+        <div class="card-body">
+          <p class="orders-kpi-card__label">Total Revenue</p>
+          <h4 class="orders-kpi-card__value">{{ orderKpis.totalRevenue | currency:'USD':'symbol':'1.0-0' }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="ib-filter-card mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-3">
+          <label class="form-label fw-bold small text-muted">Quick Search</label>
+          <input type="text" class="form-control bg-light" [(ngModel)]="orderFilters.search" name="orderSearch" placeholder="Order no, facility, product..." />
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label fw-bold small text-muted">Status</label>
+          <select class="form-select bg-light" [(ngModel)]="orderFilters.status" name="statusFilter">
+            <option *ngFor="let option of statusOptions" [ngValue]="option">{{ option }}</option>
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label fw-bold small text-muted">Facility</label>
+          <select class="form-select bg-light" [(ngModel)]="orderFilters.facility" name="facilityFilter">
+            <option *ngFor="let option of facilityOptions" [ngValue]="option">{{ option }}</option>
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label fw-bold small text-muted">Order Type</label>
+          <select class="form-select bg-light" [(ngModel)]="orderFilters.impType" name="impTypeFilter">
+            <option *ngFor="let option of impTypeOptions" [ngValue]="option">{{ option }}</option>
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label fw-bold small text-muted">Product</label>
+          <select class="form-select bg-light" [(ngModel)]="orderFilters.product" name="productFilter">
+            <option *ngFor="let option of productOptions" [ngValue]="option">{{ option }}</option>
+          </select>
+        </div>
+        <div class="col-lg-1">
+          <label class="form-label fw-bold small text-muted">Channel</label>
+          <select class="form-select bg-light" [(ngModel)]="orderFilters.channel" name="channelFilter">
+            <option value="All">All</option>
+            <option value="ICS">ICS</option>
+            <option value="Accredo">Accredo</option>
+            <option value="IB Care">IB Care</option>
+          </select>
+        </div>
+        <div class="col-12 d-flex justify-content-end">
+          <button class="btn ib-btn-secondary btn-sm" (click)="resetFilters()">Reset Filters</button>
+        </div>
+      </div>
+    </div>
+
     <div class="ib-section-card">
+      <div class="ib-section-card__header">
+        <div>
+          <h5 class="ib-section-card__title">Order Directory</h5>
+          <p class="ib-section-card__meta">Transaction-level order visibility across facilities, order types, status, and revenue.</p>
+        </div>
+        <span class="ib-table-toolbar__meta">{{ filteredOrders.length }} matching orders</span>
+      </div>
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover table-sm align-middle ib-data-table">
             <thead class="ib-table-header">
               <tr>
+                <th scope="col" class="py-2 px-3">Order ID</th>
                 <th scope="col" class="py-2 px-3">Order No.</th>
                 <th scope="col" class="py-2">Order Date</th>
-                <th scope="col" class="py-2">IMP Type</th>
-                <th scope="col" class="py-2">IMP Type Name</th>
-                <th scope="col" class="py-2">Facility / Ship To</th>
-                <th scope="col" class="py-2">Item Name</th>
-                <th scope="col" class="py-2">Ordered Qty</th>
-                <th scope="col" class="py-2">Unit Price</th>
-                <th scope="col" class="py-2">Delivery Amount</th>
-                <th scope="col" class="py-2">Invoice No.</th>
-                <th scope="col" class="py-2">PO Number</th>
+                <th scope="col" class="py-2">Facility / Patient</th>
+                <th scope="col" class="py-2">Order Type</th>
+                <th scope="col" class="py-2">Channel</th>
+                <th scope="col" class="py-2">Product</th>
+                <th scope="col" class="py-2 text-center">Units</th>
+                <th scope="col" class="py-2">Invoice</th>
                 <th scope="col" class="py-2">Status</th>
                 <th scope="col" class="py-2 text-end px-3">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let order of recentOrders">
+              <tr *ngFor="let order of filteredOrders">
+                <td class="px-3 text-muted small">{{ order.id }}</td>
                 <td class="px-3 fw-bold text-primary">{{ order.orderNo }}</td>
                 <td>{{ order.date | date:'MM/dd/yyyy' }}</td>
-                <td><span class="ib-chip">{{ order.impType }}</span></td>
-                <td>{{ order.impTypeName }}</td>
                 <td class="fw-bold">{{ order.facility }}</td>
+                <td>
+                  <div class="d-flex flex-column">
+                    <span class="fw-bold">{{ order.impTypeName }}</span>
+                    <small class="text-muted">{{ order.impType }}</small>
+                  </div>
+                </td>
+                <td><span class="ib-chip">{{ getOrderChannel(order) }}</span></td>
                 <td><span class="ib-chip">{{ order.product }}</span></td>
                 <td class="text-center">{{ order.units }}</td>
-                <td>{{ order.unitPrice | currency:'USD' }}</td>
-                <td class="fw-bold text-success">{{ order.total | currency:'USD' }}</td>
-                <td class="text-muted small">{{ order.invoiceNo }}</td>
-                <td class="text-muted small">{{ order.poNumber || '-' }}</td>
+                <td>
+                  <div class="d-flex flex-column">
+                    <span class="fw-bold text-success">{{ order.total | currency:'USD':'symbol':'1.0-0' }}</span>
+                    <small class="text-muted">{{ order.invoiceNo || 'Pending invoice' }}</small>
+                  </div>
+                </td>
                 <td>
                   <span class="ib-status-badge" [ngClass]="{
                       'ib-status-badge--success': order.status === 'Shipped',
                       'ib-status-badge--warning': order.status === 'Pending',
-                      'ib-status-badge--danger': order.status === 'Credit Hold'
+                      'ib-status-badge--danger': order.status === 'Credit Hold' || order.status === 'Cancelled'
                     }">
                     {{ order.status }}
                   </span>
                 </td>
                 <td class="px-3 text-end" style="white-space: nowrap;">
+                  <button class="ib-icon-btn me-1" (click)="viewOrderDetails(order)" title="View order details"><i class="bi bi-eye"></i></button>
                   <button class="ib-icon-btn me-1" (click)="editOrder(order)"><i class="bi bi-pencil"></i></button>
                   <button class="ib-icon-btn ib-icon-btn--danger" (click)="deleteOrder(order.id)"><i class="bi bi-trash"></i></button>
                 </td>
@@ -68,74 +177,15 @@
     </div>
   </div>
 
-  <div *ngIf="activeTab === 'tracking'">
+  <div *ngIf="activeTab === 'create-order'">
     <div class="ib-section-card">
-      <div class="card-body p-0">
-        <div class="ib-table-toolbar">
-          <h5 class="ib-section-card__title"><i class="bi bi-truck me-2 ib-text-accent"></i>Live Order Tracking</h5>
-          <span class="ib-table-toolbar__meta">Tracking view for {{ recentOrders.length }} orders</span>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-hover table-sm align-middle mb-0 ib-data-table order-tracking-table">
-            <thead class="ib-table-header">
-              <tr>
-                <th scope="col" class="py-2 px-3">Order No.</th>
-                <th scope="col" class="py-2">Facility</th>
-                <th scope="col" class="py-2">Order Date</th>
-                <th scope="col" class="py-2">Invoice No.</th>
-                <th scope="col" class="py-2">PO Number</th>
-                <th scope="col" class="py-2">Status</th>
-                <th scope="col" class="py-2">Tracking Progress</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let order of recentOrders">
-                <td class="px-3 fw-bold text-primary">{{ order.orderNo }}</td>
-                <td class="fw-bold">{{ order.facility }}</td>
-                <td>{{ order.date | date:'MM/dd/yyyy' }}</td>
-                <td class="text-muted small">{{ order.invoiceNo || 'Pending' }}</td>
-                <td class="text-muted small">{{ order.poNumber || 'N/A' }}</td>
-                <td>
-                  <span class="ib-status-badge" [ngClass]="{
-                      'ib-status-badge--success': order.status === 'Shipped',
-                      'ib-status-badge--warning': order.status === 'Pending',
-                      'ib-status-badge--danger': order.status === 'Credit Hold'
-                    }">
-                    {{ order.status }}
-                  </span>
-                </td>
-                <td class="tracking-progress-cell">
-                  <div class="ib-progress order-tracking-progress">
-                    <div
-                      class="progress-bar"
-                      role="progressbar"
-                      [style.width]="order.status === 'Shipped' ? '100%' : order.status === 'Pending' ? '40%' : '10%'"
-                      [ngClass]="{
-                        'ib-progress-bar--success': order.status === 'Shipped',
-                        'ib-progress-bar--warning': order.status === 'Pending',
-                        'ib-progress-bar--danger': order.status === 'Credit Hold'
-                      }">
-                    </div>
-                  </div>
-                  <small class="text-muted d-inline-block mt-1">
-                    {{ order.status === 'Shipped' ? 'Delivered' : order.status === 'Pending' ? 'Processing' : 'On Hold' }}
-                  </small>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="ib-section-card__header">
+        <div>
+          <h5 class="ib-section-card__title">{{ editingOrderId ? 'Edit Order' : 'Create Order' }}</h5>
+          <p class="ib-section-card__meta">Capture a new order record with fulfillment, pricing, and invoice details.</p>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div *ngIf="showForm" class="ib-modal-overlay">
-    <div class="ib-modal-shell" style="max-width: 650px;">
-      <div class="ib-modal-header">
-        <h5 class="ib-modal-title">{{ editingOrderId ? 'Edit Order' : 'Add New Order' }}</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="closeForm()"></button>
-      </div>
-      <div class="ib-modal-body">
+      <div class="card-body">
         <form (ngSubmit)="addOrder()" #orderForm="ngForm">
           <div class="ib-form-section mb-3">
             <p class="ib-form-section__title">Order Details</p>
@@ -192,12 +242,13 @@
                 <option value="Pending">Pending</option>
                 <option value="Shipped">Shipped</option>
                 <option value="Credit Hold">Credit Hold</option>
+                <option value="Cancelled">Cancelled</option>
               </select>
             </div>
           </div>
 
           <div class="d-flex justify-content-end gap-2 border-top pt-3">
-            <button type="button" class="btn ib-btn-secondary" (click)="closeForm()">Cancel</button>
+            <button type="button" class="btn ib-btn-secondary" (click)="closeForm(); activeTab = 'directory'">Cancel</button>
             <button type="submit" class="btn btn-primary" [disabled]="!orderForm.valid">
               {{ editingOrderId ? 'Update Order' : 'Save Order' }}
             </button>
@@ -206,4 +257,150 @@
       </div>
     </div>
   </div>
+
+  <div *ngIf="activeTab === 'tracking'">
+    <div class="tracking-summary-grid mb-4">
+      <div *ngFor="let item of trackingSummary" class="ib-section-card tracking-stage-card">
+        <div class="card-body">
+          <div class="tracking-stage-card__head">
+            <div>
+              <p class="tracking-stage-card__label">{{ item.key }}</p>
+              <h5 class="tracking-stage-card__value">{{ item.count }}</h5>
+            </div>
+            <span class="ib-status-badge"
+              [ngClass]="{
+                'ib-status-badge--success': item.tone === 'success',
+                'ib-status-badge--warning': item.tone === 'warning',
+                'ib-status-badge--danger': item.tone === 'danger',
+                'ib-status-badge--info': item.tone === 'info'
+              }">
+              {{ item.percent }}%
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ib-section-card">
+      <div class="card-body p-0">
+        <div class="ib-table-toolbar">
+          <h5 class="ib-section-card__title"><i class="bi bi-truck me-2 ib-text-accent"></i>Lifecycle Tracking</h5>
+          <span class="ib-table-toolbar__meta">Tracking view for {{ filteredOrders.length }} filtered orders</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle mb-0 ib-data-table order-tracking-table">
+            <thead class="ib-table-header">
+              <tr>
+                <th scope="col" class="py-2 px-3">Order No.</th>
+                <th scope="col" class="py-2">Facility</th>
+                <th scope="col" class="py-2">Order Date</th>
+                <th scope="col" class="py-2">Invoice No.</th>
+                <th scope="col" class="py-2">PO Number</th>
+                <th scope="col" class="py-2">Status</th>
+                <th scope="col" class="py-2">Tracking</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of filteredOrders">
+                <td class="px-3 fw-bold text-primary">{{ order.orderNo }}</td>
+                <td class="fw-bold">{{ order.facility }}</td>
+                <td>{{ order.date | date:'MM/dd/yyyy' }}</td>
+                <td class="text-muted small">{{ order.invoiceNo || 'Pending' }}</td>
+                <td class="text-muted small">{{ order.poNumber || 'N/A' }}</td>
+                <td>
+                  <span class="ib-status-badge" [ngClass]="{
+                      'ib-status-badge--success': order.status === 'Shipped',
+                      'ib-status-badge--warning': order.status === 'Pending',
+                      'ib-status-badge--danger': order.status === 'Credit Hold'
+                    }">
+                    {{ order.status }}
+                  </span>
+                </td>
+                <td class="tracking-progress-cell">
+                  <span class="tracking-progress-value">{{ getTrackingWidth(order) }}</span>
+                  <small class="text-muted d-inline-block mt-1">
+                    {{ getTrackingLabel(order) }}
+                  </small>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showDetails && selectedOrder" class="ib-modal-overlay">
+    <div class="ib-modal-shell" style="max-width: 760px;">
+      <div class="ib-modal-header">
+        <h5 class="ib-modal-title">Order Details</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeDetails()"></button>
+      </div>
+      <div class="ib-modal-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="ib-form-section h-100">
+              <p class="ib-form-section__title">Order Info</p>
+              <p class="mb-2"><strong>Order ID:</strong> {{ selectedOrder.id }}</p>
+              <p class="mb-2"><strong>Order No:</strong> {{ selectedOrder.orderNo }}</p>
+              <p class="mb-2"><strong>Order Date:</strong> {{ selectedOrder.date | date:'MM/dd/yyyy' }}</p>
+              <p class="mb-0"><strong>Status:</strong> {{ selectedOrder.status }}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="ib-form-section h-100">
+              <p class="ib-form-section__title">Patient / Facility Info</p>
+              <p class="mb-2"><strong>Facility:</strong> {{ selectedOrder.facility }}</p>
+              <p class="mb-2"><strong>Channel:</strong> {{ getOrderChannel(selectedOrder) }}</p>
+              <p class="mb-0"><strong>License No:</strong> {{ selectedOrder.licenseNo || 'N/A' }}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="ib-form-section h-100">
+              <p class="ib-form-section__title">Physician / Order Type</p>
+              <p class="mb-2"><strong>IMP Type:</strong> {{ selectedOrder.impType }}</p>
+              <p class="mb-2"><strong>IMP Type Name:</strong> {{ selectedOrder.impTypeName }}</p>
+              <p class="mb-0"><strong>Sales Order Type:</strong> {{ selectedOrder.salesOrderTypeDesc }}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="ib-form-section h-100">
+              <p class="ib-form-section__title">Shipment / Invoice</p>
+              <p class="mb-2"><strong>Invoice No:</strong> {{ selectedOrder.invoiceNo || 'Pending' }}</p>
+              <p class="mb-2"><strong>Invoice Date:</strong> {{ selectedOrder.invoiceDate || 'Pending' }}</p>
+              <p class="mb-0"><strong>PO Number:</strong> {{ selectedOrder.poNumber || 'N/A' }}</p>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="ib-form-section">
+              <p class="ib-form-section__title">Financial Summary</p>
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <p class="small text-muted mb-1">Product</p>
+                  <div class="fw-bold">{{ selectedOrder.product }}</div>
+                </div>
+                <div class="col-md-3">
+                  <p class="small text-muted mb-1">Units</p>
+                  <div class="fw-bold">{{ selectedOrder.units }}</div>
+                </div>
+                <div class="col-md-3">
+                  <p class="small text-muted mb-1">Unit Price</p>
+                  <div class="fw-bold">{{ selectedOrder.unitPrice | currency:'USD':'symbol':'1.0-0' }}</div>
+                </div>
+                <div class="col-md-3">
+                  <p class="small text-muted mb-1">Revenue</p>
+                  <div class="fw-bold text-success">{{ selectedOrder.total | currency:'USD':'symbol':'1.0-0' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end border-top pt-3 mt-4">
+          <button type="button" class="btn ib-btn-secondary" (click)="closeDetails()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

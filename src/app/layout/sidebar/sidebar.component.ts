@@ -24,7 +24,7 @@ export class SidebarComponent {
   protected readonly menuItems: SidebarMenuItem[] = [
     { label: 'Dashboard', icon: 'bi bi-grid', route: '/dashboard' },
     {
-      label: 'Sales Management',
+      label: 'Sales',
       icon: 'bi bi-bar-chart-steps',
       children: [
         { label: 'Daily Sales', route: '/sales-registry', queryParams: { tab: 'daily-sales' } },
@@ -33,18 +33,40 @@ export class SidebarComponent {
       ]
     },
     {
-      label: 'Order Management',
+      label: 'Orders',
       icon: 'bi bi-cart3',
       children: [
-        { label: 'Add/View/Edit Order', route: '/order-management', queryParams: { tab: 'view-orders' } },
+        { label: 'Order Directory', route: '/order-management', queryParams: { tab: 'directory' } },
+        { label: 'Create Order', route: '/order-management', queryParams: { tab: 'create-order' } },
         { label: 'Order Tracking', route: '/order-management', queryParams: { tab: 'tracking' } }
       ]
     },
     // { label: 'Network', section: 'Network' },
-    { label: 'Patient Management', icon: 'bi bi-person-hearts', route: '/patient-enrollment' },
-    { label: 'Physician Management', icon: 'bi bi-hospital', route: '/provider-network' },
     {
-      label: 'Territory Management',
+      label: 'Patients',
+      icon: 'bi bi-person-hearts',
+      children: [
+        { label: 'Patient Directory', route: '/patient-enrollment', queryParams: { tab: 'directory' } },
+        { label: 'Add Patient', route: '/patient-enrollment', queryParams: { tab: 'add-patient' } },
+        { label: 'Patient Profile', route: '/patient-enrollment', queryParams: { tab: 'profile' } },
+        { label: 'Enrollment Management', route: '/patient-enrollment', queryParams: { tab: 'enrollment' } },
+        { label: 'Patient Timeline', route: '/patient-enrollment', queryParams: { tab: 'timeline' } }
+      ]
+    },
+    {
+      label: 'Physicians',
+      icon: 'bi bi-hospital',
+      children: [
+        { label: 'Physician Directory', route: '/provider-network', queryParams: { tab: 'directory' } },
+        { label: 'Add Physician', route: '/provider-network', queryParams: { tab: 'add-physician' } },
+        { label: 'Physician Profile', route: '/provider-network', queryParams: { tab: 'profile' } },
+        // { label: 'Physician Orders', route: '/provider-network', queryParams: { tab: 'orders' } },
+        { label: 'Territory Mapping', route: '/provider-network', queryParams: { tab: 'territory-mapping' } },
+        // { label: 'Physician Timeline', route: '/provider-network', queryParams: { tab: 'timeline' } }
+      ]
+    },
+    {
+      label: 'Territories',
       icon: 'bi bi-map',
       children: [
         { label: 'Territories', route: '/territory-manager', queryParams: { tab: 'territories' } },
@@ -56,8 +78,9 @@ export class SidebarComponent {
       label: 'Sales Team',
       icon: 'bi bi-people',
       children: [
-        { label: 'Representative Profiles', route: '/sales-team', queryParams: { tab: 'profiles' } },
-        { label: 'Targets & Achievements', route: '/sales-team', queryParams: { tab: 'targets' } }
+        { label: 'Representatives', route: '/sales-team', queryParams: { tab: 'representatives' } },
+        { label: 'Targets & Performance', route: '/sales-team', queryParams: { tab: 'performance' } },
+        { label: 'Activities', route: '/sales-team', queryParams: { tab: 'activities' } }
       ]
     }
   ];

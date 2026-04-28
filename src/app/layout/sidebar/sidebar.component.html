@@ -41,7 +41,7 @@
                       [class]="expandedMenu === item.label ? 'bi bi-chevron-down' : 'bi bi-chevron-right'"></i>
                   </button>
                 </div>
-                @if (expandedMenu === item.label) {
+                @if (expandedMenu === item.label || isMenuActive(item)) {
                   <ul class="submenu">
                     @for (child of item.children; track child.label) {
                       <li class="submenu-item">

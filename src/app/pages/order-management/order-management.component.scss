@@ -1,12 +1,98 @@
+.orders-kpi-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.orders-kpi-card {
+  border: 1px solid var(--ib-border);
+  border-radius: var(--ib-radius-lg);
+
+  .card-body {
+    padding: 1rem 1.1rem;
+  }
+}
+
+.orders-kpi-card--accent {
+  border-left: 4px solid var(--ib-navy);
+}
+
+.orders-kpi-card__label {
+  color: var(--ib-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.orders-kpi-card__value {
+  color: var(--ib-navy);
+  margin: 0;
+}
+
+.tracking-summary-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.tracking-stage-card {
+  border: 1px solid var(--ib-border);
+  border-radius: var(--ib-radius-lg);
+  min-height: 108px;
+  overflow: hidden;
+
+  .card-body {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 1.1rem;
+  }
+}
+
+.tracking-stage-card__head {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.65rem;
+  justify-content: space-between;
+}
+
+.tracking-stage-card__label {
+  color: var(--ib-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.tracking-stage-card__value {
+  color: var(--ib-navy);
+  margin: 0;
+}
+
+.tracking-stage-card__percent {
+  color: var(--ib-muted);
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
 .order-tracking-table {
   font-size: 0.83rem;
 }
 
 .tracking-progress-cell {
-  min-width: 220px;
+  min-width: 180px;
 }
 
-.order-tracking-progress {
-  height: 8px;
-  min-width: 180px;
+.tracking-progress-value {
+  color: var(--ib-navy);
+  font-weight: 700;
+}
+
+@media (max-width: 991.98px) {
+  .tracking-progress-cell {
+    min-width: 180px;
+  }
 }
