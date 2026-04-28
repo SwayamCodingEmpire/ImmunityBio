@@ -100,6 +100,8 @@ interface PhysicianTimelineEvent {
   salesRep: string;
 }
 
+type MappingChangeType = 'territory' | 'salesRep';
+
 @Component({
   selector: 'app-provider-network',
   imports: [CommonModule, FormsModule],
@@ -115,6 +117,10 @@ export class ProviderNetworkComponent implements OnInit {
   profileTab: ProviderProfileTab = 'overview';
   editingNpi: string | null = null;
   selectedPhysicianNpi: string | null = null;
+  showMappingModal = false;
+  mappingChangeType: MappingChangeType = 'territory';
+  mappingPhysicianNpi = '';
+  mappingSelection = '';
 
   directoryFilters: DirectoryFilters = {
     search: '',
@@ -385,22 +391,73 @@ export class ProviderNetworkComponent implements OnInit {
     });
   }
 
-  reassignTerritory(npi: string): void {
+  openMappingModal(npi: string, changeType: MappingChangeType): void {
     const physician = this.physicians.find((item) => item.npi === npi);
     if (!physician) {
       return;
     }
 
-    physician.territory = physician.territory === 'East' ? 'North Central' : 'East';
+    this.mappingPhysicianNpi = npi;
+    this.mappingChangeType = changeType;
+    this.mappingSelection = changeType === 'territory'
+      ? this.getTerritory(physician)
+      : this.getSalesRep(physician);
+    this.showMappingModal = true;
   }
 
-  reassignSalesRep(npi: string): void {
-    const physician = this.physicians.find((item) => item.npi === npi);
-    if (!physician) {
+  closeMappingModal(): void {
+    this.showMappingModal = false;
+    this.mappingPhysicianNpi = '';
+    this.mappingSelection = '';
+    this.mappingChangeType = 'territory';
+  }
+
+  saveMappingChange(): void {
+    const physician = this.physicians.find((item) => item.npi === this.mappingPhysicianNpi);
+    if (!physician || !this.mappingSelection) {
       return;
     }
 
-    physician.salesRep = physician.salesRep === 'Lisa Volomino' ? 'Amanda Rippy' : 'Lisa Volomino';
+    if (this.mappingChangeType === 'territory') {
+      physician.territory = this.mappingSelection;
+    } else {
+      physician.salesRep = this.mappingSelection;
+    }
+
+    if (this.selectedPhysicianNpi === physician.npi) {
+      this.selectedPhysicianNpi = physician.npi;
+    }
+
+    this.closeMappingModal();
+  }
+
+  get mappingModalPhysician(): PhysicianRecord | undefined {
+    return this.physicians.find((item) => item.npi === this.mappingPhysicianNpi);
+  }
+
+  get mappingModalTitle(): string {
+    return this.mappingChangeType === 'territory' ? 'Change Territory' : 'Change Sales Rep';
+  }
+
+  get mappingModalFieldLabel(): string {
+    return this.mappingChangeType === 'territory' ? 'Territory' : 'Sales Rep';
+  }
+
+  get mappingModalOptions(): string[] {
+    return this.mappingChangeType === 'territory'
+      ? this.territoryOptions.slice(1)
+      : this.salesRepOptions.slice(1);
+  }
+
+  get mappingCurrentValue(): string {
+    const physician = this.mappingModalPhysician;
+    if (!physician) {
+      return '--';
+    }
+
+    return this.mappingChangeType === 'territory'
+      ? this.getTerritory(physician)
+      : this.getSalesRep(physician);
   }
 
   getStatusBadgeClass(status: string): string {

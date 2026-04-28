@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 type PatientTab = 'directory' | 'add-patient' | 'profile' | 'enrollment' | 'timeline';
-type EnrollmentStatus = 'Pending' | 'Approved' | 'Rejected' | 'On Hold' | 'Active';
+type EnrollmentStatus = 'Cancelled' | 'Completed' | 'In Progress' | 'Missing Information' | 'On Hold';
 type PatientStatus = 'Active' | 'Inactive';
 type ProfileTab = 'overview' | 'orders' | 'enrollment' | 'timeline' | 'notes';
 type TimelineFilter = 'All Events' | 'Enrollment' | 'Orders' | 'Shipments' | 'Notes';
@@ -151,7 +151,7 @@ export class PatientEnrollmentComponent implements OnInit {
     salesRep: '',
     facility: 'ACCREDO HEALTH GROUP INC.',
     enrollmentDate: new Date().toISOString().split('T')[0],
-    enrollmentStatus: 'Pending',
+    enrollmentStatus: 'In Progress',
     notes: ''
   };
 
@@ -205,15 +205,15 @@ export class PatientEnrollmentComponent implements OnInit {
   get directoryKpis() {
     const rows = this.filteredPatients;
     const activePatients = rows.filter((patient) => this.getPatientStatus(patient) === 'Active').length;
-    const pendingEnrollments = rows.filter((patient) => this.getEnrollmentStatus(patient) === 'Pending').length;
-    const approvedEnrollments = rows.filter((patient) => ['Approved', 'Active'].includes(this.getEnrollmentStatus(patient))).length;
+    const inProgressEnrollments = rows.filter((patient) => this.getEnrollmentStatus(patient) === 'In Progress').length;
+    const completedEnrollments = rows.filter((patient) => this.getEnrollmentStatus(patient) === 'Completed').length;
     const totalOrders = rows.reduce((sum, patient) => sum + this.getPatientOrders(patient).length, 0);
 
     return {
       totalPatients: rows.length,
       activePatients,
-      pendingEnrollments,
-      approvedEnrollments,
+      inProgressEnrollments,
+      completedEnrollments,
       totalOrders
     };
   }
@@ -271,10 +271,11 @@ export class PatientEnrollmentComponent implements OnInit {
   get enrollmentKpis() {
     return {
       total: this.enrollmentRows.length,
-      pending: this.enrollmentRows.filter((row) => row.status === 'Pending').length,
-      approved: this.enrollmentRows.filter((row) => row.status === 'Approved' || row.status === 'Active').length,
+      inProgress: this.enrollmentRows.filter((row) => row.status === 'In Progress').length,
+      completed: this.enrollmentRows.filter((row) => row.status === 'Completed').length,
+      missingInformation: this.enrollmentRows.filter((row) => row.status === 'Missing Information').length,
       onHold: this.enrollmentRows.filter((row) => row.status === 'On Hold').length,
-      rejected: this.enrollmentRows.filter((row) => row.status === 'Rejected').length
+      cancelled: this.enrollmentRows.filter((row) => row.status === 'Cancelled').length
     };
   }
 
@@ -394,8 +395,10 @@ export class PatientEnrollmentComponent implements OnInit {
     }
 
     patient.enrollmentStatus = status;
-    if (status === 'Active') {
+    if (status === 'Completed') {
       patient.patientStatus = 'Active';
+    } else if (status === 'Cancelled') {
+      patient.patientStatus = 'Inactive';
     }
   }
 
@@ -429,15 +432,19 @@ export class PatientEnrollmentComponent implements OnInit {
   }
 
   getStatusBadgeClass(status: string): string {
-    if (status === 'Active' || status === 'Approved' || status === 'First Dose') {
+    if (status === 'Completed' || status === 'First Dose') {
       return 'ib-status-badge--success';
     }
 
-    if (status === 'Pending' || status === 'Referral' || status === 'Insurance Auth' || status === 'On Hold') {
+    if (status === 'In Progress' || status === 'Referral' || status === 'Insurance Auth') {
+      return 'ib-status-badge--info';
+    }
+
+    if (status === 'On Hold' || status === 'Missing Information') {
       return 'ib-status-badge--warning';
     }
 
-    if (status === 'Rejected' || status === 'Inactive') {
+    if (status === 'Cancelled' || status === 'Rejected' || status === 'Inactive') {
       return 'ib-status-badge--danger';
     }
 
@@ -525,7 +532,7 @@ export class PatientEnrollmentComponent implements OnInit {
       salesRep: 'Lisa Volomino',
       facility: 'ACCREDO HEALTH GROUP INC.',
       enrollmentDate: new Date().toISOString().split('T')[0],
-      enrollmentStatus: 'Pending',
+      enrollmentStatus: 'In Progress',
       notes: ''
     };
   }
@@ -548,7 +555,7 @@ export class PatientEnrollmentComponent implements OnInit {
   }
 
   private getPatientStatus(patient: PatientRecord): PatientStatus {
-    return patient.patientStatus ?? (patient.status === 'Rejected' ? 'Inactive' : 'Active');
+    return patient.patientStatus ?? (patient.status === 'Cancelled' || patient.status === 'Rejected' ? 'Inactive' : 'Active');
   }
 
   private getEnrollmentStatus(patient: PatientRecord): EnrollmentStatus {
@@ -557,14 +564,18 @@ export class PatientEnrollmentComponent implements OnInit {
     }
 
     if (patient.status === 'First Dose') {
-      return 'Active';
+      return 'Completed';
     }
 
     if (patient.status === 'Insurance Auth') {
-      return 'Approved';
+      return 'In Progress';
     }
 
-    return 'Pending';
+    if (patient.status === 'Rejected') {
+      return 'Cancelled';
+    }
+
+    return 'In Progress';
   }
 
   private getTerritory(patient: PatientRecord): string {
@@ -617,22 +628,48 @@ export class PatientEnrollmentComponent implements OnInit {
     return `${diff} days`;
   }
 
+  getEnrollmentStatusDetail(patient: PatientRecord): string {
+    const status = this.getEnrollmentStatus(patient);
+
+    if (status === 'In Progress') {
+      return 'Under review';
+    }
+
+    if (status === 'Missing Information') {
+      return 'Information requested';
+    }
+
+    if (status === 'On Hold') {
+      return 'Paused for follow-up';
+    }
+
+    if (status === 'Cancelled') {
+      return 'Closed';
+    }
+
+    return 'Completed';
+  }
+
   private getEnrollmentReason(patient: PatientRecord): string {
     const status = this.getEnrollmentStatus(patient);
+
+    if (status === 'Missing Information') {
+      return 'Additional documentation is required to continue processing';
+    }
 
     if (status === 'On Hold') {
       return 'Waiting for payer documentation';
     }
 
-    if (status === 'Rejected') {
-      return 'Coverage validation failed';
+    if (status === 'Cancelled') {
+      return 'Enrollment was cancelled and closed';
     }
 
-    if (status === 'Approved' || status === 'Active') {
+    if (status === 'Completed') {
       return 'Ready for fulfillment and first shipment';
     }
 
-    return 'Awaiting enrollment review';
+    return 'Enrollment is currently in review';
   }
 
   private getPatientTimeline(patient: PatientRecord): TimelineEvent[] {

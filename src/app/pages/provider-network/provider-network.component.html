@@ -4,12 +4,12 @@
       <h2 class="ib-page-header__title">Physician Management</h2>
     </div>
     <div class="ib-page-header__actions">
-      <button class="btn ib-btn-secondary" *ngIf="activeTab !== 'directory'" (click)="setTab('directory', selectedPhysician?.npi)">
+      <!-- <button class="btn ib-btn-secondary" *ngIf="activeTab !== 'directory'" (click)="setTab('directory', selectedPhysician?.npi)">
         <i class="bi bi-list-ul"></i> Directory
-      </button>
-      <button class="btn btn-primary" (click)="startAddPhysician()">
+      </button> -->
+      <!-- <button class="btn btn-primary" (click)="startAddPhysician()">
         <i class="bi bi-plus-lg"></i> {{ activeTab === 'add-physician' ? 'Add Another Physician' : 'Add Physician' }}
-      </button>
+      </button> -->
     </div>
   </div>
 
@@ -22,48 +22,48 @@
       <div class="card border-0 shadow-sm provider-kpi-card"><div class="card-body"><p class="provider-kpi-card__label">Revenue Generated</p><h4 class="provider-kpi-card__value provider-kpi-card__value--small">{{ directoryKpis.totalRevenue | currency:'USD':'symbol':'1.0-0' }}</h4></div></div>
     </div>
 
-    <div class="ib-filter-card mb-4">
-      <div class="row g-3 align-items-end">
+    <div class="ib-filter-card ib-filter-card--compact mb-4">
+      <div class="row g-2 align-items-end">
         <div class="col-lg-4">
-          <label class="form-label fw-bold small text-muted">Search by Name</label>
-          <input class="form-control bg-light" [(ngModel)]="directoryFilters.search" name="physicianSearch" placeholder="Physician name" />
+          <label class="form-label ib-compact-filter__label small text-muted">Search by Name</label>
+          <input class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.search" name="physicianSearch" placeholder="Physician name" />
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">NPI</label>
-          <input class="form-control bg-light" [(ngModel)]="directoryFilters.npi" name="physicianNpiSearch" placeholder="NPI number" />
+          <label class="form-label ib-compact-filter__label small text-muted">NPI</label>
+          <input class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.npi" name="physicianNpiSearch" placeholder="NPI number" />
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">DEA</label>
-          <input class="form-control bg-light" [(ngModel)]="directoryFilters.deaNumber" name="physicianDeaSearch" placeholder="DEA number" />
+          <label class="form-label ib-compact-filter__label small text-muted">DEA</label>
+          <input class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.deaNumber" name="physicianDeaSearch" placeholder="DEA number" />
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">State</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.state" name="physicianStateFilter">
+          <label class="form-label ib-compact-filter__label small text-muted">State</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.state" name="physicianStateFilter">
             <option value="All">All</option>
             <option *ngFor="let physician of physicians" [ngValue]="physician.state">{{ physician.state }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Territory</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.territory" name="physicianTerritoryFilter">
+          <label class="form-label ib-compact-filter__label small text-muted">Territory</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.territory" name="physicianTerritoryFilter">
             <option *ngFor="let option of territoryOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Sales Rep</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.salesRep" name="physicianSalesRepFilter">
+          <label class="form-label ib-compact-filter__label small text-muted">Sales Rep</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.salesRep" name="physicianSalesRepFilter">
             <option *ngFor="let option of salesRepOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Product</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.product" name="physicianProductFilter">
+          <label class="form-label ib-compact-filter__label small text-muted">Product</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.product" name="physicianProductFilter">
             <option *ngFor="let option of productOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Status</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.status" name="physicianStatusFilter">
+          <label class="form-label ib-compact-filter__label small text-muted">Status</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.status" name="physicianStatusFilter">
             <option *ngFor="let option of statusOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
@@ -98,10 +98,10 @@
             </thead>
             <tbody>
               <tr *ngFor="let physician of filteredPhysicians">
-                <td class="px-3 fw-bold"><span class="ib-chip">PHY-{{ physician.npi.slice(-4) }}</span></td>
+                <td class="px-3 "><span class="ib-chip">PHY-{{ physician.npi.slice(-4) }}</span></td>
                 <td>
                   <div class="d-flex flex-column">
-                    <span class="fw-bold">{{ physician.firstName }} {{ physician.lastName }}</span>
+                    <span >{{ physician.firstName }} {{ physician.lastName }}</span>
                     <small class="text-muted">{{ physician.clinicName || physician.hospitalAffiliation || physician.city }}</small>
                   </div>
                 </td>
@@ -111,7 +111,7 @@
                 <td>{{ physician.salesRep || 'Unassigned' }}</td>
                 <td class="text-center">{{ getLinkedPatients(physician).length }}</td>
                 <td class="text-center">{{ getLinkedOrders(physician).length }}</td>
-                <td class="text-end fw-bold text-success">{{ getPhysicianRevenue(physician) | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="text-end text-success">{{ getPhysicianRevenue(physician) | currency:'USD':'symbol':'1.0-0' }}</td>
                 <td>{{ getLastActivity(physician) }}</td>
                 <td class="px-3 text-end">
                   <div class="provider-action-group justify-content-end">
@@ -598,10 +598,20 @@
                 <td>{{ row.lastVisit }}</td>
                 <td class="px-3 text-end">
                   <div class="provider-action-group justify-content-end">
-                    <button class="ib-icon-btn" type="button" title="Reassign Territory" aria-label="Reassign Territory" (click)="reassignTerritory(row.physician.npi)">
+                    <button
+                      class="ib-icon-btn"
+                      type="button"
+                      title="Change Territory"
+                      aria-label="Change Territory"
+                      (click)="openMappingModal(row.physician.npi, 'territory')">
                       <i class="bi bi-diagram-3"></i>
                     </button>
-                    <button class="ib-icon-btn" type="button" title="Reassign Sales Rep" aria-label="Reassign Sales Rep" (click)="reassignSalesRep(row.physician.npi)">
+                    <button
+                      class="ib-icon-btn"
+                      type="button"
+                      title="Change Sales Rep"
+                      aria-label="Change Sales Rep"
+                      (click)="openMappingModal(row.physician.npi, 'salesRep')">
                       <i class="bi bi-person-gear"></i>
                     </button>
                   </div>
@@ -609,6 +619,41 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showMappingModal && mappingModalPhysician" class="ib-modal-overlay">
+    <div class="ib-modal-shell" style="max-width: 560px;">
+      <div class="ib-modal-header">
+        <h5 class="ib-modal-title">{{ mappingModalTitle }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeMappingModal()"></button>
+      </div>
+      <div class="ib-modal-body">
+        <div class="ib-form-section mb-4">
+          <p class="ib-form-section__title">Physician</p>
+          <p class="mb-2"><strong>{{ mappingModalPhysician.firstName }} {{ mappingModalPhysician.lastName }}</strong></p>
+          <p class="mb-0 text-muted">NPI: {{ mappingModalPhysician.npi }}</p>
+        </div>
+
+        <div class="ib-form-section mb-4">
+          <p class="ib-form-section__title">Current Mapping</p>
+          <p class="mb-0"><strong>{{ mappingModalFieldLabel }}:</strong> {{ mappingCurrentValue }}</p>
+        </div>
+
+        <div class="ib-form-section mb-4">
+          <label class="form-label fw-bold small text-muted">Select New {{ mappingModalFieldLabel }}</label>
+          <select class="form-select bg-light" [(ngModel)]="mappingSelection" name="mappingSelection">
+            <option *ngFor="let option of mappingModalOptions" [ngValue]="option">{{ option }}</option>
+          </select>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 border-top pt-3">
+          <button type="button" class="btn ib-btn-secondary" (click)="closeMappingModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" [disabled]="!mappingSelection || mappingSelection === mappingCurrentValue" (click)="saveMappingChange()">
+            Save Change
+          </button>
         </div>
       </div>
     </div>

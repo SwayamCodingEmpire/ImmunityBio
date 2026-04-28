@@ -19,53 +19,53 @@
     <div class="patient-kpi-grid mb-4">
       <div class="card border-0 shadow-sm patient-kpi-card patient-kpi-card--accent"><div class="card-body"><p class="patient-kpi-card__label">Total Patients</p><h4 class="patient-kpi-card__value">{{ directoryKpis.totalPatients }}</h4></div></div>
       <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Active Patients</p><h4 class="patient-kpi-card__value">{{ directoryKpis.activePatients }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Pending Enrollments</p><h4 class="patient-kpi-card__value">{{ directoryKpis.pendingEnrollments }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Approved / Active</p><h4 class="patient-kpi-card__value">{{ directoryKpis.approvedEnrollments }}</h4></div></div>
+      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">In Progress</p><h4 class="patient-kpi-card__value">{{ directoryKpis.inProgressEnrollments }}</h4></div></div>
+      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Completed</p><h4 class="patient-kpi-card__value">{{ directoryKpis.completedEnrollments }}</h4></div></div>
       <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Linked Orders</p><h4 class="patient-kpi-card__value">{{ directoryKpis.totalOrders }}</h4></div></div>
     </div>
 
-    <div class="ib-filter-card mb-4">
-      <div class="row g-3 align-items-end">
+    <div class="ib-filter-card ib-filter-card--compact mb-4">
+      <div class="row g-2 align-items-end">
         <div class="col-lg-4">
-          <label class="form-label fw-bold small text-muted">Search</label>
-          <input class="form-control bg-light" [(ngModel)]="directoryFilters.search" name="directorySearch" placeholder="Patient name, ID, phone, physician" />
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Search</label>
+          <input class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.search" name="directorySearch" placeholder="Patient name, ID, phone, physician" />
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Enrollment Status</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.enrollmentStatus" name="directoryEnrollmentStatus">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Enrollment Status</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.enrollmentStatus" name="directoryEnrollmentStatus">
             <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Completed">Completed</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Missing Information">Missing Information</option>
             <option value="On Hold">On Hold</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Active">Active</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Territory</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.territory" name="directoryTerritory">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Territory</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.territory" name="directoryTerritory">
             <option *ngFor="let option of territoryOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Physician</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.physician" name="directoryPhysician">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Physician</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.physician" name="directoryPhysician">
             <option *ngFor="let option of physicianOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Product</label>
-          <select class="form-select bg-light" [(ngModel)]="directoryFilters.product" name="directoryProduct">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Product</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.product" name="directoryProduct">
             <option *ngFor="let option of productOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-3">
-          <label class="form-label fw-bold small text-muted">Start Date</label>
-          <input type="date" class="form-control bg-light" [(ngModel)]="directoryFilters.startDate" name="directoryStartDate" />
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Start Date</label>
+          <input type="date" class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.startDate" name="directoryStartDate" />
         </div>
         <div class="col-lg-3">
-          <label class="form-label fw-bold small text-muted">End Date</label>
-          <input type="date" class="form-control bg-light" [(ngModel)]="directoryFilters.endDate" name="directoryEndDate" />
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">End Date</label>
+          <input type="date" class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.endDate" name="directoryEndDate" />
         </div>
       </div>
     </div>
@@ -248,11 +248,11 @@
               <div class="col-md-4">
                 <label class="form-label fw-bold small text-muted">Enrollment Status</label>
                 <select class="form-select bg-light" [(ngModel)]="patientForm.enrollmentStatus" name="enrollmentStatus">
-                  <option value="Pending">Pending</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Rejected">Rejected</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Completed">Completed</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Missing Information">Missing Information</option>
                   <option value="On Hold">On Hold</option>
-                  <option value="Active">Active</option>
                 </select>
               </div>
               <div class="col-md-12">
@@ -384,7 +384,7 @@
         <div class="patient-detail-list">
           <div><span>Enrollment Date</span><strong>{{ profileSummary.patient.enrollmentDate || profileSummary.patient.date }}</strong></div>
           <div><span>Status</span><strong>{{ profileSummary.enrollmentStatus }}</strong></div>
-          <div><span>Pending Since</span><strong>{{ profileSummary.patient.enrollmentStatus === 'Pending' ? 'Under review' : 'Cleared' }}</strong></div>
+          <div><span>Status Detail</span><strong>{{ getEnrollmentStatusDetail(profileSummary.patient) }}</strong></div>
           <div><span>Notes</span><strong>{{ profileSummary.patient.notes || 'No notes added yet.' }}</strong></div>
         </div>
       </div>
@@ -432,10 +432,11 @@
   <div *ngIf="activeTab === 'enrollment'">
     <div class="patient-kpi-grid mb-4">
       <div class="card border-0 shadow-sm patient-kpi-card patient-kpi-card--accent"><div class="card-body"><p class="patient-kpi-card__label">Enrollments</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.total }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Pending</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.pending }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Approved / Active</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.approved }}</h4></div></div>
+      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">In Progress</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.inProgress }}</h4></div></div>
+      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Completed</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.completed }}</h4></div></div>
+      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Missing Information</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.missingInformation }}</h4></div></div>
       <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">On Hold</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.onHold }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Rejected</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.rejected }}</h4></div></div>
+      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Cancelled</p><h4 class="patient-kpi-card__value">{{ enrollmentKpis.cancelled }}</h4></div></div>
     </div>
 
     <div class="ib-filter-card mb-4">
@@ -444,11 +445,11 @@
           <label class="form-label fw-bold small text-muted">Status</label>
           <select class="form-select bg-light" [(ngModel)]="enrollmentFilters.status" name="enrollmentStatusFilter">
             <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Completed">Completed</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Missing Information">Missing Information</option>
             <option value="On Hold">On Hold</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Active">Active</option>
           </select>
         </div>
         <div class="col-lg-3">
@@ -497,7 +498,7 @@
                 <th class="py-2">Physician</th>
                 <th class="py-2">Enrollment Date</th>
                 <th class="py-2">Status</th>
-                <th class="py-2">Pending Since</th>
+                <th class="py-2">Status Age</th>
                 <th class="py-2">Reason / Notes</th>
                 <th class="py-2 px-3 text-end">Action</th>
               </tr>
@@ -513,14 +514,17 @@
                 <td class="text-muted">{{ row.reason }}</td>
                 <td class="px-3 text-end">
                   <div class="patient-action-group justify-content-end">
-                    <button class="ib-icon-btn" type="button" title="Approve Enrollment" aria-label="Approve Enrollment" (click)="updateEnrollmentStatus(row.patient.id, 'Approved')">
+                    <button class="ib-icon-btn" type="button" title="Mark Completed" aria-label="Mark Completed" (click)="updateEnrollmentStatus(row.patient.id, 'Completed')">
                       <i class="bi bi-check-circle"></i>
                     </button>
-                    <button class="ib-icon-btn ib-icon-btn--danger" type="button" title="Reject Enrollment" aria-label="Reject Enrollment" (click)="updateEnrollmentStatus(row.patient.id, 'Rejected')">
+                    <button class="ib-icon-btn ib-icon-btn--danger" type="button" title="Cancel Enrollment" aria-label="Cancel Enrollment" (click)="updateEnrollmentStatus(row.patient.id, 'Cancelled')">
                       <i class="bi bi-x-circle"></i>
                     </button>
                     <button class="ib-icon-btn" type="button" title="Put On Hold" aria-label="Put On Hold" (click)="updateEnrollmentStatus(row.patient.id, 'On Hold')">
                       <i class="bi bi-pause-circle"></i>
+                    </button>
+                    <button class="ib-icon-btn" type="button" title="Mark Missing Information" aria-label="Mark Missing Information" (click)="updateEnrollmentStatus(row.patient.id, 'Missing Information')">
+                      <i class="bi bi-exclamation-circle"></i>
                     </button>
                     <button class="ib-icon-btn" type="button" title="Add Notes" aria-label="Add Notes" (click)="addEnrollmentNote(row.patient.id)">
                       <i class="bi bi-journal-text"></i>

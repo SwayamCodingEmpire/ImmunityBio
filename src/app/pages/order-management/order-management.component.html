@@ -63,39 +63,39 @@
       </div>
     </div>
 
-    <div class="ib-filter-card mb-4">
-      <div class="row g-3 align-items-end">
+    <div class="ib-filter-card ib-filter-card--compact mb-4">
+      <div class="row g-2 align-items-end">
         <div class="col-lg-3">
-          <label class="form-label fw-bold small text-muted">Quick Search</label>
-          <input type="text" class="form-control bg-light" [(ngModel)]="orderFilters.search" name="orderSearch" placeholder="Order no, facility, product..." />
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Quick Search</label>
+          <input type="text" class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="orderFilters.search" name="orderSearch" placeholder="Order no, facility, product..." />
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Status</label>
-          <select class="form-select bg-light" [(ngModel)]="orderFilters.status" name="statusFilter">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Status</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="orderFilters.status" name="statusFilter">
             <option *ngFor="let option of statusOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Facility</label>
-          <select class="form-select bg-light" [(ngModel)]="orderFilters.facility" name="facilityFilter">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Facility</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="orderFilters.facility" name="facilityFilter">
             <option *ngFor="let option of facilityOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Order Type</label>
-          <select class="form-select bg-light" [(ngModel)]="orderFilters.impType" name="impTypeFilter">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Order Type</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="orderFilters.impType" name="impTypeFilter">
             <option *ngFor="let option of impTypeOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
-          <label class="form-label fw-bold small text-muted">Product</label>
-          <select class="form-select bg-light" [(ngModel)]="orderFilters.product" name="productFilter">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Product</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="orderFilters.product" name="productFilter">
             <option *ngFor="let option of productOptions" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-1">
-          <label class="form-label fw-bold small text-muted">Channel</label>
-          <select class="form-select bg-light" [(ngModel)]="orderFilters.channel" name="channelFilter">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Channel</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="orderFilters.channel" name="channelFilter">
             <option value="All">All</option>
             <option value="ICS">ICS</option>
             <option value="Accredo">Accredo</option>
@@ -103,7 +103,7 @@
           </select>
         </div>
         <div class="col-12 d-flex justify-content-end">
-          <button class="btn ib-btn-secondary btn-sm" (click)="resetFilters()">Reset Filters</button>
+          <button class="btn ib-btn-secondary btn-sm ib-compact-filter__button" (click)="resetFilters()">Reset Filters</button>
         </div>
       </div>
     </div>
@@ -443,10 +443,10 @@
             </div>
           </div>
         </div>
-
+<!-- 
         <div class="d-flex justify-content-end border-top pt-3 mt-4">
           <button type="button" class="btn ib-btn-secondary" (click)="closeDetails()">Close</button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

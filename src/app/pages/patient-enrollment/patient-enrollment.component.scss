@@ -36,6 +36,24 @@
   line-height: 1.4;
 }
 
+.ib-filter-card--compact {
+  padding: 0.8rem 1rem;
+}
+
+.ib-compact-filter__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.28rem;
+  text-transform: uppercase;
+}
+
+.ib-compact-filter__control {
+  font-size: 0.82rem;
+  min-height: 34px;
+  padding-bottom: 0.38rem;
+  padding-top: 0.38rem;
+}
+
 .patient-profile-summary {
   border: 1px solid var(--ib-border);
   border-radius: var(--ib-radius-lg);
