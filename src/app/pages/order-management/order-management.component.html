@@ -112,7 +112,7 @@
       <div class="ib-section-card__header">
         <div>
           <h5 class="ib-section-card__title">Order Directory</h5>
-          <p class="ib-section-card__meta">Transaction-level order visibility across facilities, order types, status, and revenue.</p>
+          <!-- <p class="ib-section-card__meta">Transaction-level order visibility across facilities, order types, status, and revenue.</p> -->
         </div>
         <span class="ib-table-toolbar__meta">{{ filteredOrders.length }} matching orders</span>
       </div>
@@ -139,10 +139,10 @@
                 <td class="px-3 text-muted small">{{ order.id }}</td>
                 <td class="px-3 fw-bold text-primary">{{ order.orderNo }}</td>
                 <td>{{ order.date | date:'MM/dd/yyyy' }}</td>
-                <td class="fw-bold">{{ order.facility }}</td>
+                <td>{{ order.facility }}</td>
                 <td>
                   <div class="d-flex flex-column">
-                    <span class="fw-bold">{{ order.impTypeName }}</span>
+                    <span>{{ order.impTypeName }}</span>
                     <small class="text-muted">{{ order.impType }}</small>
                   </div>
                 </td>
@@ -151,7 +151,7 @@
                 <td class="text-center">{{ order.units }}</td>
                 <td>
                   <div class="d-flex flex-column">
-                    <span class="fw-bold text-success">{{ order.total | currency:'USD':'symbol':'1.0-0' }}</span>
+                    <span class="text-success">{{ order.total | currency:'USD':'symbol':'1.0-0' }}</span>
                     <small class="text-muted">{{ order.invoiceNo || 'Pending invoice' }}</small>
                   </div>
                 </td>
@@ -341,6 +341,51 @@
       </div>
       <div class="ib-modal-body">
         <div class="row g-3">
+          <div class="col-12">
+            <div class="ib-form-section">
+              <div class="order-details-tracking__header">
+                <div>
+                  <p class="ib-form-section__title mb-1">Tracking Info</p>
+                  <!-- <p class="order-details-tracking__meta mb-0">Live order journey from placement to delivery.</p> -->
+                </div>
+                <span class="ib-status-badge" [ngClass]="{
+                    'ib-status-badge--success': selectedOrder.status === 'Shipped',
+                    'ib-status-badge--warning': selectedOrder.status === 'Pending',
+                    'ib-status-badge--danger': selectedOrder.status === 'Credit Hold' || selectedOrder.status === 'Cancelled',
+                    'ib-status-badge--info': selectedOrder.status !== 'Shipped' && selectedOrder.status !== 'Pending' && selectedOrder.status !== 'Credit Hold' && selectedOrder.status !== 'Cancelled'
+                  }">
+                  {{ getTrackingLabel(selectedOrder) }}
+                </span>
+              </div>
+
+              <div class="order-tracking-timeline mt-3">
+                <div *ngFor="let step of getOrderTrackingSteps(selectedOrder)"
+                  class="order-tracking-step"
+                  [ngClass]="{
+                    'order-tracking-step--completed': step.state === 'completed',
+                    'order-tracking-step--current': step.state === 'current',
+                    'order-tracking-step--issue': step.state === 'issue'
+                  }">
+                  <div class="order-tracking-step__marker">
+                    <i class="bi"
+                      [ngClass]="{
+                        'bi-check-lg': step.state === 'completed',
+                        'bi-truck': step.state === 'current',
+                        'bi-exclamation-lg': step.state === 'issue',
+                        'bi-circle': step.state === 'upcoming'
+                      }"></i>
+                  </div>
+                  <div class="order-tracking-step__content">
+                    <div class="order-tracking-step__topline">
+                      <h6 class="order-tracking-step__label">{{ step.label }}</h6>
+                      <span class="order-tracking-step__date">{{ step.date }}</span>
+                    </div>
+                    <!-- <p class="order-tracking-step__detail mb-0">{{ step.detail }}</p> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="col-md-6">
             <div class="ib-form-section h-100">
               <p class="ib-form-section__title">Order Info</p>

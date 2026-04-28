@@ -80,11 +80,11 @@
             </thead>
             <tbody>
               <tr *ngFor="let territory of filteredTerritories">
-                <td class="px-3 fw-bold"><span class="ib-chip">{{ territory.id }}</span></td>
-                <td class="fw-bold">{{ territory.name }}</td>
+                <td class="px-3 "><span class="ib-chip">{{ territory.id }}</span></td>
+                <td >{{ territory.name }}</td>
                 <td>
                   <div class="d-flex flex-column">
-                    <span class="fw-bold">{{ territory.director }}</span>
+                    <span>{{ territory.director }}</span>
                     <small class="text-muted">{{ territory.name }} Region</small>
                   </div>
                 </td>
@@ -100,11 +100,13 @@
                     {{ territory.status ?? 'Active' }}
                   </span>
                 </td>
-                <td class="fw-bold text-success text-end">{{ territory.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="text-success text-end">{{ territory.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
                 <td class="px-3 text-end">
-                  <button class="ib-icon-btn me-1" (click)="openAssignmentModal({ territoryId: territory.id, territoryName: territory.name, repName: getAssignedRep(territory)?.name || 'Unassigned' })"><i class="bi bi-person-check"></i></button>
-                  <button class="ib-icon-btn me-1" (click)="editTerritory(territory)"><i class="bi bi-pencil"></i></button>
-                  <button class="ib-icon-btn ib-icon-btn--danger" (click)="deleteTerritory(territory.id)"><i class="bi bi-trash"></i></button>
+                  <div class="ib-action-group">
+                    <button class="ib-icon-btn" (click)="openAssignmentModal({ territoryId: territory.id, territoryName: territory.name, repName: getAssignedRep(territory)?.name || 'Unassigned' })"><i class="bi bi-person-check"></i></button>
+                    <button class="ib-icon-btn" (click)="editTerritory(territory)"><i class="bi bi-pencil"></i></button>
+                    <button class="ib-icon-btn ib-icon-btn--danger" (click)="deleteTerritory(territory.id)"><i class="bi bi-trash"></i></button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -153,7 +155,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let row of assignmentRows">
-                <td class="px-3 fw-bold">{{ row.repName }}</td>
+                <td class="px-3 ">{{ row.repName }}</td>
                 <td>{{ row.territoryName }}</td>
                 <td>{{ row.region }}</td>
                 <td class="text-muted">{{ row.assignedDate }}</td>
@@ -164,9 +166,11 @@
                   </span>
                 </td>
                 <td class="px-3 text-end">
-                  <button class="ib-icon-btn me-1" (click)="openAssignmentModal({ territoryId: row.territoryId, territoryName: row.territoryName, repName: row.repName })"><i class="bi bi-arrow-repeat"></i></button>
-                  <button class="ib-icon-btn me-1" (click)="openHistoryModal(row.territoryName)"><i class="bi bi-clock-history"></i></button>
-                  <button class="ib-icon-btn ib-icon-btn--danger" (click)="removeAssignment(row.territoryId)"><i class="bi bi-person-x"></i></button>
+                  <div class="ib-action-group">
+                    <button class="ib-icon-btn" (click)="openAssignmentModal({ territoryId: row.territoryId, territoryName: row.territoryName, repName: row.repName })"><i class="bi bi-arrow-repeat"></i></button>
+                    <button class="ib-icon-btn" (click)="openHistoryModal(row.territoryName)"><i class="bi bi-clock-history"></i></button>
+                    <button class="ib-icon-btn ib-icon-btn--danger" (click)="removeAssignment(row.territoryId)"><i class="bi bi-person-x"></i></button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -246,15 +250,15 @@
             </thead>
             <tbody>
               <tr *ngFor="let row of performanceRows; let i = index">
-                <td class="px-3 fw-bold text-muted">{{ i + 1 }}</td>
-                <td class="px-3 fw-bold">{{ row.territory.name }}</td>
+                <td class="px-3  text-muted">{{ i + 1 }}</td>
+                <td class="px-3 ">{{ row.territory.name }}</td>
                 <td class="text-muted">{{ row.territory.director }}</td>
                 <td class="text-end">{{ row.units }}</td>
                 <td class="text-end">{{ row.orders }}</td>
                 <td class="text-end">{{ row.enrollments }}</td>
-                <td class="text-end fw-bold text-success">{{ row.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
-                <td class="text-end fw-bold">{{ row.goalPercent }}%</td>
-                <td class="text-end fw-bold">{{ row.goalPercent }}%</td>
+                <td class="text-end text-success">{{ row.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="text-end ">{{ row.goalPercent }}%</td>
+                <td class="text-end ">{{ row.goalPercent }}%</td>
               </tr>
             </tbody>
           </table>

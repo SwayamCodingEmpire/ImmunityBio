@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 interface SidebarMenuItem {
@@ -19,6 +19,10 @@ interface SidebarMenuItem {
 export class SidebarComponent {
   private readonly router = inject(Router);
 
+  @Input() collapsed = false;
+  @Output() toggleCollapse = new EventEmitter<void>();
+  @Output() requestExpand = new EventEmitter<void>();
+
   protected expandedMenu: string | null = null;
 
   protected readonly menuItems: SidebarMenuItem[] = [
@@ -38,7 +42,7 @@ export class SidebarComponent {
       children: [
         { label: 'Order Directory', route: '/order-management', queryParams: { tab: 'directory' } },
         // { label: 'Create Order', route: '/order-management', queryParams: { tab: 'create-order' } },
-        { label: 'Order Tracking', route: '/order-management', queryParams: { tab: 'tracking' } }
+        // { label: 'Order Tracking', route: '/order-management', queryParams: { tab: 'tracking' } }
       ]
     },
     // { label: 'Network', section: 'Network' },
@@ -86,7 +90,21 @@ export class SidebarComponent {
   ];
 
   protected toggleMenu(label: string): void {
+    if (this.collapsed) {
+      this.requestExpand.emit();
+      this.expandedMenu = label;
+      return;
+    }
+
     this.expandedMenu = this.expandedMenu === label ? null : label;
+  }
+
+  protected onToggleCollapse(): void {
+    if (!this.collapsed) {
+      this.expandedMenu = null;
+    }
+
+    this.toggleCollapse.emit();
   }
 
   protected isLinkActive(item: SidebarMenuItem): boolean {

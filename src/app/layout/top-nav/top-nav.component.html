@@ -1,11 +1,21 @@
 <nav class="navbar navbar-expand-lg top-nav-shell px-4 py-3">
   <div class="container-fluid">
-    <!-- <div class="d-flex align-items-center">
-      <div class="top-nav-copy d-flex flex-column">
-        <span class="top-nav-title">Commercial &amp; Patient Access Portal</span>
-        <span class="top-nav-subtitle">Smart Therapies for Difficult Diseases | ImmunityBio</span>
-      </div>
-    </div> -->
+    <div class="d-flex align-items-center gap-3 top-nav-brand-wrap">
+      <button
+        type="button"
+        class="top-nav-sidebar-btn"
+        (click)="toggleSidebar.emit()"
+        [attr.aria-label]="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+        <i [class]="sidebarCollapsed ? 'bi bi-layout-sidebar-inset' : 'bi bi-layout-sidebar'"></i>
+      </button>
+
+      <a routerLink="/" class="top-nav-brand-link d-flex align-items-center text-decoration-none h2">
+        <img
+          src="https://immunitybio.com/wp-content/smush-webp/2022/08/ImmunityBio-Logo-2024-Color-Screen-042424.png.webp"
+          alt="ImmunityBio Logo"
+          class="top-nav-logo" />
+      </a>
+    </div>
 
     <div class="d-flex align-items-center ms-auto gap-3">
       <!-- <div class="input-group top-nav-search">

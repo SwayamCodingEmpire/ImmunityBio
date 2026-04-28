@@ -126,8 +126,9 @@
 
 .patient-action-group {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.4rem;
+  white-space: nowrap;
 }
 
 .patient-timeline {

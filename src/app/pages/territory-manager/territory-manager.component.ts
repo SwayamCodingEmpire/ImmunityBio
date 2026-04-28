@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild, inject, OnInit } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -41,12 +41,21 @@ interface TerritoryFilters {
   templateUrl: './territory-manager.component.html',
   styleUrl: './territory-manager.component.scss'
 })
-export class TerritoryManagerComponent implements OnInit {
+export class TerritoryManagerComponent implements OnInit, OnDestroy {
   private dataService = inject(DataService);
   private route = inject(ActivatedRoute);
   private performanceChart?: echarts.ECharts;
+  private territoryPerformanceChartEl?: ElementRef<HTMLDivElement>;
+  private readonly handleWindowResize = () => this.refreshPerformanceChart();
 
-  @ViewChild('territoryPerformanceChart') territoryPerformanceChartEl?: ElementRef<HTMLDivElement>;
+  @ViewChild('territoryPerformanceChart')
+  set territoryPerformanceChartRef(ref: ElementRef<HTMLDivElement> | undefined) {
+    this.territoryPerformanceChartEl = ref;
+
+    if (ref && this.activeTab === 'performance') {
+      this.refreshPerformanceChart();
+    }
+  }
 
   activeTab: TerritoryTab = 'territories';
   showForm = false;
@@ -70,15 +79,30 @@ export class TerritoryManagerComponent implements OnInit {
   };
 
   ngOnInit() {
+    window.addEventListener('resize', this.handleWindowResize);
+
     this.route.queryParams.subscribe(params => {
+      const previousTab = this.activeTab;
+
       if (params['tab']) {
         this.activeTab = params['tab'] as TerritoryTab;
+      } else {
+        this.activeTab = 'territories';
+      }
+
+      if (previousTab === 'performance' && this.activeTab !== 'performance') {
+        this.disposePerformanceChart();
       }
 
       if (this.activeTab === 'performance') {
         this.refreshPerformanceChart();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.handleWindowResize);
+    this.disposePerformanceChart();
   }
 
   newTerritory: TerritoryRecord = {
@@ -366,10 +390,24 @@ export class TerritoryManagerComponent implements OnInit {
     URL.revokeObjectURL(url);
   }
 
-  refreshPerformanceChart(): void {
-    setTimeout(() => {
+  refreshPerformanceChart(attempt = 0): void {
+    requestAnimationFrame(() => {
       const el = this.territoryPerformanceChartEl?.nativeElement;
       if (!el || this.activeTab !== 'performance') return;
+
+      if (el.clientWidth === 0 || el.clientHeight === 0) {
+        if (attempt >= 6) {
+          return;
+        }
+
+        setTimeout(() => this.refreshPerformanceChart(attempt + 1), 80);
+        return;
+      }
+
+      const existingDom = this.performanceChart?.getDom() as HTMLDivElement | undefined;
+      if (this.performanceChart && existingDom !== el) {
+        this.disposePerformanceChart();
+      }
 
       this.performanceChart = this.performanceChart ?? echarts.init(el);
       this.performanceChart.setOption({
@@ -392,6 +430,11 @@ export class TerritoryManagerComponent implements OnInit {
       });
       this.performanceChart.resize();
     });
+  }
+
+  private disposePerformanceChart(): void {
+    this.performanceChart?.dispose();
+    this.performanceChart = undefined;
   }
 
   private getTerritoryStateHint(territoryName: string): string {

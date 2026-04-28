@@ -89,6 +89,124 @@
   max-width: 1040px;
 }
 
+.order-details-tracking__header {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.order-details-tracking__meta {
+  color: var(--ib-muted);
+  font-size: 0.8rem;
+}
+
+.order-tracking-timeline {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  position: relative;
+}
+
+.order-tracking-timeline::before {
+  background: #dbe4ee;
+  content: '';
+  height: 2px;
+  left: 1.25rem;
+  position: absolute;
+  right: 1.25rem;
+  top: 1rem;
+}
+
+.order-tracking-step {
+  align-content: start;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-rows: 32px 1fr;
+  justify-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.order-tracking-step__marker {
+  align-items: center;
+  background: #f8fafc;
+  border: 2px solid #cbd5e1;
+  border-radius: 999px;
+  color: #64748b;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  width: 32px;
+}
+
+.order-tracking-step__content {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  height: 100%;
+  padding: 0.85rem 0.95rem;
+  width: 100%;
+}
+
+.order-tracking-step__topline {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.order-tracking-step__label {
+  color: var(--ib-navy);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.order-tracking-step__date {
+  color: var(--ib-muted);
+  font-size: 0.77rem;
+  font-weight: 600;
+}
+
+.order-tracking-step__detail {
+  color: var(--ib-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.order-tracking-step--completed .order-tracking-step__marker {
+  background: #ecfdf3;
+  border-color: #16a34a;
+  color: #15803d;
+}
+
+.order-tracking-step--completed .order-tracking-step__content {
+  border-color: #d1fae5;
+}
+
+.order-tracking-step--current .order-tracking-step__marker {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.order-tracking-step--current .order-tracking-step__content {
+  border-color: #bfdbfe;
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.08);
+}
+
+.order-tracking-step--issue .order-tracking-step__marker {
+  background: #fef2f2;
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.order-tracking-step--issue .order-tracking-step__content {
+  border-color: #fecaca;
+}
+
 .order-tracking-table {
   font-size: 0.83rem;
 }
@@ -105,5 +223,28 @@
 @media (max-width: 991.98px) {
   .tracking-progress-cell {
     min-width: 180px;
+  }
+
+  .order-details-tracking__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .order-tracking-timeline {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .order-tracking-step__topline {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .order-tracking-timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .order-tracking-timeline::before {
+    display: none;
   }
 }

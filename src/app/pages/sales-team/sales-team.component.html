@@ -69,14 +69,14 @@
             </thead>
             <tbody>
               <tr *ngFor="let row of repDirectoryRows">
-                <td class="px-3 fw-bold">{{ row.rep.name }}</td>
+                <td class="px-3 ">{{ row.rep.name }}</td>
                 <td>{{ row.territory }}</td>
                 <td class="text-muted">{{ row.region }}</td>
                 <td class="text-center">{{ row.assignedPhysicians }}</td>
                 <td class="text-center">{{ row.activePatients }}</td>
                 <td class="text-center">{{ row.orders }}</td>
-                <td class="text-end fw-bold text-success">{{ row.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
-                <td class="text-center fw-bold">{{ row.achievementPct }}%</td>
+                <td class="text-end text-success">{{ row.revenue | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="text-center ">{{ row.achievementPct }}%</td>
                 <td>
                   <span class="ib-status-badge" [ngClass]="row.status === 'Active' ? 'ib-status-badge--success' : 'ib-status-badge--info'">{{ row.status }}</span>
                 </td>
@@ -169,7 +169,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let doc of repProfileSummary.physicians">
-                    <td class="px-3 fw-bold">{{ doc.firstName }} {{ doc.lastName }}</td>
+                    <td class="px-3 ">{{ doc.firstName }} {{ doc.lastName }}</td>
                     <td class="text-muted">{{ doc.state }}</td>
                     <td>{{ doc.product }}</td>
                   </tr>
@@ -192,7 +192,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let patient of repProfileSummary.patients">
-                    <td class="px-3 fw-bold">{{ patient.name }}</td>
+                    <td class="px-3 ">{{ patient.name }}</td>
                     <td>{{ patient.enrollmentStatus || patient.status }}</td>
                     <td class="text-muted">{{ patient.physicianState }}</td>
                   </tr>
@@ -217,7 +217,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let order of repProfileSummary.orders">
-                    <td class="px-3 fw-bold">{{ order.id }}</td>
+                    <td class="px-3 ">{{ order.id }}</td>
                     <td>{{ order.facility }}</td>
                     <td>{{ order.status }}</td>
                     <td class="text-end">{{ order.units }}</td>
@@ -250,7 +250,7 @@
       <div class="ib-section-card__header">
         <div>
           <h5 class="ib-section-card__title">{{ editingName ? 'Edit Representative' : 'Create Representative' }}</h5>
-          <p class="ib-section-card__meta">Add or update a representative profile used across territories, coverage, and performance.</p>
+          <!-- <p class="ib-section-card__meta">Add or update a representative profile used across territories, coverage, and performance.</p> -->
         </div>
       </div>
       <div class="card-body">
@@ -446,7 +446,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let a of filteredActivities">
-                <td class="px-3 fw-bold">{{ a.repName }}</td>
+                <td class="px-3 ">{{ a.repName }}</td>
                 <td><span class="ib-chip">{{ a.activityType }}</span></td>
                 <td>{{ a.physician }}</td>
                 <td class="text-muted">{{ a.date }}</td>

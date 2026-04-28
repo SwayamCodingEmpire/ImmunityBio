@@ -38,6 +38,13 @@ interface OrderFilters {
   channel: string;
 }
 
+interface OrderTrackingStep {
+  label: string;
+  detail: string;
+  date: string;
+  state: 'completed' | 'current' | 'upcoming' | 'issue';
+}
+
 @Component({
   selector: 'app-order-management',
   imports: [CommonModule, FormsModule, CurrencyPipe, DatePipe, NgClass],
@@ -298,5 +305,57 @@ export class OrderManagementComponent implements OnInit {
     if (order.status === 'Pending') return 'Processing';
     if (order.status === 'Cancelled') return 'Cancelled';
     return 'On Hold';
+  }
+
+  getOrderTrackingSteps(order: OrderRecord): OrderTrackingStep[] {
+    const placedDate = order.date;
+    const verifiedDate = this.offsetDate(placedDate, 1);
+    const approvedDate = this.offsetDate(placedDate, 2);
+    const dispatchedDate = order.invoiceDate || this.offsetDate(placedDate, 3);
+    const deliveredDate = order.invoiceDate || this.offsetDate(placedDate, 4);
+
+    if (order.status === 'Shipped') {
+      return [
+        { label: 'Order placed', detail: 'Order was received and logged into the system.', date: placedDate, state: 'completed' },
+        { label: 'Verified', detail: 'Order details and facility information were validated.', date: verifiedDate, state: 'completed' },
+        { label: 'Dispatched', detail: 'Shipment was prepared and handed to fulfillment.', date: dispatchedDate, state: 'completed' },
+        { label: 'Delivered', detail: 'Order completed successfully.', date: deliveredDate, state: 'completed' }
+      ];
+    }
+
+    if (order.status === 'Credit Hold') {
+      return [
+        { label: 'Order placed', detail: 'Order was received and logged into the system.', date: placedDate, state: 'completed' },
+        { label: 'Verified', detail: 'Order is under review before release.', date: verifiedDate, state: 'current' },
+        { label: 'Credit hold', detail: 'Shipment is paused until the hold is resolved.', date: order.invoiceDate || 'Pending review', state: 'issue' },
+        { label: 'Dispatched', detail: 'Will start after the credit hold is cleared.', date: 'Awaiting release', state: 'upcoming' }
+      ];
+    }
+
+    if (order.status === 'Cancelled') {
+      return [
+        { label: 'Order placed', detail: 'Order was received and logged into the system.', date: placedDate, state: 'completed' },
+        { label: 'Review started', detail: 'Order entered the processing queue.', date: verifiedDate, state: 'completed' },
+        { label: 'Cancelled', detail: 'Order was cancelled before shipment.', date: order.invoiceDate || this.offsetDate(placedDate, 2), state: 'issue' },
+        { label: 'Dispatched', detail: 'Shipment was not initiated.', date: 'Not applicable', state: 'upcoming' }
+      ];
+    }
+
+    return [
+      { label: 'Order placed', detail: 'Order was received and logged into the system.', date: placedDate, state: 'completed' },
+      { label: 'Verified', detail: 'Order details and facility information were validated.', date: verifiedDate, state: 'completed' },
+      { label: 'Processing', detail: 'The order is being prepared for dispatch.', date: approvedDate, state: 'current' },
+      { label: 'Dispatched', detail: 'Shipment will update here once it leaves the warehouse.', date: 'Awaiting dispatch', state: 'upcoming' }
+    ];
+  }
+
+  private offsetDate(dateValue: string, offsetDays: number): string {
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) {
+      return 'Pending';
+    }
+
+    date.setDate(date.getDate() + offsetDays);
+    return date.toISOString().split('T')[0];
   }
 }

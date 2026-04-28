@@ -64,6 +64,7 @@ interface RepPerformanceRow {
 export class DashboardComponent implements AfterViewInit, OnDestroy {
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
+  private readonly handleWindowResize = () => this.resizeVisibleCharts();
 
   kpis = this.dataService.getKpis();
   territories = this.dataService.getTerritories();
@@ -151,9 +152,13 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
         this.initOrUpdateChart(section);
       }
     }
+
+    window.addEventListener('resize', this.handleWindowResize);
   }
 
   ngOnDestroy(): void {
+    window.removeEventListener('resize', this.handleWindowResize);
+
     for (const key of Object.keys(this.charts) as DashboardSection[]) {
       this.charts[key]?.dispose();
       delete this.charts[key];
@@ -173,19 +178,51 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private initOrUpdateChart(section: DashboardSection): void {
+  private initOrUpdateChart(section: DashboardSection, attempt = 0): void {
     // Wait for Angular to flush the conditional chart DOM before querying ViewChild refs.
     setTimeout(() => {
       const el = this.getChartElement(section);
       if (!el) return;
 
+      if ((el.clientWidth === 0 || el.clientHeight === 0) && attempt < 6) {
+        this.initOrUpdateChart(section, attempt + 1);
+        return;
+      }
+
       const existing = this.charts[section];
-      const chart = existing ?? echarts.init(el);
+      let chart = existing;
+      if (existing) {
+        const existingDom = existing.getDom() as HTMLDivElement | undefined;
+        if (existingDom !== el) {
+          existing.dispose();
+          delete this.charts[section];
+          chart = undefined;
+        }
+      }
+
+      chart = chart ?? echarts.init(el);
       this.charts[section] = chart;
 
       chart.setOption(this.getChartOption(section), { notMerge: true, lazyUpdate: true });
       chart.resize();
     });
+  }
+
+  private resizeVisibleCharts(): void {
+    for (const section of Object.keys(this.sectionView) as DashboardSection[]) {
+      if (this.sectionView[section] !== 'chart') {
+        continue;
+      }
+
+      const chart = this.charts[section];
+      const el = this.getChartElement(section);
+
+      if (chart && el && el.clientWidth > 0 && el.clientHeight > 0) {
+        chart.resize();
+      } else if (el) {
+        this.initOrUpdateChart(section);
+      }
+    }
   }
 
   private getChartElement(section: DashboardSection): HTMLDivElement | null {

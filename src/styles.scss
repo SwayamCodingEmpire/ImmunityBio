@@ -5,10 +5,10 @@
    =================================================== */
 
 @use "styles/shared-ui";
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
 
 /* CSS Custom Properties */
 :root {
+  --ib-font-family: 'Sora', sans-serif;
   --ib-navy: #0A2463;
   --ib-navy-light: #1E3A8A;
   --ib-navy-soft: #1449A0;
@@ -50,7 +50,7 @@
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--ib-font-family);
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   color: var(--ib-text);
   font-size: 14px;
@@ -58,9 +58,9 @@ body {
   margin: 0;
 }
 
-/* Headings use Montserrat */
+/* Use the same type family consistently across the app */
 h1, h2, h3, h4, h5, h6, .fw-bold {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--ib-font-family);
 }
 
 /* ===== SCROLLBAR ===== */
@@ -104,7 +104,7 @@ main {
   background: linear-gradient(135deg, var(--ib-navy) 0%, var(--ib-navy-light) 100%) !important;
   border-color: var(--ib-navy) !important;
   color: var(--ib-white) !important;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--ib-font-family);
   font-weight: 600;
   letter-spacing: 0.3px;
   box-shadow: var(--ib-shadow-sm);
@@ -141,7 +141,7 @@ main {
 
 /* ===== PAGE HEADER ===== */
 .page-header-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--ib-font-family);
   font-weight: 700;
   color: var(--ib-navy);
 }
@@ -185,7 +185,7 @@ main {
 
 .ib-page-header__title {
   color: var(--ib-navy);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--ib-font-family);
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: -0.3px;
@@ -224,7 +224,7 @@ main {
 
 .ib-section-card__title {
   color: var(--ib-navy);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--ib-font-family);
   font-size: 1rem;
   font-weight: 700;
   margin: 0;
@@ -389,6 +389,15 @@ main {
   border-color: #d1d9e4;
 }
 
+.ib-action-group {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
 .ib-btn-secondary {
   background: #ffffff;
   border: 1px solid var(--ib-border);
@@ -416,7 +425,7 @@ main {
 
 .ib-form-section__title {
   color: var(--ib-navy);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--ib-font-family);
   font-size: 0.86rem;
   font-weight: 700;
   margin: 0 0 0.85rem;
@@ -450,7 +459,7 @@ main {
 
 .ib-modal-title {
   color: var(--ib-navy);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--ib-font-family);
   font-size: 1rem;
   font-weight: 700;
   margin: 0;
