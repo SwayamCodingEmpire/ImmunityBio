@@ -9,8 +9,8 @@
       <button class="btn ib-btn-secondary" *ngIf="activeTab !== 'directory'" (click)="setTab('directory', selectedPatient?.id)">
         <i class="bi bi-list-ul"></i> Directory
       </button>
-      <button class="btn btn-primary" (click)="startAddPatient()">
-        <i class="bi bi-person-plus"></i> {{ activeTab === 'add-patient' ? 'Add Another Patient' : 'Add Patient' }}
+      <button class="btn btn-primary" (click)="openAddNoteModal()">
+        <i class="bi bi-journal-plus"></i> Add Note
       </button>
     </div>
   </div>
@@ -74,7 +74,7 @@
       <div class="ib-section-card__header">
         <div>
           <h5 class="ib-section-card__title">Patient Directory</h5>
-          <p class="ib-section-card__meta">Search, filter, and manage all patient/customer records from one operations-first directory.</p>
+          <!-- <p class="ib-section-card__meta">Search, filter, and manage all patient/customer records from one operations-first directory.</p> -->
         </div>
         <span class="ib-table-toolbar__meta">{{ filteredPatients.length }} patients</span>
       </div>
@@ -119,9 +119,9 @@
                     <button class="ib-icon-btn" type="button" title="Edit Patient" aria-label="Edit Patient" (click)="editPatient(patient)">
                       <i class="bi bi-pencil"></i>
                     </button>
-                    <button class="ib-icon-btn" type="button" title="Add Order" aria-label="Add Order" (click)="addOrderForPatient(patient.id)">
+                    <!-- <button class="ib-icon-btn" type="button" title="Add Order" aria-label="Add Order" (click)="addOrderForPatient(patient.id)">
                       <i class="bi bi-cart-plus"></i>
-                    </button>
+                    </button> -->
                     <button class="ib-icon-btn" type="button" title="View Timeline" aria-label="View Timeline" (click)="openPatientTimeline(patient.id)">
                       <i class="bi bi-clock-history"></i>
                     </button>
@@ -140,7 +140,7 @@
       <div class="ib-section-card__header">
         <div>
           <h5 class="ib-section-card__title">{{ editingPatientId ? 'Edit Patient' : 'Add Patient' }}</h5>
-          <p class="ib-section-card__meta">Use a structured patient profile form across identity, contact, mapping, and enrollment details.</p>
+          <!-- <p class="ib-section-card__meta">Use a structured patient profile form across identity, contact, mapping, and enrollment details.</p> -->
         </div>
       </div>
       <div class="card-body">
@@ -484,7 +484,7 @@
       <div class="ib-section-card__header">
         <div>
           <h5 class="ib-section-card__title">Enrollment Management</h5>
-          <p class="ib-section-card__meta">Review, approve, reject, hold, and annotate patient onboarding in one operations queue.</p>
+          <!-- <p class="ib-section-card__meta">Review, approve, reject, hold, and annotate patient onboarding in one operations queue.</p> -->
         </div>
       </div>
       <div class="card-body p-0">
@@ -565,6 +565,54 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showNoteModal" class="ib-modal-overlay">
+    <div class="ib-modal-shell" style="max-width: 560px;">
+      <div class="ib-modal-header">
+        <h5 class="ib-modal-title">Add Patient Note</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeNoteModal()"></button>
+      </div>
+      <div class="ib-modal-body">
+        <form (ngSubmit)="saveNote()" #noteForm="ngForm">
+          <div class="ib-form-section mb-4">
+            <p class="ib-form-section__title">Patient Reference</p>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-bold small text-muted">Patient</label>
+                <select class="form-select bg-light" [(ngModel)]="notePatientId" name="notePatientId" required>
+                  <option *ngFor="let patient of patients" [ngValue]="patient.id">
+                    {{ patient.name }} ({{ patient.id }})
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="ib-form-section mb-4">
+            <p class="ib-form-section__title">Note Details</p>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-bold small text-muted">Note</label>
+                <textarea
+                  rows="5"
+                  class="form-control bg-light"
+                  [(ngModel)]="noteText"
+                  name="noteText"
+                  required
+                  placeholder="Add enrollment follow-up, payer blocker, or care coordination note"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="button" class="btn ib-btn-secondary" (click)="closeNoteModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!noteForm.valid || !noteText.trim()">Save Note</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

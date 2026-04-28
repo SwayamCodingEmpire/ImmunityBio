@@ -229,8 +229,16 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
         xAxis: {
           type: 'value',
           axisLabel: {
-            rotate: 45, // Make value labels diagonal to avoid overlapping
-            align: 'left'
+            formatter: (value: number) => {
+              if (value >= 1_000_000) {
+                return `${(value / 1_000_000).toFixed(value % 1_000_000 === 0 ? 0 : 1)}M`;
+              }
+              if (value >= 1_000) {
+                return `${Math.round(value / 1_000)}K`;
+              }
+              return `${value}`;
+            },
+            hideOverlap: true
           }
         },
         yAxis: {

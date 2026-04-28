@@ -60,8 +60,8 @@
           <div class="px-3 py-2 ib-table-header d-flex align-items-center justify-content-between gap-2">
             <span class="fw-bold small">WEEKLY SALES</span>
             <div class="btn-group btn-group-sm" role="group" aria-label="Weekly sales view">
-              <button type="button" class="btn btn-outline-secondary" [class.active]="sectionView.weeklySales === 'table'" (click)="setSectionView('weeklySales', 'table')">Table</button>
-              <button type="button" class="btn btn-outline-secondary" [class.active]="sectionView.weeklySales === 'chart'" (click)="setSectionView('weeklySales', 'chart')">Chart</button>
+              <button type="button" class="btn btn-outline-primary" [class.active]="sectionView.weeklySales === 'table'" (click)="setSectionView('weeklySales', 'table')">Table</button>
+              <button type="button" class="btn btn-outline-primary" [class.active]="sectionView.weeklySales === 'chart'" (click)="setSectionView('weeklySales', 'chart')">Chart</button>
             </div>
           </div>
           <div *ngIf="sectionView.weeklySales === 'table'; else weeklySalesChartTpl" class="table-responsive">
@@ -132,8 +132,8 @@
         <div class="px-3 py-2 ib-table-header d-flex align-items-center justify-content-between gap-2">
           <span class="fw-bold small">TERRITORY PERFORMANCE</span>
           <div class="btn-group btn-group-sm" role="group" aria-label="Territory performance view">
-            <button type="button" class="btn btn-outline-secondary" [class.active]="sectionView.territoryPerformance === 'table'" (click)="setSectionView('territoryPerformance', 'table')">Table</button>
-            <button type="button" class="btn btn-outline-secondary" [class.active]="sectionView.territoryPerformance === 'chart'" (click)="setSectionView('territoryPerformance', 'chart')">Chart</button>
+            <button type="button" class="btn btn-outline-primary" [class.active]="sectionView.territoryPerformance === 'table'" (click)="setSectionView('territoryPerformance', 'table')">Table</button>
+            <button type="button" class="btn btn-outline-primary" [class.active]="sectionView.territoryPerformance === 'chart'" (click)="setSectionView('territoryPerformance', 'chart')">Chart</button>
           </div>
         </div>
         <div class="card-body p-0">
@@ -171,8 +171,8 @@
     <div class="px-3 py-2 ib-table-header d-flex align-items-center justify-content-between gap-2">
       <span class="fw-bold small">YEARLY SALES BREAKDOWN</span>
       <div class="btn-group btn-group-sm" role="group" aria-label="Yearly sales breakdown view">
-        <button type="button" class="btn btn-outline-secondary" [class.active]="sectionView.yearlySalesBreakdown === 'table'" (click)="setSectionView('yearlySalesBreakdown', 'table')">Table</button>
-        <button type="button" class="btn btn-outline-secondary" [class.active]="sectionView.yearlySalesBreakdown === 'chart'" (click)="setSectionView('yearlySalesBreakdown', 'chart')">Chart</button>
+        <button type="button" class="btn btn-outline-primary" [class.active]="sectionView.yearlySalesBreakdown === 'table'" (click)="setSectionView('yearlySalesBreakdown', 'table')">Table</button>
+        <button type="button" class="btn btn-outline-primary" [class.active]="sectionView.yearlySalesBreakdown === 'chart'" (click)="setSectionView('yearlySalesBreakdown', 'chart')">Chart</button>
       </div>
     </div>
     <div class="card-body p-0">
@@ -237,8 +237,8 @@
     <div class="px-3 py-2 ib-table-header d-flex align-items-center justify-content-between gap-2">
       <span class="fw-bold small">TERRITORY &amp; REP PERFORMANCE</span>
       <div class="btn-group btn-group-sm" role="group" aria-label="Rep performance view">
-        <button type="button" class="btn btn-outline-secondary" [class.active]="sectionView.repPerformance === 'table'" (click)="setSectionView('repPerformance', 'table')">Table</button>
-        <button type="button" class="btn btn-outline-secondary" [class.active]="sectionView.repPerformance === 'chart'" (click)="setSectionView('repPerformance', 'chart')">Chart</button>
+        <button type="button" class="btn btn-outline-primary" [class.active]="sectionView.repPerformance === 'table'" (click)="setSectionView('repPerformance', 'table')">Table</button>
+        <button type="button" class="btn btn-outline-primary" [class.active]="sectionView.repPerformance === 'chart'" (click)="setSectionView('repPerformance', 'chart')">Chart</button>
       </div>
     </div>
     <div class="card-body p-0">

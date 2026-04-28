@@ -186,7 +186,7 @@
         </div>
       </div>
       <div class="card-body">
-        <form (ngSubmit)="addOrder()" #orderForm="ngForm">
+        <form class="order-form-shell" (ngSubmit)="addOrder()" #orderForm="ngForm">
           <div class="ib-form-section mb-3">
             <p class="ib-form-section__title">Order Details</p>
             <div class="row g-3">
@@ -227,27 +227,30 @@
             </div>
           </div>
 
-          <div class="row g-3 mb-4">
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">Invoice No.</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.invoiceNo" name="invoiceNo" placeholder="e.g. 10836192">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold small text-muted">PO Number</label>
-              <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.poNumber" name="poNumber">
-            </div>
-            <div class="col-md-12">
-              <label class="form-label fw-bold small text-muted">Status</label>
-              <select class="form-select bg-light" [(ngModel)]="newOrder.status" name="status">
-                <option value="Pending">Pending</option>
-                <option value="Shipped">Shipped</option>
-                <option value="Credit Hold">Credit Hold</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
+          <div class="ib-form-section mb-4">
+            <p class="ib-form-section__title">Fulfillment</p>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Invoice No.</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.invoiceNo" name="invoiceNo" placeholder="e.g. 10836192">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">PO Number</label>
+                <input type="text" class="form-control bg-light" [(ngModel)]="newOrder.poNumber" name="poNumber">
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-bold small text-muted">Status</label>
+                <select class="form-select bg-light" [(ngModel)]="newOrder.status" name="status">
+                  <option value="Pending">Pending</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Credit Hold">Credit Hold</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          <div class="d-flex justify-content-end gap-2 border-top pt-3">
+          <div class="order-form-actions d-flex justify-content-end gap-2 border-top pt-3">
             <button type="button" class="btn ib-btn-secondary" (click)="closeForm(); activeTab = 'directory'">Cancel</button>
             <button type="submit" class="btn btn-primary" [disabled]="!orderForm.valid">
               {{ editingOrderId ? 'Update Order' : 'Save Order' }}

@@ -110,6 +110,9 @@ export class PatientEnrollmentComponent implements OnInit {
   timelineFilter: TimelineFilter = 'All Events';
   editingPatientId: string | null = null;
   selectedPatientId: string | null = null;
+  showNoteModal = false;
+  notePatientId = '';
+  noteText = '';
 
   directoryFilters: DirectoryFilters = {
     search: '',
@@ -346,10 +349,11 @@ export class PatientEnrollmentComponent implements OnInit {
     }
   }
 
-  startAddPatient(): void {
-    this.editingPatientId = null;
-    this.resetPatientForm();
-    this.setTab('add-patient', this.selectedPatientId ?? undefined);
+  openAddNoteModal(patientId?: string): void {
+    const fallbackPatientId = patientId ?? this.selectedPatientId ?? this.patients[0]?.id ?? '';
+    this.notePatientId = fallbackPatientId;
+    this.noteText = '';
+    this.showNoteModal = true;
   }
 
   openPatientProfile(patientId: string, profileTab: ProfileTab = 'overview'): void {
@@ -396,14 +400,32 @@ export class PatientEnrollmentComponent implements OnInit {
   }
 
   addEnrollmentNote(patientId: string): void {
-    const patient = this.patients.find((item) => item.id === patientId);
+    this.openAddNoteModal(patientId);
+  }
+
+  closeNoteModal(): void {
+    this.showNoteModal = false;
+    this.notePatientId = '';
+    this.noteText = '';
+  }
+
+  saveNote(): void {
+    const trimmedNote = this.noteText.trim();
+    if (!this.notePatientId || !trimmedNote) {
+      return;
+    }
+
+    const patient = this.patients.find((item) => item.id === this.notePatientId);
     if (!patient) {
       return;
     }
 
     patient.notes = patient.notes
-      ? `${patient.notes} | Follow-up added by operations team.`
-      : 'Follow-up added by operations team.';
+      ? `${patient.notes} | ${trimmedNote}`
+      : trimmedNote;
+
+    this.selectedPatientId = patient.id;
+    this.closeNoteModal();
   }
 
   getStatusBadgeClass(status: string): string {

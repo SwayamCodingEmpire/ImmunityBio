@@ -37,7 +37,7 @@ export class SidebarComponent {
       icon: 'bi bi-cart3',
       children: [
         { label: 'Order Directory', route: '/order-management', queryParams: { tab: 'directory' } },
-        { label: 'Create Order', route: '/order-management', queryParams: { tab: 'create-order' } },
+        // { label: 'Create Order', route: '/order-management', queryParams: { tab: 'create-order' } },
         { label: 'Order Tracking', route: '/order-management', queryParams: { tab: 'tracking' } }
       ]
     },
@@ -47,10 +47,10 @@ export class SidebarComponent {
       icon: 'bi bi-person-hearts',
       children: [
         { label: 'Patient Directory', route: '/patient-enrollment', queryParams: { tab: 'directory' } },
-        { label: 'Add Patient', route: '/patient-enrollment', queryParams: { tab: 'add-patient' } },
-        { label: 'Patient Profile', route: '/patient-enrollment', queryParams: { tab: 'profile' } },
+        // { label: 'Add Patient', route: '/patient-enrollment', queryParams: { tab: 'add-patient' } },
+        // { label: 'Patient Profile', route: '/patient-enrollment', queryParams: { tab: 'profile' } },
         { label: 'Enrollment Management', route: '/patient-enrollment', queryParams: { tab: 'enrollment' } },
-        { label: 'Patient Timeline', route: '/patient-enrollment', queryParams: { tab: 'timeline' } }
+        // { label: 'Patient Timeline', route: '/patient-enrollment', queryParams: { tab: 'timeline' } }
       ]
     },
     {
@@ -58,8 +58,8 @@ export class SidebarComponent {
       icon: 'bi bi-hospital',
       children: [
         { label: 'Physician Directory', route: '/provider-network', queryParams: { tab: 'directory' } },
-        { label: 'Add Physician', route: '/provider-network', queryParams: { tab: 'add-physician' } },
-        { label: 'Physician Profile', route: '/provider-network', queryParams: { tab: 'profile' } },
+        // { label: 'Add Physician', route: '/provider-network', queryParams: { tab: 'add-physician' } },
+        // { label: 'Physician Profile', route: '/provider-network', queryParams: { tab: 'profile' } },
         // { label: 'Physician Orders', route: '/provider-network', queryParams: { tab: 'orders' } },
         { label: 'Territory Mapping', route: '/provider-network', queryParams: { tab: 'territory-mapping' } },
         // { label: 'Physician Timeline', route: '/provider-network', queryParams: { tab: 'timeline' } }
