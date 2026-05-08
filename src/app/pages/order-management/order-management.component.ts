@@ -1,361 +1,209 @@
-import { Component, ElementRef, ViewChild, inject, OnInit } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule, CurrencyPipe, DatePipe, NgClass } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
-type OrderTab = 'directory' | 'create-order' | 'tracking';
-type OrderStatus = 'Pending' | 'Shipped' | 'Credit Hold' | 'Cancelled';
-
-interface OrderRecord {
+interface OrderRow {
   id: string;
-  orderNo: string;
-  licenseNo: string;
-  impType: string;
-  impTypeName: string;
-  facility: string;
-  salesOrderTypeCode: string;
-  salesOrderTypeDesc: string;
-  itemCode: string;
-  product: string;
-  deliveryQty: number;
-  units: number;
-  total: number;
-  unitPrice: number;
-  invoiceNo: string;
-  invoiceDate: string;
-  poNumber: string;
+  accountNo: string;
+  distribution: string;
   status: string;
-  date: string;
+  shipToName: string;
+  shipToAddress: string;
+  shipToCity: string;
+  shipToState: string;
+  shipToZip: string;
+  deliveryQty: number;
+  orderDate: string;
+  deliveryDate: string;
+  area: string;
+  abd: string;
+  businessManager: string;
+  territory: string;
+  unitsAssigned: number;
 }
 
 interface OrderFilters {
   search: string;
   status: string;
-  facility: string;
-  impType: string;
-  product: string;
-  channel: string;
+  distribution: string;
 }
 
-interface OrderTrackingStep {
+interface TimelineStep {
   label: string;
-  detail: string;
   date: string;
+  detail: string;
   state: 'completed' | 'current' | 'upcoming' | 'issue';
+}
+
+interface SplitAssignment {
+  abd: string;
+  businessManager: string;
+  territory: string;
+  units: number;
 }
 
 @Component({
   selector: 'app-order-management',
-  imports: [CommonModule, FormsModule, CurrencyPipe, DatePipe, NgClass],
+  imports: [CommonModule, FormsModule, NgClass],
   templateUrl: './order-management.component.html',
   styleUrl: './order-management.component.scss'
 })
 export class OrderManagementComponent implements OnInit {
-  private dataService = inject(DataService);
   private route = inject(ActivatedRoute);
 
-  @ViewChild('importOrdersInput') importOrdersInput?: ElementRef<HTMLInputElement>;
+  // active filters — only updated on Apply click
+  orderFilters: OrderFilters = { search: '', status: 'All', distribution: 'All' };
+  // staged filters — bound to the filter inputs
+  pendingFilters: OrderFilters = { search: '', status: 'All', distribution: 'All' };
 
-  activeTab: OrderTab = 'directory';
-  showDetails = false;
-  editingOrderId: string | null = null;
-  selectedOrder: OrderRecord | null = null;
-  lastImportMessage = '';
+  private allOrders: OrderRow[] = [
+    { id: 'ORD-001', accountNo: '8712783392326', distribution: 'ICS',    status: 'Shipped',      shipToName: 'JAMES C LIN MD',                 shipToAddress: '100 HIGHLAND ST',       shipToCity: 'MILTON',        shipToState: 'MA', shipToZip: '2186',  deliveryQty: 1, orderDate: '2026-04-30', deliveryDate: '2026-05-01', area: 'East',          abd: 'Keith DeRuiter', businessManager: 'OPEN',                territory: 'Boston, MA',          unitsAssigned: 2 },
+    { id: 'ORD-002', accountNo: '8712783328627', distribution: 'ICS',    status: 'Pending',      shipToName: 'H LEE MOFFITT CANCER CENTER IV', shipToAddress: '12902 USF MAGNOLIA DR', shipToCity: 'TAMPA',         shipToState: 'FL', shipToZip: '33612', deliveryQty: 2, orderDate: '2026-04-30', deliveryDate: '2026-05-01', area: 'South Central', abd: 'Chuck Gaetano',  businessManager: 'Katrina Caronia',     territory: 'Tampa, FL',           unitsAssigned: 1 },
+    { id: 'ORD-003', accountNo: '8712785588010', distribution: 'ICS',    status: 'Pending',      shipToName: 'TOWER OUTPATIENT SURGERY CTR',   shipToAddress: '8635 W 3RD ST',         shipToCity: 'LOS ANGELES',   shipToState: 'CA', shipToZip: '90048', deliveryQty: 3, orderDate: '2026-04-30', deliveryDate: '2026-05-01', area: 'Southwest',     abd: 'OPEN',           businessManager: 'Alexandra Maddalosso',territory: 'Los Angeles, CA',     unitsAssigned: 3 },
+    { id: 'ORD-004', accountNo: '4471528182231', distribution: 'ICS',    status: 'Pending',      shipToName: 'PRAIRIE LAKES HEALTHCARE SYST',  shipToAddress: '401 9TH AVE NW',        shipToCity: 'WATERTOWN',     shipToState: 'SD', shipToZip: '57201', deliveryQty: 2, orderDate: '2026-04-30', deliveryDate: '2026-05-04', area: 'Southwest',     abd: 'OPEN',           businessManager: 'James Reiff',         territory: 'Boise, ID',           unitsAssigned: 2 },
+    { id: 'ORD-005', accountNo: '4471528182220', distribution: 'ICS',    status: 'Pending',      shipToName: 'UROPARTNERS LLC',                shipToAddress: '17901 GOVERNORS HWY',   shipToCity: 'HOMEWOOD',      shipToState: 'IL', shipToZip: '60430', deliveryQty: 2, orderDate: '2026-04-30', deliveryDate: '2026-05-04', area: 'North Central', abd: 'OPEN',           businessManager: 'Robb Evans',          territory: 'Chicago, IL',         unitsAssigned: 1 },
+    { id: 'ORD-006', accountNo: '4471528182140', distribution: 'ICS',    status: 'Credit Hold',  shipToName: 'STANFORD HEALTH CARE ONCOLOGY',  shipToAddress: '875 BLAKE WILBUR DR',   shipToCity: 'PALO ALTO',     shipToState: 'CA', shipToZip: '94304', deliveryQty: 2, orderDate: '2026-04-30', deliveryDate: '2026-05-04', area: 'Southwest',     abd: 'OPEN',           businessManager: 'Freddy Garzon',       territory: 'Northern California', unitsAssigned: 2 },
+    { id: 'ORD-007', accountNo: '4471528181831', distribution: 'ICS',    status: 'Pending',      shipToName: 'UROLOGY OF INDIANA LLC',         shipToAddress: '679 E COUNTY LINE RD',  shipToCity: 'GREENWOOD',     shipToState: 'IN', shipToZip: '46143', deliveryQty: 1, orderDate: '2026-04-30', deliveryDate: '2026-05-04', area: 'North Central', abd: 'OPEN',           businessManager: 'Chris Moffitt',       territory: 'Indianapolis, IN',    unitsAssigned: 1 },
+    { id: 'ORD-008', accountNo: '4471528182091', distribution: 'ICS',    status: 'Shipped',      shipToName: 'UCSF MEDICAL CENTER BENIOFF',    shipToAddress: '1975 4TH ST',           shipToCity: 'SAN FRANCISCO', shipToState: 'CA', shipToZip: '94143', deliveryQty: 1, orderDate: '2026-04-30', deliveryDate: '2026-05-04', area: 'Southwest',     abd: 'Freddy Garzon',  businessManager: 'OPEN',                territory: 'Northern California', unitsAssigned: 1 },
+    { id: 'ORD-009', accountNo: '',             distribution: 'Accredo', status: 'Shipped',      shipToName: 'DANIEL CANTER',                 shipToAddress: '2170 COUNTRY CLUB DR',  shipToCity: 'LAWRENCEVILLE', shipToState: 'GA', shipToZip: '30043', deliveryQty: 3, orderDate: '2026-04-30', deliveryDate: '2026-05-01', area: 'South Central', abd: 'Chuck Gaetano',  businessManager: 'Michael Real',        territory: 'Atlanta, GA',         unitsAssigned: 1 }
+  ];
 
-  orderFilters: OrderFilters = {
-    search: '',
-    status: 'All',
-    facility: 'All',
-    impType: 'All',
-    product: 'All',
-    channel: 'All'
-  };
+  // ── Track modal ──────────────────────────────────────────
+  trackingOrder: OrderRow | null = null;
+  openTrackModal(order: OrderRow): void { this.trackingOrder = order; }
+  closeTrackModal(): void               { this.trackingOrder = null;  }
 
-  ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      if (params['tab']) {
-        this.activeTab = params['tab'] as OrderTab;
-      }
-    });
-  }
-
-  newOrder: Partial<OrderRecord> = {
-    facility: '',
-    impType: 'F1',
-    impTypeName: 'Physician',
-    product: 'Anktiva400 mg/0.4 mL',
-    units: 1,
-    total: 35800,
-    unitPrice: 35800,
-    invoiceNo: '',
-    poNumber: '',
-    status: 'Pending'
-  };
-
-  get recentOrders(): OrderRecord[] {
-    return this.dataService.getRecentOrders();
-  }
-
-  get statusOptions(): string[] {
-    return ['All', 'Pending', 'Shipped', 'Credit Hold', 'Cancelled'];
-  }
-
-  get facilityOptions(): string[] {
-    return ['All', ...new Set(this.recentOrders.map((order) => order.facility))];
-  }
-
-  get impTypeOptions(): string[] {
-    return ['All', ...new Set(this.recentOrders.map((order) => order.impTypeName))];
-  }
-
-  get productOptions(): string[] {
-    return ['All', ...new Set(this.recentOrders.map((order) => order.product))];
-  }
-
-  get filteredOrders(): OrderRecord[] {
-    const query = this.orderFilters.search.trim().toLowerCase();
-
-    return [...this.recentOrders]
-      .filter((order) => {
-        const channel = this.getOrderChannel(order);
-        const matchesSearch = !query
-          || order.orderNo.toLowerCase().includes(query)
-          || order.facility.toLowerCase().includes(query)
-          || order.product.toLowerCase().includes(query)
-          || order.impTypeName.toLowerCase().includes(query)
-          || order.poNumber.toLowerCase().includes(query)
-          || order.invoiceNo.toLowerCase().includes(query);
-
-        return matchesSearch
-          && (this.orderFilters.status === 'All' || order.status === this.orderFilters.status)
-          && (this.orderFilters.facility === 'All' || order.facility === this.orderFilters.facility)
-          && (this.orderFilters.impType === 'All' || order.impTypeName === this.orderFilters.impType)
-          && (this.orderFilters.product === 'All' || order.product === this.orderFilters.product)
-          && (this.orderFilters.channel === 'All' || channel === this.orderFilters.channel);
-      })
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }
-
-  get orderKpis() {
-    const orders = this.filteredOrders;
-
-    return {
-      totalOrders: orders.length,
-      shippedOrders: orders.filter((order) => order.status === 'Shipped').length,
-      pendingOrders: orders.filter((order) => order.status === 'Pending').length,
-      cancelledOrders: orders.filter((order) => order.status === 'Cancelled' || order.status === 'Credit Hold').length,
-      totalUnits: orders.reduce((sum, order) => sum + order.units, 0),
-      totalRevenue: orders.reduce((sum, order) => sum + order.total, 0)
-    };
-  }
-
-  get trackingSummary() {
-    const total = this.filteredOrders.length;
-    const percentOfTotal = (count: number): number => total === 0 ? 0 : Math.round((count / total) * 100);
-
-    const verifiedCount = this.filteredOrders.filter((order) => order.status !== 'Credit Hold' && order.status !== 'Cancelled').length;
-    const approvedCount = this.filteredOrders.filter((order) => order.status === 'Pending' || order.status === 'Shipped').length;
-    const shippedCount = this.filteredOrders.filter((order) => order.status === 'Shipped').length;
-    const onHoldCount = this.filteredOrders.filter((order) => order.status === 'Credit Hold' || order.status === 'Cancelled').length;
-
-    const groups = [
-      { key: 'Created', count: total, percent: total === 0 ? 0 : 100, tone: 'info' },
-      { key: 'Verified', count: verifiedCount, percent: percentOfTotal(verifiedCount), tone: 'info' },
-      { key: 'Approved', count: approvedCount, percent: percentOfTotal(approvedCount), tone: 'warning' },
-      { key: 'Shipped', count: shippedCount, percent: percentOfTotal(shippedCount), tone: 'success' },
-      { key: 'On Hold', count: onHoldCount, percent: percentOfTotal(onHoldCount), tone: 'danger' }
-    ];
-
-    return groups;
-  }
-
-  addOrder(): void {
-    if (this.editingOrderId) {
-      const order = this.dataService.getRecentOrders().find((o: OrderRecord) => o.id === this.editingOrderId);
-      if (order) {
-        Object.assign(order, this.newOrder);
-      }
-    } else {
-      const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
-      const orderNo = '760' + Math.floor(2000000 + Math.random() * 999999);
-      this.dataService.getRecentOrders().unshift({
-        id: orderId,
-        orderNo: orderNo,
-        licenseNo: '',
-        impType: this.newOrder.impType,
-        impTypeName: this.newOrder.impTypeName,
-        facility: this.newOrder.facility,
-        salesOrderTypeCode: '7036 8803-01',
-        salesOrderTypeDesc: 'EDS Sales Order',
-        itemCode: '7036 8803-01',
-        product: this.newOrder.product,
-        deliveryQty: this.newOrder.units,
-        units: this.newOrder.units,
-        total: this.newOrder.units ? this.newOrder.units * 35800 : 0,
-        unitPrice: 35800,
-        invoiceNo: this.newOrder.invoiceNo,
-        invoiceDate: '',
-        poNumber: this.newOrder.poNumber,
-        status: this.newOrder.status,
-        date: new Date().toISOString().split('T')[0]
-      });
-    }
-    this.closeForm();
-  }
-
-  editOrder(order: OrderRecord): void {
-    this.editingOrderId = order.id;
-    this.newOrder = { ...order };
-    this.activeTab = 'create-order';
-  }
-
-  viewOrderDetails(order: OrderRecord): void {
-    this.selectedOrder = order;
-    this.showDetails = true;
-  }
-
-  closeDetails(): void {
-    this.showDetails = false;
-    this.selectedOrder = null;
-  }
-
-  deleteOrder(id: string): void {
-    this.dataService.deleteOrder(id);
-    if (this.selectedOrder?.id === id) {
-      this.closeDetails();
-    }
-  }
-
-  closeForm(): void {
-    this.editingOrderId = null;
-    this.newOrder = { facility: '', impType: 'F1', impTypeName: 'Physician', product: 'Anktiva400 mg/0.4 mL', units: 1, total: 35800, unitPrice: 35800, invoiceNo: '', poNumber: '', status: 'Pending' };
-  }
-
-  updateTotal(): void {
-    this.newOrder.total = (this.newOrder.units ?? 0) * 35800;
-  }
-
-  resetFilters(): void {
-    this.orderFilters = {
-      search: '',
-      status: 'All',
-      facility: 'All',
-      impType: 'All',
-      product: 'All',
-      channel: 'All'
-    };
-  }
-
-  exportOrders(): void {
-    const headers = ['Order ID', 'Order No', 'Order Date', 'Facility', 'IMP Type', 'Product', 'Units', 'Status', 'Channel', 'Revenue'];
-    const rows = this.filteredOrders.map((order) => [
-      order.id,
-      order.orderNo,
-      order.date,
-      order.facility,
-      order.impTypeName,
-      order.product,
-      String(order.units),
-      order.status,
-      this.getOrderChannel(order),
-      String(order.total)
-    ]);
-    const csv = [headers, ...rows]
-      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-      .join('\n');
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'orders-report.csv';
-    link.click();
-    URL.revokeObjectURL(url);
-  }
-
-  openImportPicker(): void {
-    this.importOrdersInput?.nativeElement.click();
-  }
-
-  onImportFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-
-    this.lastImportMessage = `Import ready: ${file.name}. Demo mode keeps existing orders unchanged for now.`;
-    input.value = '';
-  }
-
-  getOrderChannel(order: OrderRecord): string {
-    if (order.impType.startsWith('F')) return 'ICS';
-    if (order.impType.startsWith('H')) return 'Accredo';
-    return 'IB Care';
-  }
-
-  getTrackingWidth(order: OrderRecord): string {
-    if (order.status === 'Shipped') return '100%';
-    if (order.status === 'Pending') return '55%';
-    if (order.status === 'Cancelled') return '15%';
-    return '20%';
-  }
-
-  getTrackingLabel(order: OrderRecord): string {
-    if (order.status === 'Shipped') return 'Delivered';
-    if (order.status === 'Pending') return 'Processing';
-    if (order.status === 'Cancelled') return 'Cancelled';
-    return 'On Hold';
-  }
-
-  getOrderTrackingSteps(order: OrderRecord): OrderTrackingStep[] {
-    const placedDate = order.date;
-    const verifiedDate = this.offsetDate(placedDate, 1);
-    const approvedDate = this.offsetDate(placedDate, 2);
-    const dispatchedDate = order.invoiceDate || this.offsetDate(placedDate, 3);
-    const deliveredDate = order.invoiceDate || this.offsetDate(placedDate, 4);
+  getTimelineSteps(order: OrderRow): TimelineStep[] {
+    const base    = new Date(order.orderDate);
+    const deliver = new Date(order.deliveryDate);
+    const fmt     = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const add     = (d: Date, n: number) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
 
     if (order.status === 'Shipped') {
       return [
-        { label: 'Order placed', detail: 'Order was received and logged into the system.', date: placedDate, state: 'completed' },
-        { label: 'Verified', detail: 'Order details and facility information were validated.', date: verifiedDate, state: 'completed' },
-        { label: 'Dispatched', detail: 'Shipment was prepared and handed to fulfillment.', date: dispatchedDate, state: 'completed' },
-        { label: 'Delivered', detail: 'Order completed successfully.', date: deliveredDate, state: 'completed' }
+        { label: 'Order Placed',       date: fmt(base),        detail: 'Order received and logged into the system.',         state: 'completed' },
+        { label: 'Documents Verified', date: fmt(add(base,1)), detail: 'Facility credentials and order details validated.',   state: 'completed' },
+        { label: 'Packed & Ready',     date: fmt(add(base,1)), detail: 'Shipment prepared and handed to fulfillment team.',  state: 'completed' },
+        { label: 'Dispatched',         date: fmt(add(base,2)), detail: 'Package picked up by courier and in transit.',       state: 'completed' },
+        { label: 'Shipped',            date: fmt(deliver),     detail: 'Order shipped successfully to facility.',            state: 'completed' }
       ];
     }
-
     if (order.status === 'Credit Hold') {
       return [
-        { label: 'Order placed', detail: 'Order was received and logged into the system.', date: placedDate, state: 'completed' },
-        { label: 'Verified', detail: 'Order is under review before release.', date: verifiedDate, state: 'current' },
-        { label: 'Credit hold', detail: 'Shipment is paused until the hold is resolved.', date: order.invoiceDate || 'Pending review', state: 'issue' },
-        { label: 'Dispatched', detail: 'Will start after the credit hold is cleared.', date: 'Awaiting release', state: 'upcoming' }
+        { label: 'Order Placed',        date: fmt(base),            detail: 'Order received and logged into the system.',                  state: 'completed' },
+        { label: 'Documents Verified',  date: fmt(add(base, 1)),    detail: 'Initial review completed before release to fulfillment.',      state: 'completed' },
+        { label: 'Credit Hold Flagged', date: fmt(add(base, 2)),    detail: 'Order paused — account under credit review. Action required.', state: 'issue'     },
+        { label: 'Dispatched',          date: 'Awaiting release',   detail: 'Will proceed once the credit hold is resolved.',               state: 'upcoming'  },
+        { label: 'Delivered',           date: 'Pending',            detail: 'Delivery pending resolution of credit hold.',                  state: 'upcoming'  }
       ];
     }
-
     if (order.status === 'Cancelled') {
       return [
-        { label: 'Order placed', detail: 'Order was received and logged into the system.', date: placedDate, state: 'completed' },
-        { label: 'Review started', detail: 'Order entered the processing queue.', date: verifiedDate, state: 'completed' },
-        { label: 'Cancelled', detail: 'Order was cancelled before shipment.', date: order.invoiceDate || this.offsetDate(placedDate, 2), state: 'issue' },
-        { label: 'Dispatched', detail: 'Shipment was not initiated.', date: 'Not applicable', state: 'upcoming' }
+        { label: 'Order Placed',    date: fmt(base),         detail: 'Order received and logged into the system.',   state: 'completed' },
+        { label: 'Review Started',  date: fmt(add(base, 1)), detail: 'Order entered the processing queue.',           state: 'completed' },
+        { label: 'Cancelled',       date: fmt(add(base, 2)), detail: 'Order was cancelled before shipment.',          state: 'issue'     },
+        { label: 'Dispatched',      date: 'Not applicable',  detail: 'Shipment was not initiated.',                   state: 'upcoming'  },
+        { label: 'Delivered',       date: 'Not applicable',  detail: 'Order will not be delivered.',                  state: 'upcoming'  }
       ];
     }
-
     return [
-      { label: 'Order placed', detail: 'Order was received and logged into the system.', date: placedDate, state: 'completed' },
-      { label: 'Verified', detail: 'Order details and facility information were validated.', date: verifiedDate, state: 'completed' },
-      { label: 'Processing', detail: 'The order is being prepared for dispatch.', date: approvedDate, state: 'current' },
-      { label: 'Dispatched', detail: 'Shipment will update here once it leaves the warehouse.', date: 'Awaiting dispatch', state: 'upcoming' }
+      { label: 'Order Placed',       date: fmt(base),             detail: 'Order received and logged into the system.',              state: 'completed' },
+      { label: 'Documents Verified', date: fmt(add(base, 1)),     detail: 'Facility credentials and order details validated.',        state: 'completed' },
+      { label: 'Processing',         date: fmt(add(base, 1)),     detail: 'Order is being prepared for dispatch.',                    state: 'current'   },
+      { label: 'Dispatched',         date: 'Awaiting dispatch',   detail: 'Shipment will update once it leaves the warehouse.',       state: 'upcoming'  },
+      { label: 'Delivered',          date: 'Pending',             detail: 'Estimated on completion of dispatch.',                     state: 'upcoming'  }
     ];
   }
 
-  private offsetDate(dateValue: string, offsetDays: number): string {
-    const date = new Date(dateValue);
-    if (Number.isNaN(date.getTime())) {
-      return 'Pending';
-    }
+  // ── Details modal ────────────────────────────────────────
+  detailsOrder: OrderRow | null = null;
+  openDetailsModal(order: OrderRow): void { this.detailsOrder = order; }
+  closeDetailsModal(): void               { this.detailsOrder = null;  }
 
-    date.setDate(date.getDate() + offsetDays);
-    return date.toISOString().split('T')[0];
+  // ── Edit modal ───────────────────────────────────────────
+  editingOrder: OrderRow | null = null;
+  editForm: Partial<OrderRow> = {};
+
+  openEditModal(order: OrderRow): void {
+    this.editingOrder = order;
+    this.editForm = { ...order };
+  }
+  closeEditModal(): void {
+    this.editingOrder = null;
+    this.editForm = {};
+  }
+  saveEdit(): void {
+    if (!this.editingOrder) return;
+    Object.assign(this.editingOrder, this.editForm);
+    this.closeEditModal();
+  }
+
+  // ── Split modal ──────────────────────────────────────────
+  splittingOrder: OrderRow | null = null;
+  splitAssignments: SplitAssignment[] = [];
+
+  readonly abdOptions       = ['Keith DeRuiter', 'Chuck Gaetano', 'OPEN', 'Freddy Garzon'];
+  readonly managerOptions   = ['OPEN', 'Katrina Caronia', 'Alexandra Maddalosso', 'James Reiff', 'Michael Reol', 'Robb Evans', 'Chris Moffitt'];
+  readonly territoryOptions = ['Boston, MA', 'Tampa, FL', 'Los Angeles, CA', 'Atlanta, GA', 'Boise, ID', 'Chicago, IL', 'Northern California', 'Indianapolis, IN'];
+
+  openSplitModal(order: OrderRow): void {
+    this.splittingOrder = order;
+    this.splitAssignments = [{ abd: '', businessManager: '', territory: '', units: 0 }];
+  }
+  closeSplitModal(): void {
+    this.splittingOrder = null;
+    this.splitAssignments = [];
+  }
+  addSplitRow(): void    { this.splitAssignments.push({ abd: '', businessManager: '', territory: '', units: 0 }); }
+  removeSplitRow(i: number): void { this.splitAssignments.splice(i, 1); }
+
+  get splitTotal(): number {
+    return this.splitAssignments.reduce((sum, a) => sum + (Number(a.units) || 0), 0);
+  }
+  get splitProgressPercent(): number {
+    if (!this.splittingOrder || this.splittingOrder.unitsAssigned === 0) return 0;
+    return Math.min((this.splitTotal / this.splittingOrder.unitsAssigned) * 100, 100);
+  }
+  get splitIsOver(): boolean {
+    return !!this.splittingOrder && this.splitTotal > this.splittingOrder.unitsAssigned;
+  }
+  get splitIsValid(): boolean {
+    return !this.splitIsOver && this.splitTotal > 0
+      && this.splitAssignments.every(a => !!a.abd && !!a.businessManager && !!a.territory && a.units > 0);
+  }
+  saveSplit(): void {
+    if (!this.splitIsValid) return;
+    console.log('Split saved for', this.splittingOrder?.id, this.splitAssignments);
+    this.closeSplitModal();
+  }
+
+  // ── Filters ──────────────────────────────────────────────
+  readonly statusOptions       = ['All', 'Shipped', 'Pending', 'Credit Hold', 'Cancelled'];
+  readonly distributionOptions = ['All', 'ICS', 'Accredo', 'IB Care'];
+  readonly statusFormOptions   = ['', 'Shipped', 'Pending', 'Credit Hold', 'Cancelled'];
+
+  get filteredOrders(): OrderRow[] {
+    const q = this.orderFilters.search.trim().toLowerCase();
+    return this.allOrders.filter(o => {
+      const matchSearch = !q || [o.accountNo, o.distribution, o.shipToName, o.area, o.abd, o.businessManager, o.territory, o.status]
+        .some(v => v.toLowerCase().includes(q));
+      const matchStatus = this.orderFilters.status === 'All' || o.status === this.orderFilters.status;
+      const matchDist   = this.orderFilters.distribution === 'All' || o.distribution === this.orderFilters.distribution;
+      return matchSearch && matchStatus && matchDist;
+    });
+  }
+
+  applyFilters(): void {
+    this.orderFilters = { ...this.pendingFilters };
+  }
+
+  resetFilters(): void {
+    this.orderFilters    = { search: '', status: 'All', distribution: 'All' };
+    this.pendingFilters  = { search: '', status: 'All', distribution: 'All' };
+  }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(() => {});
   }
 }

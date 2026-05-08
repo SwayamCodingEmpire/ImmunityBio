@@ -66,6 +66,23 @@ interface PatientFormModel {
   notes: string;
 }
 
+interface PatientRow {
+  hub: string;
+  status: string;
+  patientId: string;
+  referralReceivedDate: string;
+  dateRxReadyToSchedule: string;
+  payerInformation: string;
+  prescriber: string;
+  siteName: string;
+  city: string;
+  state: string;
+  zip: string;
+  qtyOrdered: string;
+  abd: string;
+  businessManager: string;
+}
+
 interface DirectoryFilters {
   search: string;
   enrollmentStatus: string;
@@ -132,6 +149,55 @@ export class PatientEnrollmentComponent implements OnInit {
     startDate: '',
     endDate: ''
   };
+
+  directoryStatusFilter = 'All';
+  pendingStatusFilter   = 'All';
+
+  applyDirectoryFilter(): void {
+    this.directoryStatusFilter = this.pendingStatusFilter;
+  }
+
+  readonly patientRows: PatientRow[] = [
+    { hub: 'IB Care', status: 'Completed', patientId: 'P-67027383', referralReceivedDate: '4/7/2026',   dateRxReadyToSchedule: '4/13/2026', payerInformation: 'MEDICARE NEW YORK (NY)',     prescriber: 'CHRISTOPHER MICHAEL PIECZONKA', siteName: 'ASSOCIATED MEDICAL PROFESSIONALS OF NY, PLLC', city: '(Blank)', state: 'NY', zip: '13210', qtyOrdered: '(Blank)', abd: 'Keith DeRuiter', businessManager: 'Timothy Kittell'  },
+    { hub: 'IB Care', status: 'Completed', patientId: 'P-67027383', referralReceivedDate: '4/14/2026',  dateRxReadyToSchedule: '4/14/2026', payerInformation: 'MEDICARE NEW YORK (NY)',     prescriber: 'CHRISTOPHER MICHAEL PIECZONKA', siteName: 'ASSOCIATED MEDICAL PROFESSIONALS OF NY, PLLC', city: '(Blank)', state: 'NY', zip: '13210', qtyOrdered: '(Blank)', abd: 'Keith DeRuiter', businessManager: 'Timothy Kittell'  },
+    { hub: 'IB Care', status: 'Completed', patientId: 'P-65914172', referralReceivedDate: '4/21/2025',  dateRxReadyToSchedule: '4/21/2025', payerInformation: 'HUMANA',                    prescriber: 'CARRIE ALINE STEWART',          siteName: 'CHRISTUS SAINT VINCENT UROLOGY ASSOCIATES',           city: '(Blank)', state: 'NM', zip: '87505', qtyOrdered: '(Blank)', abd: 'OPEN',           businessManager: 'Kristen Cook'    },
+    { hub: 'IB Care', status: 'Cancelled', patientId: 'P-65914172', referralReceivedDate: '4/14/2026',  dateRxReadyToSchedule: '4/17/2026', payerInformation: '[No Details Available]',    prescriber: 'CARRIE ALINE STEWART',          siteName: 'CHRISTUS SAINT VINCENT UROLOGY ASSOCIATES',           city: '(Blank)', state: 'NM', zip: '87505', qtyOrdered: '(Blank)', abd: 'OPEN',           businessManager: 'Kristen Cook'    },
+    { hub: 'IB Care', status: 'Completed', patientId: 'P-69579963', referralReceivedDate: '4/13/2026',  dateRxReadyToSchedule: '4/13/2026', payerInformation: 'AETNA INC',                 prescriber: 'LAURA BUKAVINA',                siteName: 'CLEVELAND CLINIC MAIN CAMPUS UROLOGY',                city: '(Blank)', state: 'OH', zip: '44195', qtyOrdered: '(Blank)', abd: 'OPEN',           businessManager: 'Debra Henderson' },
+    { hub: 'Accredo', status: 'Completed', patientId: 'P-69579033', referralReceivedDate: '4/13/2026',  dateRxReadyToSchedule: '4/15/2026', payerInformation: 'HUMANA',                    prescriber: 'LAURA BUKAVINA',                siteName: 'CLEVELAND CLINIC MAIN CAMPUS UROLOGY',                city: '(Blank)', state: 'OH', zip: '44195', qtyOrdered: '(Blank)', abd: 'OPEN',           businessManager: 'Debra Henderson' },
+    { hub: 'IB Care', status: 'Completed', patientId: 'P-69574358', referralReceivedDate: '4/13/2026',  dateRxReadyToSchedule: '4/13/2026', payerInformation: 'HUMANA',                    prescriber: 'BRYANT EMORY POOLE',            siteName: 'UROLOGY CENTERS OF ALABAMA',                          city: '(Blank)', state: 'AL', zip: '35209', qtyOrdered: '(Blank)', abd: 'Chuck Gaetano',  businessManager: 'OPEN'            },
+    { hub: 'IB Care', status: 'Completed', patientId: 'P-67744371', referralReceivedDate: '10/10/2025', dateRxReadyToSchedule: '10/13/2025',payerInformation: 'MEDICARE NEW JERSEY (NJ)',  prescriber: 'SANDIP M PRASAD',              siteName: 'GARDEN STATE UROLOGY',                                city: '(Blank)', state: 'NJ', zip: '7960',  qtyOrdered: '(Blank)', abd: '(Blank)',         businessManager: '(Blank)'         },
+    { hub: 'Accredo', status: 'Completed', patientId: 'P-67744371', referralReceivedDate: '4/13/2026',  dateRxReadyToSchedule: '4/13/2026', payerInformation: 'MEDICARE NEW JERSEY (NJ)',  prescriber: 'SANDIP M PRASAD',              siteName: 'GARDEN STATE UROLOGY',                                city: '(Blank)', state: 'NJ', zip: '7960',  qtyOrdered: '(Blank)', abd: '(Blank)',         businessManager: '(Blank)'         }
+  ];
+
+  // ── Patient row edit modal ──────────────────────────────
+  editingPatientRow: PatientRow | null = null;
+  editRowForm: Partial<PatientRow> = {};
+
+  openEditRow(row: PatientRow): void {
+    this.editingPatientRow = row;
+    this.editRowForm = { ...row };
+  }
+  closeEditRow(): void { this.editingPatientRow = null; this.editRowForm = {}; }
+  saveEditRow(): void {
+    if (!this.editingPatientRow) return;
+    Object.assign(this.editingPatientRow, this.editRowForm);
+    this.closeEditRow();
+  }
+
+  // ── Patient row details modal ────────────────────────────
+  detailsPatientRow: PatientRow | null = null;
+  openDetailsRow(row: PatientRow): void  { this.detailsPatientRow = row; }
+  closeDetailsRow(): void                { this.detailsPatientRow = null; }
+
+  displayVal(val: string): string {
+    return (!val || val === '(Blank)') ? '—' : val;
+  }
+
+  get filteredPatientRows(): PatientRow[] {
+    return this.patientRows.filter(r =>
+      this.directoryStatusFilter === 'All' || r.status === this.directoryStatusFilter
+    );
+  }
 
   patientForm: PatientFormModel = {
     firstName: '',

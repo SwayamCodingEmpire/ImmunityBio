@@ -37,7 +37,7 @@
 }
 
 .ib-filter-card--compact {
-  padding: 0.8rem 1rem;
+  padding: 0rem;
 }
 
 .ib-compact-filter__label {
@@ -190,6 +190,98 @@
   border: 1px solid #edf2f7;
   border-radius: 14px;
   padding: 1rem 1.1rem;
+}
+
+.pe-th {
+  white-space: nowrap;
+}
+
+.pe-directory-table {
+  font-size: 0.8rem;
+}
+
+.pe-modal-footer {
+  border-top: 1px solid var(--ib-border);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+}
+
+// reuse om-details-grid/row from order-management pattern
+.om-details-grid {
+  border: 1px solid var(--ib-border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.om-details-row {
+  align-items: baseline;
+  border-bottom: 1px solid var(--ib-border);
+  display: flex;
+  gap: 1rem;
+  padding: 0.65rem 1rem;
+
+  &:last-child { border-bottom: none; }
+  &:nth-child(odd) { background: #f8fafc; }
+}
+
+.om-details-label {
+  color: var(--ib-muted);
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  min-width: 100px;
+  text-transform: uppercase;
+}
+
+.om-details-value {
+  font-size: 0.85rem;
+}
+
+// tooltip reuse
+.om-tooltip-wrap {
+  display: inline-block;
+  position: relative;
+
+  &::after {
+    background: #1e293b;
+    border-radius: 5px;
+    bottom: calc(100% + 6px);
+    color: #fff;
+    content: attr(data-tip);
+    font-size: 0.71rem;
+    font-weight: 500;
+    left: 50%;
+    opacity: 0;
+    padding: 4px 9px;
+    pointer-events: none;
+    position: absolute;
+    transform: translateX(-50%);
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+    z-index: 20;
+  }
+
+  &::before {
+    border: 5px solid transparent;
+    border-top-color: #1e293b;
+    bottom: calc(100% + 1px);
+    content: '';
+    left: 50%;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    transform: translateX(-50%);
+    transition: opacity 0.15s ease;
+    z-index: 20;
+  }
+
+  &:hover::after,
+  &:hover::before { opacity: 1; }
 }
 
 @media (max-width: 991.98px) {

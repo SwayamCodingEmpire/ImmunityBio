@@ -18,7 +18,7 @@
                 <div
                   class="nav-link nav-link--menu"
                   [class.nav-link--collapsed]="collapsed"
-                  [class.active]="expandedMenu === item.label || isMenuActive(item)"
+                  [class.active]="isMenuActive(item)"
                   [attr.title]="collapsed ? item.label : null"
                   (click)="toggleMenu(item.label)">
                   <div class="nav-link-main">

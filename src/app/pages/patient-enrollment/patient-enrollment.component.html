@@ -9,124 +9,76 @@
       <button class="btn ib-btn-secondary" *ngIf="activeTab !== 'directory'" (click)="setTab('directory', selectedPatient?.id)">
         <i class="bi bi-list-ul"></i> Directory
       </button>
-      <button class="btn btn-primary" (click)="openAddNoteModal()">
-        <i class="bi bi-journal-plus"></i> Add Note
-      </button>
     </div>
   </div>
 
   <div *ngIf="activeTab === 'directory'">
-    <div class="patient-kpi-grid mb-4">
-      <div class="card border-0 shadow-sm patient-kpi-card patient-kpi-card--accent"><div class="card-body"><p class="patient-kpi-card__label">Total Patients</p><h4 class="patient-kpi-card__value">{{ directoryKpis.totalPatients }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Active Patients</p><h4 class="patient-kpi-card__value">{{ directoryKpis.activePatients }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">In Progress</p><h4 class="patient-kpi-card__value">{{ directoryKpis.inProgressEnrollments }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Completed</p><h4 class="patient-kpi-card__value">{{ directoryKpis.completedEnrollments }}</h4></div></div>
-      <div class="card border-0 shadow-sm patient-kpi-card"><div class="card-body"><p class="patient-kpi-card__label">Linked Orders</p><h4 class="patient-kpi-card__value">{{ directoryKpis.totalOrders }}</h4></div></div>
-    </div>
 
     <div class="ib-filter-card ib-filter-card--compact mb-4">
       <div class="row g-2 align-items-end">
-        <div class="col-lg-4">
-          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Search</label>
-          <input class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.search" name="directorySearch" placeholder="Patient name, ID, phone, physician" />
-        </div>
-        <div class="col-lg-2">
-          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Enrollment Status</label>
-          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.enrollmentStatus" name="directoryEnrollmentStatus">
+        <div class="col-lg-3">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Status</label>
+          <select class="form-select form-select-sm bg-light ib-compact-filter__control"
+            [(ngModel)]="pendingStatusFilter" name="directoryStatusFilter">
             <option value="All">All</option>
-            <option value="Cancelled">Cancelled</option>
             <option value="Completed">Completed</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Missing Information">Missing Information</option>
-            <option value="On Hold">On Hold</option>
+            <option value="Cancelled">Cancelled</option>
           </select>
         </div>
-        <div class="col-lg-2">
-          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Territory</label>
-          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.territory" name="directoryTerritory">
-            <option *ngFor="let option of territoryOptions" [ngValue]="option">{{ option }}</option>
-          </select>
-        </div>
-        <div class="col-lg-2">
-          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Physician</label>
-          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.physician" name="directoryPhysician">
-            <option *ngFor="let option of physicianOptions" [ngValue]="option">{{ option }}</option>
-          </select>
-        </div>
-        <div class="col-lg-2">
-          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Product</label>
-          <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.product" name="directoryProduct">
-            <option *ngFor="let option of productOptions" [ngValue]="option">{{ option }}</option>
-          </select>
-        </div>
-        <div class="col-lg-3">
-          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Start Date</label>
-          <input type="date" class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.startDate" name="directoryStartDate" />
-        </div>
-        <div class="col-lg-3">
-          <label class="form-label ib-compact-filter__label fw-bold small text-muted">End Date</label>
-          <input type="date" class="form-control form-control-sm bg-light ib-compact-filter__control" [(ngModel)]="directoryFilters.endDate" name="directoryEndDate" />
+        <div class="col-lg-2 d-flex align-items-end">
+          <button class="btn btn-primary btn-sm ib-compact-filter__button w-100" (click)="applyDirectoryFilter()">
+            Apply
+          </button>
         </div>
       </div>
     </div>
 
     <div class="ib-section-card">
       <div class="ib-section-card__header">
-        <div>
-          <h5 class="ib-section-card__title">Patient Directory</h5>
-          <!-- <p class="ib-section-card__meta">Search, filter, and manage all patient/customer records from one operations-first directory.</p> -->
-        </div>
-        <span class="ib-table-toolbar__meta">{{ filteredPatients.length }} patients</span>
+        <h5 class="ib-section-card__title">Patient Directory</h5>
+        <span class="ib-table-toolbar__meta">{{ filteredPatientRows.length }} records</span>
       </div>
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover table-sm align-middle mb-0 ib-data-table">
+          <table class="table table-hover table-sm align-middle mb-0 ib-data-table pe-directory-table">
             <thead class="ib-table-header">
               <tr>
-                <th class="py-2 px-3">Patient ID</th>
-                <th class="py-2">Patient Name</th>
-                <th class="py-2">DOB / Age</th>
-                <th class="py-2">Gender</th>
-                <th class="py-2">Assigned Physician</th>
-                <th class="py-2">Territory</th>
-                <th class="py-2">Enrollment Status</th>
-                <th class="py-2">Last Order Date</th>
-                <th class="py-2 text-center">Total Orders</th>
-                <th class="py-2 px-3 text-end">Action</th>
+                <th class="py-2 px-3 pe-th">Hub</th>
+                <th class="py-2 pe-th">Status</th>
+                <th class="py-2 pe-th">Patient ID</th>
+                <th class="py-2 pe-th">Site Name</th>
+                <th class="py-2 pe-th">ABD</th>
+                <th class="py-2 pe-th">Business Manager</th>
+                <th class="py-2 text-end px-3 pe-th">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let patient of filteredPatients">
-                <td class="px-3 fw-bold"><span class="ib-chip">{{ patient.id }}</span></td>
+              <tr *ngFor="let row of filteredPatientRows">
+                <td class="px-3 small">{{ row.hub }}</td>
                 <td>
-                  <div class="d-flex flex-column">
-                    <span class="fw-bold">{{ patient.name }}</span>
-                    <small class="text-muted">{{ patient.phone || patient.facility }}</small>
-                  </div>
+                  <span class="ib-status-badge" [ngClass]="getStatusBadgeClass(row.status)">{{ row.status }}</span>
                 </td>
-                <td>{{ patient.dateOfBirth || '--' }}<br><small class="text-muted">Age {{ profileSummary?.patient?.id === patient.id ? profileSummary?.age : '--' }}</small></td>
-                <td>{{ patient.gender || '--' }}</td>
-                <td>{{ patient.doctor }}</td>
-                <td>{{ patient.territory || patient.physicianState }}</td>
-                <td><span class="ib-status-badge" [ngClass]="getStatusBadgeClass(patient.enrollmentStatus || patient.status)">{{ patient.enrollmentStatus || patient.status }}</span></td>
-                <td>{{ patient.shipDate || '-' }}</td>
-                <td class="text-center">{{ patient.qty > 0 ? 1 : 0 }}</td>
-                <td class="px-3 text-end">
-                  <div class="patient-action-group justify-content-end">
-                    <button class="ib-icon-btn" type="button" title="View Patient" aria-label="View Patient" (click)="openPatientProfile(patient.id)">
-                      <i class="bi bi-person-vcard"></i>
-                    </button>
-                    <button class="ib-icon-btn" type="button" title="Edit Patient" aria-label="Edit Patient" (click)="editPatient(patient)">
+                <td class="fw-bold text-primary">{{ row.patientId }}</td>
+                <td>{{ row.siteName }}</td>
+                <td [class.text-muted]="row.abd === '(Blank)' || row.abd === 'OPEN'"
+                    [class.fst-italic]="row.abd === 'OPEN'" style="white-space:nowrap;">{{ row.abd }}</td>
+                <td [class.text-muted]="row.businessManager === '(Blank)' || row.businessManager === 'OPEN'"
+                    [class.fst-italic]="row.businessManager === 'OPEN'" style="white-space:nowrap;">{{ row.businessManager }}</td>
+                <td class="px-3 text-end" style="white-space:nowrap;">
+                  <span class="om-tooltip-wrap" data-tip="Edit Row">
+                    <button class="ib-icon-btn me-1" (click)="openEditRow(row)">
                       <i class="bi bi-pencil"></i>
                     </button>
-                    <!-- <button class="ib-icon-btn" type="button" title="Add Order" aria-label="Add Order" (click)="addOrderForPatient(patient.id)">
-                      <i class="bi bi-cart-plus"></i>
-                    </button> -->
-                    <button class="ib-icon-btn" type="button" title="View Timeline" aria-label="View Timeline" (click)="openPatientTimeline(patient.id)">
-                      <i class="bi bi-clock-history"></i>
+                  </span>
+                  <!-- <span class="om-tooltip-wrap" data-tip="Details">
+                    <button class="ib-icon-btn" (click)="openDetailsRow(row)">
+                      <i class="bi bi-card-list"></i>
                     </button>
-                  </div>
+                  </span> -->
                 </td>
+              </tr>
+              <tr *ngIf="filteredPatientRows.length === 0">
+                <td colspan="7" class="text-center text-muted py-4">No records match the selected status.</td>
               </tr>
             </tbody>
           </table>
@@ -569,6 +521,163 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Edit Row Modal ══════════════════════════════════════ -->
+  <div *ngIf="editingPatientRow" class="ib-modal-overlay" (click)="closeEditRow()">
+    <div class="ib-modal-shell" style="max-width: 720px;" (click)="$event.stopPropagation()">
+      <div class="ib-modal-header">
+        <div class="d-flex flex-column gap-1">
+          <h5 class="ib-modal-title mb-0">Edit Row</h5>
+          <span class="text-muted small">{{ editingPatientRow.patientId }}</span>
+        </div>
+        <button type="button" class="btn-close" (click)="closeEditRow()"></button>
+      </div>
+      <div class="ib-modal-body">
+        <form #peEditForm="ngForm">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label fw-bold small text-muted">Hub</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.hub" name="peHub">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold small text-muted">Status</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.status" name="peStatus">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold small text-muted">Patient ID</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.patientId" name="pePatientId">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold small text-muted">Referral Received Date</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.referralReceivedDate" name="peRefDate">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold small text-muted">Date RX Ready to Schedule</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.dateRxReadyToSchedule" name="peDateRx">
+            </div>
+            <div class="col-md-8">
+              <label class="form-label fw-bold small text-muted">Payer Information</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.payerInformation" name="pePayer">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Prescriber</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.prescriber" name="pePrescriber">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">Site Name</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.siteName" name="peSiteName">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold small text-muted">City</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.city" name="peCity">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label fw-bold small text-muted">State</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.state" name="peState">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label fw-bold small text-muted">Zip</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.zip" name="peZip">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label fw-bold small text-muted">Qty Ordered</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.qtyOrdered" name="peQty">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold small text-muted">ABD</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.abd" name="peAbd">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold small text-muted">Business Manager</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.businessManager" name="peMgr">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="pe-modal-footer">
+        <button type="button" class="btn ib-btn-secondary" (click)="closeEditRow()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="saveEditRow()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Details Row Modal ════════════════════════════════════ -->
+  <div *ngIf="detailsPatientRow" class="ib-modal-overlay" (click)="closeDetailsRow()">
+    <div class="ib-modal-shell" style="max-width: 480px; max-height: 85vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
+      <div class="ib-modal-header">
+        <div class="d-flex flex-column gap-1">
+          <h5 class="ib-modal-title mb-0">Patient Record Details</h5>
+          <span class="text-muted small">{{ detailsPatientRow.patientId }}</span>
+        </div>
+        <button type="button" class="btn-close" (click)="closeDetailsRow()"></button>
+      </div>
+      <div class="ib-modal-body" style="overflow-y: auto; flex: 1;">
+        <div class="om-details-grid">
+          <div class="om-details-row">
+            <span class="om-details-label">Hub</span>
+            <span class="om-details-value fw-bold">{{ displayVal(detailsPatientRow.hub) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">Status</span>
+            <span class="om-details-value">
+              <span class="ib-status-badge" [ngClass]="getStatusBadgeClass(detailsPatientRow.status)">{{ detailsPatientRow.status }}</span>
+            </span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">Patient ID</span>
+            <span class="om-details-value fw-bold text-primary">{{ displayVal(detailsPatientRow.patientId) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">Site Name</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.siteName) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">Prescriber</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.prescriber) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">ABD</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.abd) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">Business Mgr</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.businessManager) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">Referral Date</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.referralReceivedDate) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">RX Ready Date</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.dateRxReadyToSchedule) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">Payer</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.payerInformation) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">City</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.city) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">State</span>
+            <span class="om-details-value fw-bold">{{ displayVal(detailsPatientRow.state) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">ZIP</span>
+            <span class="om-details-value">{{ displayVal(detailsPatientRow.zip) }}</span>
+          </div>
+          <div class="om-details-row">
+            <span class="om-details-label">Qty Ordered</span>
+            <span class="om-details-value fw-bold">{{ displayVal(detailsPatientRow.qtyOrdered) }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="pe-modal-footer">
+        <button type="button" class="btn ib-btn-secondary" (click)="closeDetailsRow()">Close</button>
       </div>
     </div>
   </div>

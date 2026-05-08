@@ -208,7 +208,7 @@ main {
 .ib-section-card {
   background: var(--ib-white);
   border: 1px solid var(--ib-border);
-  border-radius: 14px;
+  border-radius: 6px;
   box-shadow: var(--ib-shadow-sm);
   overflow: hidden;
 }
@@ -236,7 +236,6 @@ main {
   margin: 0.2rem 0 0;
 }
 
-.ib-filter-card,
 .ib-empty-state,
 .ib-modal-shell {
   background: var(--ib-white);
@@ -246,7 +245,7 @@ main {
 }
 
 .ib-filter-card {
-  padding: 1.1rem 1.25rem;
+  padding: 0rem;
 }
 
 .ib-empty-state {
@@ -438,7 +437,7 @@ main {
   inset: 0;
   justify-content: center;
   min-height: 100vh;
-  padding-top: 4rem;
+  padding-top: 1rem;
   position: fixed;
   z-index: 3;
 }
