@@ -7,8 +7,10 @@ import { ProviderNetworkComponent } from './pages/provider-network/provider-netw
 import { TerritoryManagerComponent } from './pages/territory-manager/territory-manager.component';
 import { SalesTeamComponent } from './pages/sales-team/sales-team.component';
 import { GpoComponent } from './pages/gpo/gpo.component';
+import { GpoMasterAccountComponent } from './pages/gpo-master-account/gpo-master-account.component';
 import { ZipToTerritoryComponent } from './pages/zip-to-territory/zip-to-territory.component';
 import { UsersComponent } from './pages/users/users.component';
+import { CustomerMatrixComponent } from './pages/customer-matrix/customer-matrix.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'order-management', pathMatch: 'full' },
@@ -19,7 +21,9 @@ export const routes: Routes = [
   { path: 'provider-network', component: ProviderNetworkComponent },
   { path: 'territory-manager', component: TerritoryManagerComponent },
   { path: 'sales-team', component: SalesTeamComponent },
-  { path: 'gpo', component: GpoComponent },
+  { path: 'gpo', component: GpoMasterAccountComponent },
+  { path: 'customer-matrix', component: CustomerMatrixComponent },
+  { path: 'admin/gpo', component: GpoComponent },
   { path: 'zip-to-territory', component: ZipToTerritoryComponent },
   { path: 'users', component: UsersComponent },
 ];

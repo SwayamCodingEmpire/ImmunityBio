@@ -26,13 +26,16 @@ export class SidebarComponent {
   protected expandedMenu: string | null = null;
 
   protected readonly menuItems: SidebarMenuItem[] = [
+    { label: 'Dashboard', icon: 'bi bi-grid', route: '/dashboard' },
+    // { label: 'Customer Matrix', icon: 'bi bi-grid-3x3', route: '/customer-matrix' },
     { label: 'Order Management', icon: 'bi bi-cart3', route: '/order-management' },
     { label: 'Patient Enrollment', icon: 'bi bi-person-hearts', route: '/patient-enrollment' },
+    { label: 'GPO Hierarchy', icon: 'bi bi-diagram-3', route: '/gpo' },
     {
       label: 'Admin',
       icon: 'bi bi-shield-lock',
       children: [
-        { label: 'GPO', route: '/gpo' },
+        { label: 'GPO', route: '/admin/gpo' },
         { label: 'Zip to Territory', route: '/zip-to-territory' },
         { label: 'Users', route: '/users' }
       ]
