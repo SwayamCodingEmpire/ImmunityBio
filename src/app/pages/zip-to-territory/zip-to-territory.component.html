@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="ib-page-header">
-    <h2 class="ib-page-header__title">Zip → Territory</h2>
+    <h2 class="ib-page-header__title">Zip to Territory</h2>
   </div>
 
   <!-- Filters -->
@@ -35,26 +35,30 @@
         <table class="table table-hover table-sm align-middle mb-0 ib-data-table">
           <thead class="ib-table-header">
             <tr>
-              <th class="py-2 px-3">MDO ZIP</th>
-              <th class="py-2">City / State</th>
-              <th class="py-2">Curr Terr</th>
-              <th class="py-2">Lgcy Terr</th>
-              <th class="py-2">ABD</th>
-              <th class="py-2">TBM</th>
-              <th class="py-2">Effective</th>
-              <th class="py-2">Source</th>
+              <th class="py-2 px-3" style="white-space:nowrap;">MDO ZIP</th>
+              <th class="py-2" style="white-space:nowrap;">Territory ID</th>
+              <th class="py-2" style="white-space:nowrap;">City</th>
+              <th class="py-2" style="white-space:nowrap;">State</th>
+              <th class="py-2" style="white-space:nowrap;">Curr Terr</th>
+              <th class="py-2" style="white-space:nowrap;">Lgcy Terr</th>
+              <th class="py-2" style="white-space:nowrap;">ABD</th>
+              <th class="py-2" style="white-space:nowrap;">TBM</th>
+              <th class="py-2" style="white-space:nowrap;">Effective</th>
+              <th class="py-2" style="white-space:nowrap;">Source</th>
               <th class="py-2 text-center px-3">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let row of filteredRows">
-              <td class="px-3 fw-bold text-primary">{{ row.mdoZip }}</td>
-              <td>{{ row.cityState }}</td>
+              <td class="px-3 fw-bold text-primary" style="white-space:nowrap;">{{ row.mdoZip }}</td>
+              <td>{{ row.territoryId }}</td>
+              <td style="white-space:nowrap;">{{ row.city }}</td>
+              <td>{{ row.state }}</td>
               <td><span class="ib-chip">{{ row.currTerr }}</span></td>
               <td><span class="ib-chip ztt-chip--legacy">{{ row.lgcyTerr }}</span></td>
-              <td>{{ row.abd }}</td>
-              <td>{{ row.tbm }}</td>
-              <td>{{ row.effective }}</td>
+              <td style="white-space:nowrap;">{{ row.abd }}</td>
+              <td style="white-space:nowrap;">{{ row.tbm }}</td>
+              <td style="white-space:nowrap;">{{ row.effective }}</td>
               <td>
                 <span class="ib-status-badge"
                   [class.ib-status-badge--info]="row.source === 'Veeva'"
@@ -69,7 +73,7 @@
               </td>
             </tr>
             <tr *ngIf="filteredRows.length === 0">
-              <td colspan="9" class="text-center text-muted py-4">No records match the current filters.</td>
+              <td colspan="11" class="text-center text-muted py-4">No records match the current filters.</td>
             </tr>
           </tbody>
         </table>
@@ -86,7 +90,7 @@
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Edit Mapping</h5>
-        <span class="text-muted small">ZIP {{ editingRow.mdoZip }} &mdash; {{ editingRow.cityState }}</span>
+        <span class="text-muted small">ZIP {{ editingRow.mdoZip }} &mdash; {{ editingRow.city }}, {{ editingRow.state }}</span>
       </div>
       <button type="button" class="btn-close" (click)="closeEdit()"></button>
     </div>
@@ -97,50 +101,52 @@
 
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">MDO ZIP</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.mdoZip" name="mdoZip">
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.mdoZip" name="mdoZip">
           </div>
 
-          <div class="col-md-8">
-            <label class="form-label fw-bold small text-muted">City / State</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.cityState" name="cityState">
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Territory ID</label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.territoryId" name="territoryId">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">City</label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.city" name="city">
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label fw-bold small text-muted">State</label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.state" name="state">
           </div>
 
           <div class="col-md-3">
             <label class="form-label fw-bold small text-muted">Curr Terr</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.currTerr" name="currTerr">
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.currTerr" name="currTerr">
           </div>
 
           <div class="col-md-3">
             <label class="form-label fw-bold small text-muted">Lgcy Terr</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.lgcyTerr" name="lgcyTerr">
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.lgcyTerr" name="lgcyTerr">
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">ABD</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.abd" name="abd">
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.abd" name="abd">
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">TBM</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.tbm" name="tbm">
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.tbm" name="tbm">
           </div>
 
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">Effective</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.effective" name="effective">
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.effective" name="effective">
           </div>
 
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">Source</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.source" name="source">
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.source" name="source">
           </div>
 
         </div>
