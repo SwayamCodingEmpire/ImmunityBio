@@ -31,12 +31,12 @@ export class SidebarComponent {
     { label: 'Order Management', icon: 'bi bi-cart3', route: '/order-management' },
     { label: 'Patient Enrollment', icon: 'bi bi-person-hearts', route: '/patient-enrollment' },
     { label: 'GPO Hierarchy', icon: 'bi bi-diagram-3', route: '/gpo' },
+    { label: 'Zip to Territory', icon: 'bi bi-geo-alt', route: '/zip-to-territory' },
     {
       label: 'Admin',
       icon: 'bi bi-shield-lock',
       children: [
         // { label: 'GPO', route: '/admin/gpo' },
-        { label: 'Zip to Territory', route: '/zip-to-territory' },
         { label: 'Users', route: '/users' }
       ]
     }
