@@ -165,12 +165,13 @@
   align-items: center;
   background: transparent;
   border: none;
+  border-bottom: 1px solid var(--ib-border);
   cursor: pointer;
   display: flex;
   gap: 0.5rem;
   padding: 0.6rem 1.25rem;
   text-align: left;
-  transition: background 0.1s;
+  transition: background 0.15s;
   width: 100%;
 
   &:hover { background: rgba(10, 36, 99, 0.025); }
@@ -208,8 +209,9 @@
 
 .cm-section__body {
   animation: cm-fade-in 0.15s ease-out;
-  padding: 0 0 0.75rem;
+  padding: 0 1rem 0.75rem;
 }
+
 
 @keyframes cm-fade-in {
   from { opacity: 0; transform: translateY(-4px); }
@@ -218,6 +220,9 @@
 
 // ── BP / NPI chips (extend ib-chip) ──────────────────────────
 .cm-bp-chip {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #15803d;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -335,7 +340,7 @@
   color: var(--ib-muted-soft);
   font-size: 0.8rem;
   font-style: italic;
-  margin: 0 0 0.35rem;
+  margin: 0.6rem 0 0.35rem;
   padding: 0 1.25rem;
 }
 

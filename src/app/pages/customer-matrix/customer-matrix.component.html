@@ -35,7 +35,7 @@
     <!-- No results -->
     <div class="ib-empty-state" *ngIf="filteredAccounts.length === 0">
       <i class="bi bi-search ib-empty-state__icon" style="font-size:2rem;"></i>
-      <p class="mt-2 mb-0 text-muted">No accounts match <strong>"{{ searchQuery }}"</strong></p>
+      <p class="mt-2 mb-0 text-muted">No accounts match <strong>{{ searchQuery }}</strong></p>
     </div>
 
     <div class="cm-master-card ib-section-card" *ngFor="let account of filteredAccounts; let i = index"
