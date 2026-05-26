@@ -1,0 +1,206 @@
+<div class="container-fluid">
+  <div class="ib-page-header">
+    <div>
+      <h2 class="ib-page-header__title">Roster &amp; Placement</h2>
+      <!-- a -->
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="ib-filter-card ib-filter-card--compact mb-4">
+    <div class="row g-2 align-items-end">
+      <div class="col-lg-2">
+        <label class="form-label ib-compact-filter__label fw-bold small text-muted">Territory ID</label>
+        <input type="text" class="form-control form-control-sm bg-light ib-compact-filter__control"
+          [(ngModel)]="pendingTerritory" placeholder="e.g. TX3829" />
+      </div>
+      <div class="col-lg-2">
+        <label class="form-label ib-compact-filter__label fw-bold small text-muted">ABD</label>
+        <input type="text" class="form-control form-control-sm bg-light ib-compact-filter__control"
+          [(ngModel)]="pendingAbd" placeholder="Name" />
+      </div>
+      <div class="col-lg-2">
+        <label class="form-label ib-compact-filter__label fw-bold small text-muted">TBM</label>
+        <input type="text" class="form-control form-control-sm bg-light ib-compact-filter__control"
+          [(ngModel)]="pendingTbm" placeholder="Name" />
+      </div>
+      <div class="col-lg-2">
+        <label class="form-label ib-compact-filter__label fw-bold small text-muted">Status</label>
+        <select class="form-select form-select-sm bg-light ib-compact-filter__control" [(ngModel)]="pendingStatus">
+          <option *ngFor="let s of statusOptions">{{ s }}</option>
+        </select>
+      </div>
+      <div class="col-lg-2 d-flex gap-2 align-items-end">
+        <button class="btn btn-primary btn-sm ib-compact-filter__button flex-grow-1" (click)="applyFilters()">Apply</button>
+        <button class="btn btn-sm ib-btn-secondary" (click)="resetFilters()" title="Clear filters">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="ib-section-card">
+    <div class="ib-section-card__header">
+      <h5 class="ib-section-card__title">Roster</h5>
+      <div class="d-flex align-items-center gap-3">
+        <span class="ib-table-toolbar__meta">{{ filteredRows.length }} assignments</span>
+        <button class="btn btn-sm ib-btn-secondary" (click)="exportCsv()" title="Download as CSV">
+          <i class="bi bi-download me-1"></i>Export
+        </button>
+        <button class="btn btn-primary btn-sm" (click)="openAddModal()">
+          <i class="bi bi-plus-lg me-1"></i>Add Assignment
+        </button>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle mb-0 ib-data-table">
+          <thead class="ib-table-header">
+            <tr>
+              <th class="py-2 px-3" style="white-space:nowrap;">Territory ID</th>
+              <th class="py-2" style="white-space:nowrap;">ABD</th>
+              <th class="py-2" style="white-space:nowrap;">TBM</th>
+              <th class="py-2" style="white-space:nowrap;">Start Date</th>
+              <th class="py-2" style="white-space:nowrap;">End Date</th>
+              <th class="py-2" style="white-space:nowrap;">Status</th>
+              <th class="py-2 text-center px-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of filteredRows" [class.rp-row--open]="rowStatus(row) === 'Open'">
+              <td class="px-3 fw-bold" style="white-space:nowrap;">
+                <span class="text-primary">{{ row.territoryId }}</span>
+              </td>
+              <td style="white-space:nowrap;">{{ row.abd }}</td>
+              <td style="white-space:nowrap;">
+                <span *ngIf="row.tbm; else openTbm">{{ row.tbm }}</span>
+                <ng-template #openTbm>
+                  <span class="text-muted fst-italic">Vacant</span>
+                </ng-template>
+              </td>
+              <td style="white-space:nowrap;">{{ row.startDate | date:'MM/dd/yyyy' }}</td>
+              <td style="white-space:nowrap;">
+                <span *ngIf="row.endDate; else openEnd">{{ row.endDate | date:'MM/dd/yyyy' }}</span>
+                <ng-template #openEnd>
+                  <span class="text-muted fst-italic">Open</span>
+                </ng-template>
+              </td>
+              <td>
+                <span class="ib-status-badge"
+                  [class.ib-status-badge--success]="rowStatus(row) === 'Active'"
+                  [class.ib-status-badge--danger]="rowStatus(row) === 'Open'"
+                  [class.ib-status-badge--info]="rowStatus(row) === 'Upcoming'"
+                  [class.ib-status-badge--secondary]="rowStatus(row) === 'Inactive'">
+                  {{ rowStatus(row) }}
+                </span>
+              </td>
+              <td class="text-center px-3">
+                <button class="ib-icon-btn" title="Edit" (click)="openEdit(row)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredRows.length === 0">
+              <td colspan="7" class="text-center text-muted py-4">No assignments match the current filters.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ Add Assignment Modal ═══════════════════════════════════ -->
+<div *ngIf="showAddModal" class="ib-modal-overlay" (click)="closeAddModal()">
+  <div class="ib-modal-shell" style="max-width: 560px;" (click)="$event.stopPropagation()">
+    <div class="ib-modal-header">
+      <div class="d-flex flex-column gap-1">
+        <h5 class="ib-modal-title mb-0">Add Assignment</h5>
+        <span class="text-muted small">Future start dates are supported for pre-planned placements.</span>
+      </div>
+      <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+    </div>
+    <div class="ib-modal-body">
+      <form>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">Territory ID <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.territoryId" name="addTerrId" placeholder="e.g. TX3829">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">ABD <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.abd" name="addAbd">
+          </div>
+          <div class="col-md-12">
+            <label class="form-label fw-bold small text-muted">TBM <span class="fw-normal text-muted">(leave blank if vacancy)</span></label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.tbm" name="addTbm">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">Start Date <span class="text-danger">*</span></label>
+            <input type="date" class="form-control" [(ngModel)]="addForm.startDate" name="addStart">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">End Date <span class="fw-normal text-muted">(leave blank = open)</span></label>
+            <input type="date" class="form-control" [(ngModel)]="addForm.endDate" name="addEnd">
+          </div>
+          <div *ngIf="addForm.tbm === '' || addForm.tbm === undefined" class="col-12">
+            <div class="alert alert-warning py-2 small mb-0">
+              <i class="bi bi-exclamation-triangle me-1"></i>
+              No TBM entered — this territory will be flagged as <strong>Open</strong> and excluded from IC credit until a rep is assigned.
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="ib-modal-footer">
+      <button type="button" class="btn ib-btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button type="button" class="btn btn-primary" [disabled]="!addFormValid" (click)="saveAdd()">Add Assignment</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ Edit Assignment Modal ══════════════════════════════════ -->
+<div *ngIf="editingRow" class="ib-modal-overlay" (click)="closeEdit()">
+  <div class="ib-modal-shell" style="max-width: 560px;" (click)="$event.stopPropagation()">
+    <div class="ib-modal-header">
+      <div class="d-flex flex-column gap-1">
+        <h5 class="ib-modal-title mb-0">Edit Assignment</h5>
+        <span class="text-muted small">Territory {{ editingRow.territoryId }}</span>
+      </div>
+      <button type="button" class="btn-close" (click)="closeEdit()"></button>
+    </div>
+    <div class="ib-modal-body">
+      <form>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">Territory ID</label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.territoryId" name="editTerrId">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">ABD</label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.abd" name="editAbd">
+          </div>
+          <div class="col-md-12">
+            <label class="form-label fw-bold small text-muted">TBM <span class="fw-normal text-muted">(clear to mark Open)</span></label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.tbm" name="editTbm">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">Start Date</label>
+            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.startDate" name="editStart">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">End Date <span class="fw-normal text-muted">(leave blank = open)</span></label>
+            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.endDate" name="editEnd">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="ib-modal-footer">
+      <button type="button" class="btn ib-btn-secondary" (click)="closeEdit()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>

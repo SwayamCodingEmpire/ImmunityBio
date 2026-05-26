@@ -468,6 +468,14 @@ main {
   padding: 1.25rem 1.4rem 1.4rem;
 }
 
+.ib-modal-footer {
+  border-top: 1px solid var(--ib-border);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+}
+
 .ib-field-note {
   color: var(--ib-muted);
   font-size: 0.74rem;

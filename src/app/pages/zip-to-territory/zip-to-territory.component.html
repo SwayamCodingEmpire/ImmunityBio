@@ -28,7 +28,12 @@
   <div class="ib-section-card">
     <div class="ib-section-card__header">
       <h5 class="ib-section-card__title">Zip to Territory Mapping</h5>
-      <span class="ib-table-toolbar__meta">{{ filteredRows.length }} records</span>
+      <div class="d-flex align-items-center gap-3">
+        <span class="ib-table-toolbar__meta">{{ filteredRows.length }} records</span>
+        <button class="btn btn-sm ib-btn-secondary" (click)="exportCsv()" title="Download current view as CSV for Maptitude">
+          <i class="bi bi-download me-1"></i>Export
+        </button>
+      </div>
     </div>
     <div class="card-body p-0">
       <div class="table-responsive">
@@ -44,6 +49,8 @@
               <th class="py-2" style="white-space:nowrap;">ABD</th>
               <th class="py-2" style="white-space:nowrap;">TBM</th>
               <th class="py-2" style="white-space:nowrap;">Effective</th>
+              <th class="py-2" style="white-space:nowrap;">Start Date</th>
+              <th class="py-2" style="white-space:nowrap;">End Date</th>
               <th class="py-2" style="white-space:nowrap;">Source</th>
               <th class="py-2 text-center px-3">Actions</th>
             </tr>
@@ -59,6 +66,12 @@
               <td style="white-space:nowrap;">{{ row.abd }}</td>
               <td style="white-space:nowrap;">{{ row.tbm }}</td>
               <td style="white-space:nowrap;">{{ row.effective }}</td>
+              <td style="white-space:nowrap;">{{ row.startDate || '—' }}</td>
+              <td style="white-space:nowrap;">
+                <span [class.text-muted]="!row.endDate" [class.fst-italic]="!row.endDate">
+                  {{ row.endDate || 'Open' }}
+                </span>
+              </td>
               <td>
                 <span class="ib-status-badge"
                   [class.ib-status-badge--info]="row.source === 'Veeva'"
@@ -73,7 +86,7 @@
               </td>
             </tr>
             <tr *ngIf="filteredRows.length === 0">
-              <td colspan="11" class="text-center text-muted py-4">No records match the current filters.</td>
+              <td colspan="13" class="text-center text-muted py-4">No records match the current filters.</td>
             </tr>
           </tbody>
         </table>
@@ -147,6 +160,18 @@
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">Source</label>
             <input type="text" class="form-control bg-light" [(ngModel)]="editForm.source" name="source">
+          </div>
+
+          <div class="col-12"><hr class="my-1"></div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Start Date</label>
+            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.startDate" name="startDate">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">End Date <span class="fw-normal text-muted">(leave blank = open)</span></label>
+            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.endDate" name="endDate">
           </div>
 
         </div>

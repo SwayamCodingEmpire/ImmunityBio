@@ -39,7 +39,12 @@
   <div class="ib-section-card">
     <div class="ib-section-card__header">
       <h5 class="ib-section-card__title">Order Directory</h5>
-      <span class="ib-table-toolbar__meta">{{ filteredOrders.length }} matching orders</span>
+      <div class="d-flex align-items-center gap-3">
+        <span class="ib-table-toolbar__meta">{{ filteredOrders.length }} matching orders</span>
+        <button class="btn btn-primary btn-sm" (click)="openAddModal()">
+          <i class="bi bi-plus-lg me-1"></i>Add Order
+        </button>
+      </div>
     </div>
     <div class="card-body p-0">
       <table class="table table-hover table-sm align-middle ib-data-table w-100">
@@ -52,6 +57,8 @@
             <th class="py-2 text-center om-th-nowrap">Units Assigned</th>
             <th class="py-2 om-th-nowrap">Channel</th>
             <th class="py-2 om-th-nowrap">Status</th>
+            <th class="py-2 om-th-nowrap">Commercial</th>
+            <th class="py-2 om-th-nowrap">IC Eligible</th>
             <th class="py-2 text-end px-3 om-th-nowrap">Actions</th>
           </tr>
         </thead>
@@ -74,6 +81,22 @@
                 'ib-status-badge--danger':  order.status === 'Credit Hold' || order.status === 'Cancelled'
               }">{{ order.status }}</span>
             </td>
+            <td>
+              <span class="om-flag-badge"
+                [class.om-flag-badge--on]="order.isCommercial"
+                [class.om-flag-badge--off]="!order.isCommercial"
+                [title]="order.isCommercial ? 'Commercial' : 'Non-Commercial'">
+                <i class="bi" [class.bi-check-circle-fill]="order.isCommercial" [class.bi-x-circle-fill]="!order.isCommercial"></i>
+              </span>
+            </td>
+            <td>
+              <span class="om-flag-badge"
+                [class.om-flag-badge--on]="order.icEligible"
+                [class.om-flag-badge--off]="!order.icEligible"
+                [title]="order.icEligible ? 'IC Eligible' : 'Not IC Eligible'">
+                <i class="bi" [class.bi-check-circle-fill]="order.icEligible" [class.bi-x-circle-fill]="!order.icEligible"></i>
+              </span>
+            </td>
             <td class="px-3 text-end" style="white-space: nowrap;">
               <span class="om-tooltip-wrap" data-tip="Track Shipment">
                 <button class="ib-icon-btn me-1" (click)="openTrackModal(order)">
@@ -85,8 +108,11 @@
                   <i class="bi bi-pencil"></i>
                 </button>
               </span>
-              <span class="om-tooltip-wrap" data-tip="Split Order">
-                <button class="ib-icon-btn me-1" (click)="openSplitModal(order)">
+              <span class="om-tooltip-wrap"
+                [attr.data-tip]="canSplit(order) ? 'Split Order' : 'Split disabled — must be Commercial & IC Eligible'">
+                <button class="ib-icon-btn me-1"
+                  [disabled]="!canSplit(order)"
+                  (click)="openSplitModal(order)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 16 16">
                     <path d="M1 8 H7 M7 8 L13 3.5 M7 8 L13 12.5"
                           fill="none" stroke="currentColor" stroke-width="1.9"
@@ -104,13 +130,146 @@
             </td>
           </tr>
           <tr *ngIf="filteredOrders.length === 0">
-            <td colspan="8" class="text-center text-muted py-4">No orders match the current filters.</td>
+            <td colspan="10" class="text-center text-muted py-4">No orders match the current filters.</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
+</div>
+
+
+<!-- ══ MODAL 0 — Add Order ════════════════════════════════════ -->
+<div *ngIf="showAddModal" class="ib-modal-overlay" (click)="closeAddModal()">
+  <div class="ib-modal-shell om-modal" style="max-width: 800px; max-height: 93vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
+    <div class="ib-modal-header">
+      <div class="d-flex flex-column gap-1">
+        <h5 class="ib-modal-title mb-0">Add Manual Order</h5>
+        <span class="text-muted small">All fields are editable. Flags default to Commercial &amp; IC Eligible.</span>
+      </div>
+      <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+    </div>
+    <div class="ib-modal-body" style="overflow-y: auto; flex: 1;">
+      <form #addFormRef="ngForm">
+        <div class="row g-3">
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Account No.</label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.accountNo" name="addAccountNo">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Distribution</label>
+            <select class="form-select" [(ngModel)]="addForm.distribution" name="addDist">
+              <option value="">— Select —</option>
+              <option>ICS</option>
+              <option>Accredo</option>
+              <option>IB Care</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Status</label>
+            <select class="form-select" [(ngModel)]="addForm.status" name="addStatus">
+              <option value="">— Select —</option>
+              <option>Shipped</option>
+              <option>Pending</option>
+              <option>Credit Hold</option>
+              <option>Cancelled</option>
+            </select>
+          </div>
+
+          <div class="col-md-8">
+            <label class="form-label fw-bold small text-muted">Ship To Name</label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.shipToName" name="addShipToName">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Ship To Address</label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.shipToAddress" name="addShipToAddr">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">City</label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.shipToCity" name="addCity">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-bold small text-muted">State</label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.shipToState" name="addState" maxlength="2">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-bold small text-muted">ZIP</label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.shipToZip" name="addZip">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Area</label>
+            <input type="text" class="form-control" [(ngModel)]="addForm.area" name="addArea">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">ABD</label>
+            <select class="form-select" [(ngModel)]="addForm.abd" name="addAbd">
+              <option value="">— Select —</option>
+              <option *ngFor="let opt of abdOptions">{{ opt }}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Business Manager</label>
+            <select class="form-select" [(ngModel)]="addForm.businessManager" name="addMgr">
+              <option value="">— Select —</option>
+              <option *ngFor="let opt of managerOptions">{{ opt }}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-muted">Territory</label>
+            <select class="form-select" [(ngModel)]="addForm.territory" name="addTerr">
+              <option value="">— Select —</option>
+              <option *ngFor="let opt of territoryOptions">{{ opt }}</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-bold small text-muted">Delivery Qty</label>
+            <input type="number" min="0" class="form-control" [(ngModel)]="addForm.deliveryQty" name="addDeliveryQty">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-bold small text-muted">Units Assigned</label>
+            <input type="number" min="0" class="form-control" [(ngModel)]="addForm.unitsAssigned" name="addUnits">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Order Date</label>
+            <input type="date" class="form-control" [(ngModel)]="addForm.orderDate" name="addOrderDate">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Delivery Date</label>
+            <input type="date" class="form-control" [(ngModel)]="addForm.deliveryDate" name="addDeliveryDate">
+          </div>
+
+          <div class="col-12">
+            <hr class="my-1">
+            <p class="fw-bold small text-muted mb-2">Order Flags</p>
+            <div class="d-flex gap-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch"
+                  id="addIsCommercial" [(ngModel)]="addForm.isCommercial" name="addIsCommercial">
+                <label class="form-check-label small fw-semibold" for="addIsCommercial">
+                  {{ addForm.isCommercial ? 'Commercial' : 'Non-Commercial' }}
+                </label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch"
+                  id="addIcEligible" [(ngModel)]="addForm.icEligible" name="addIcEligible">
+                <label class="form-check-label small fw-semibold" for="addIcEligible">
+                  {{ addForm.icEligible ? 'IC Eligible' : 'Not IC Eligible' }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+    <div class="ib-modal-footer">
+      <button type="button" class="btn ib-btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button type="button" class="btn btn-primary" [disabled]="!addFormValid" (click)="saveAdd()">Add Order</button>
+    </div>
+  </div>
 </div>
 
 
@@ -179,70 +338,91 @@
         <div class="row g-3">
 
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Account No.</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.accountNo" name="editAccountNo">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Account No.</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.accountNo" name="editAccountNo" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Distribution</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.distribution" name="editDist">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Distribution</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.distribution" name="editDist" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Status</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.status" name="editStatus" placeholder="e.g. Shipped">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Status</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.status" name="editStatus" readonly>
           </div>
 
           <div class="col-md-8">
-            <label class="form-label fw-bold small text-muted">Ship To Name</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.shipToName" name="editShipToName">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Ship To Name</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToName" name="editShipToName" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Ship To Address</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.shipToAddress" name="editShipToAddr">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Ship To Address</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToAddress" name="editShipToAddr" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">City</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.shipToCity" name="editCity">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>City</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToCity" name="editCity" readonly>
           </div>
           <div class="col-md-2">
-            <label class="form-label fw-bold small text-muted">State</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.shipToState" name="editState">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>State</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToState" name="editState" readonly>
           </div>
           <div class="col-md-2">
-            <label class="form-label fw-bold small text-muted">ZIP</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.shipToZip" name="editZip">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>ZIP</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToZip" name="editZip" readonly>
           </div>
 
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Area</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.area" name="editArea">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Area</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.area" name="editArea" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">ABD</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.abd" name="editAbd">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>ABD</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.abd" name="editAbd" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Business Manager</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.businessManager" name="editMgr">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Business Manager</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.businessManager" name="editMgr" readonly>
           </div>
           <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">Territory</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.territory" name="editTerr">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Territory</label>
+            <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.territory" name="editTerr" readonly>
           </div>
           <div class="col-md-3">
-            <label class="form-label fw-bold small text-muted">Delivery Qty</label>
-            <input type="number" min="0" class="form-control bg-light" [(ngModel)]="editForm.deliveryQty" name="editDeliveryQty">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Delivery Qty</label>
+            <input type="number" min="0" class="form-control om-readonly" [(ngModel)]="editForm.deliveryQty" name="editDeliveryQty" readonly>
           </div>
           <div class="col-md-3">
-            <label class="form-label fw-bold small text-muted">Units Assigned</label>
-            <input type="number" min="0" class="form-control bg-light" [(ngModel)]="editForm.unitsAssigned" name="editUnits">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Units Assigned</label>
+            <input type="number" min="0" class="form-control om-readonly" [(ngModel)]="editForm.unitsAssigned" name="editUnits" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Order Date</label>
-            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.orderDate" name="editOrderDate">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Order Date</label>
+            <input type="date" class="form-control om-readonly" [(ngModel)]="editForm.orderDate" name="editOrderDate" readonly>
           </div>
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">Delivery Date</label>
-            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.deliveryDate" name="editDeliveryDate">
+            <input type="date" class="form-control om-editable" [(ngModel)]="editForm.deliveryDate" name="editDeliveryDate">
+          </div>
+
+          <div class="col-12">
+            <hr class="my-1">
+            <p class="fw-bold small text-muted mb-2">Order Flags</p>
+            <div class="d-flex gap-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch"
+                  id="editIsCommercial" [(ngModel)]="editForm.isCommercial" name="editIsCommercial">
+                <label class="form-check-label small fw-semibold" for="editIsCommercial">
+                  {{ editForm.isCommercial ? 'Commercial' : 'Non-Commercial' }}
+                </label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch"
+                  id="editIcEligible" [(ngModel)]="editForm.icEligible" name="editIcEligible">
+                <label class="form-check-label small fw-semibold" for="editIcEligible">
+                  {{ editForm.icEligible ? 'IC Eligible' : 'Not IC Eligible' }}
+                </label>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -288,7 +468,7 @@
       </div>
       <div class="om-split-rows">
         <div class="om-split-row om-split-row--header">
-          <span>ABD</span><span>Business Manager</span><span>Territory</span>
+          <span>ABD</span><span>Business Manager</span>
           <span class="text-center">Units</span><span></span>
         </div>
         <div class="om-split-row" *ngFor="let row of splitAssignments; let i = index">
@@ -302,12 +482,6 @@
             <select class="form-select form-select-sm bg-light" [(ngModel)]="row.businessManager" [name]="'splitMgr_'+i">
               <option value="">— Manager —</option>
               <option *ngFor="let opt of managerOptions" [value]="opt">{{ opt }}</option>
-            </select>
-          </div>
-          <div>
-            <select class="form-select form-select-sm bg-light" [(ngModel)]="row.territory" [name]="'splitTerr_'+i">
-              <option value="">— Territory —</option>
-              <option *ngFor="let opt of territoryOptions" [value]="opt">{{ opt }}</option>
             </select>
           </div>
           <div>

@@ -9,11 +9,12 @@ import { SalesTeamComponent } from './pages/sales-team/sales-team.component';
 import { GpoComponent } from './pages/gpo/gpo.component';
 import { GpoMasterAccountComponent } from './pages/gpo-master-account/gpo-master-account.component';
 import { ZipToTerritoryComponent } from './pages/zip-to-territory/zip-to-territory.component';
+import { RosterPlacementComponent } from './pages/roster-placement/roster-placement.component';
 import { UsersComponent } from './pages/users/users.component';
 import { CustomerMatrixComponent } from './pages/customer-matrix/customer-matrix.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'order-management', pathMatch: 'full' },
+  { path: '', redirectTo: 'customer-matrix', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'sales-registry', component: SalesRegistryComponent },
   { path: 'order-management', component: OrderManagementComponent },
@@ -25,5 +26,6 @@ export const routes: Routes = [
   { path: 'customer-matrix', component: CustomerMatrixComponent },
   { path: 'admin/gpo', component: GpoComponent },
   { path: 'zip-to-territory', component: ZipToTerritoryComponent },
+  { path: 'roster-placement', component: RosterPlacementComponent },
   { path: 'users', component: UsersComponent },
 ];
