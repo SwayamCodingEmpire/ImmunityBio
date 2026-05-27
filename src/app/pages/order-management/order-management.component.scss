@@ -115,6 +115,20 @@
   &:hover::before {
     opacity: 1;
   }
+
+  // Right-edge variant — anchors tooltip to the right so it doesn't overflow viewport
+  &--left {
+    &::after {
+      left: auto;
+      right: 0;
+      transform: none;
+    }
+    &::before {
+      left: auto;
+      right: 6px;
+      transform: none;
+    }
+  }
 }
 
 // ── Edit modal — locked vs editable fields ───────────────────

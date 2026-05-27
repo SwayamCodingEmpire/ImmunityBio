@@ -42,7 +42,7 @@ function emptyAccredo(): AccredoAccount {
 export class CustomerMatrixComponent {
 
   searchQuery = '';
-  channelFilter: 'all' | 'ics' | 'accredo' | 'both' | 'neither' = 'all';
+  channelFilter: 'all' | 'ics' | 'accredo' = 'all';
 
   private sectionState = new Map<MasterAccount, { ics: boolean; accredo: boolean }>();
 
@@ -231,8 +231,6 @@ export class CustomerMatrixComponent {
     switch (this.channelFilter) {
       case 'ics':     list = list.filter(a => a.icsAccounts.length > 0 && a.accredoAccounts.length === 0); break;
       case 'accredo': list = list.filter(a => a.accredoAccounts.length > 0 && a.icsAccounts.length === 0); break;
-      case 'both':    list = list.filter(a => a.icsAccounts.length > 0 && a.accredoAccounts.length > 0); break;
-      case 'neither': list = list.filter(a => a.icsAccounts.length === 0 && a.accredoAccounts.length === 0); break;
     }
     return list;
   }

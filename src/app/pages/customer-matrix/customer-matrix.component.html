@@ -14,10 +14,6 @@
           (click)="channelFilter = 'ics'" type="button">ICS</button>
         <button class="cm-filter-btn cm-filter-btn--accredo" [class.cm-filter-btn--active]="channelFilter === 'accredo'"
           (click)="channelFilter = 'accredo'" type="button">Accredo</button>
-        <button class="cm-filter-btn cm-filter-btn--both" [class.cm-filter-btn--active]="channelFilter === 'both'"
-          (click)="channelFilter = 'both'" type="button">Both</button>
-        <button class="cm-filter-btn cm-filter-btn--neither" [class.cm-filter-btn--active]="channelFilter === 'neither'"
-          (click)="channelFilter = 'neither'" type="button">Neither</button>
       </div>
 
       <button class="cm-expand-btn" (click)="allExpanded ? collapseAll() : expandAll()" type="button">
