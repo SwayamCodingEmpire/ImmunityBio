@@ -43,7 +43,7 @@ const D = { s: '',           e: ''           }; // inactive (no dates)
 
 @Component({
   selector: 'app-gpo-master-account',
-  imports: [CommonModule, FormsModule, NgClass],
+  imports: [CommonModule, FormsModule],
   templateUrl: './gpo-master-account.component.html',
   styleUrl: './gpo-master-account.component.scss'
 })

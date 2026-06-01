@@ -22,7 +22,7 @@ interface GpoRow {
 
 @Component({
   selector: 'app-gpo',
-  imports: [CommonModule, FormsModule, NgClass],
+  imports: [CommonModule, FormsModule],
   templateUrl: './gpo.component.html',
   styleUrl: './gpo.component.scss'
 })

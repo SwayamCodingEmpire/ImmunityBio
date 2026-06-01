@@ -1,12 +1,3 @@
-/* ===================================================
-   ImmunityBio Brand Theme
-   Primary: #0A2463 (Deep Navy)
-   Accent:  #009FD4 (ImmunityBio Teal-Blue)
-   =================================================== */
-
-@use "styles/shared-ui";
-
-/* CSS Custom Properties */
 :root {
   --ib-font-family: 'Sora', sans-serif;
   --ib-navy: #0A2463;
@@ -61,11 +52,6 @@ body {
 /* Use the same type family consistently across the app */
 h1, h2, h3, h4, h5, h6, .fw-bold {
   font-family: var(--ib-font-family);
-}
-
-/* ===== SCROLLBAR ===== */
-html {
-  @include shared-ui.compact-scrollbar;
 }
 
 /* ===== MAIN CONTENT BACKGROUND ===== */

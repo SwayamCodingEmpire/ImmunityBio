@@ -22,7 +22,7 @@ interface GpoNavRow {
 
 @Component({
   selector: 'app-gpo-nav',
-  imports: [CommonModule, FormsModule, NgClass],
+  imports: [CommonModule, FormsModule],
   templateUrl: './gpo-nav.component.html',
   styleUrl: './gpo-nav.component.scss'
 })
