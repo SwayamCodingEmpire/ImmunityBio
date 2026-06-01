@@ -46,6 +46,8 @@
                 <th class="py-2 px-3 pe-th">Hub</th>
                 <th class="py-2 pe-th">Status</th>
                 <th class="py-2 pe-th">Patient ID</th>
+                <th class="py-2 pe-th">HCP Name</th>
+                <th class="py-2 pe-th">Completion Date</th>
                 <th class="py-2 pe-th">Site Name</th>
                 <th class="py-2 pe-th">ABD</th>
                 <th class="py-2 pe-th">Business Manager</th>
@@ -58,7 +60,9 @@
                 <td>
                   <span class="ib-status-badge" [ngClass]="getStatusBadgeClass(row.status)">{{ row.status }}</span>
                 </td>
-                <td class="fw-bold text-primary">{{ row.patientId }}</td>
+                <td class="fw-bold text-primary" style="white-space:nowrap;">{{ row.patientId }}</td>
+                <td>{{ displayVal(row.hcpName) }}</td>
+                <td style="white-space:nowrap;">{{ row.enrollmentCompletionDate || '—' }}</td>
                 <td>{{ row.siteName }}</td>
                 <td [class.text-muted]="row.abd === '(Blank)' || row.abd === 'OPEN'"
                     [class.fst-italic]="row.abd === 'OPEN'" style="white-space:nowrap;">{{ row.abd }}</td>
@@ -78,7 +82,7 @@
                 </td>
               </tr>
               <tr *ngIf="filteredPatientRows.length === 0">
-                <td colspan="7" class="text-center text-muted py-4">No records match the selected status.</td>
+                <td colspan="9" class="text-center text-muted py-4">No records match the selected status.</td>
               </tr>
             </tbody>
           </table>
@@ -449,6 +453,7 @@
                 <th class="py-2">Patient Name</th>
                 <th class="py-2">Physician</th>
                 <th class="py-2">Enrollment Date</th>
+                <th class="py-2">Completion Date</th>
                 <th class="py-2">Status</th>
                 <th class="py-2">Status Age</th>
                 <th class="py-2">Reason / Notes</th>
@@ -460,7 +465,11 @@
                 <td class="px-3 fw-bold">{{ row.enrollmentId }}</td>
                 <td>{{ row.patient.name }}</td>
                 <td>{{ row.physician }}</td>
-                <td>{{ row.enrollmentDate }}</td>
+                <td style="white-space:nowrap;">{{ row.enrollmentDate }}</td>
+                <td style="white-space:nowrap;">
+                  <span *ngIf="row.enrollmentCompletionDate">{{ row.enrollmentCompletionDate }}</span>
+                  <span *ngIf="!row.enrollmentCompletionDate" class="text-muted fst-italic">Pending</span>
+                </td>
                 <td><span class="ib-status-badge" [ngClass]="getStatusBadgeClass(row.status)">{{ row.status }}</span></td>
                 <td>{{ row.pendingSince }}</td>
                 <td class="text-muted">{{ row.reason }}</td>
@@ -567,6 +576,14 @@
               <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.prescriber" name="pePrescriber">
             </div>
             <div class="col-md-6">
+              <label class="form-label fw-bold small text-muted">HCP Name</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.hcpName" name="peHcpName">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold small text-muted">Enrollment Completion Date</label>
+              <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.enrollmentCompletionDate" name="peEnrollmentCompletionDate" placeholder="e.g. 4/13/2026">
+            </div>
+            <div class="col-md-8">
               <label class="form-label fw-bold small text-muted">Site Name</label>
               <input type="text" class="form-control bg-light" [(ngModel)]="editRowForm.siteName" name="peSiteName">
             </div>

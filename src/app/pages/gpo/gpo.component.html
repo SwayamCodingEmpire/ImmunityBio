@@ -1,57 +1,97 @@
 <div class="container-fluid">
   <div class="ib-page-header">
-    <h2 class="ib-page-header__title">GPO</h2>
+    <h2 class="ib-page-header__title">GPO Hierarchy</h2>
+    <div class="ib-page-header__actions">
+      <span class="ib-table-toolbar__meta">{{ rows.length }} hierarchies</span>
+      <button class="btn btn-primary btn-sm" (click)="openAdd()">
+        <i class="bi bi-plus-lg me-1"></i>Add GPO Hierarchy
+      </button>
+    </div>
   </div>
 
   <div class="ib-section-card">
-    <div class="ib-section-card__header">
-      <h5 class="ib-section-card__title">GPO Directory</h5>
-      <span class="ib-table-toolbar__meta">{{ rows.length }} accounts</span>
-    </div>
     <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-hover table-sm align-middle mb-0 ib-data-table gpo-table">
           <thead class="ib-table-header">
             <tr>
-              <th class="py-2 px-3" style="white-space:nowrap;">BP Number</th>
-              <th class="py-2" style="white-space:nowrap;">GPO (L1)</th>
-              <th class="py-2" style="white-space:nowrap;">Sub-GPO (L2)</th>
-              <th class="py-2" style="white-space:nowrap;">Group (L3)</th>
-              <th class="py-2" style="white-space:nowrap;">Sub-Group (L4)</th>
-              <th class="py-2" style="white-space:nowrap;">Practice (L5)</th>
-              <th class="py-2">Channel</th>
+              <th class="py-2 px-3" style="white-space:nowrap;">GPO 1</th>
+              <th class="py-2" style="white-space:nowrap;">GPO 2</th>
+              <th class="py-2" style="white-space:nowrap;">GPO 3</th>
+              <th class="py-2" style="white-space:nowrap;">GPO 4</th>
+              <th class="py-2" style="white-space:nowrap;">GPO 5</th>
               <th class="py-2 text-center px-3">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let row of rows">
-              <td class="px-3 fw-bold text-primary" style="white-space:nowrap;">{{ row.bpNumber }}</td>
-              <td>
+
+              <td class="px-3">
                 <span *ngIf="row.gpoL1" class="ib-chip">{{ row.gpoL1 }}</span>
+                <div *ngIf="row.gpoL1" class="gpo-meta-row">
+                  <span class="gpo-level-status"
+                    [class.gpo-level-status--active]="isLevelActive(row.gpoL1End)"
+                    [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL1End)">
+                    ● {{ isLevelActive(row.gpoL1End) ? 'Active' : 'Inactive' }}
+                  </span>
+                  <span *ngIf="row.gpoL1Rebate" class="gpo-rebate-badge">{{ row.gpoL1Rebate }}% rebate</span>
+                </div>
               </td>
+
               <td style="white-space:nowrap;">
-                <span *ngIf="row.subGpoL2" class="gpo-text-sm">{{ row.subGpoL2 }}</span>
+                <span *ngIf="row.gpoL2" class="gpo-text-sm">{{ row.gpoL2 }}</span>
+                <div *ngIf="row.gpoL2" class="gpo-meta-row">
+                  <span class="gpo-level-status"
+                    [class.gpo-level-status--active]="isLevelActive(row.gpoL2End)"
+                    [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL2End)">
+                    ● {{ isLevelActive(row.gpoL2End) ? 'Active' : 'Inactive' }}
+                  </span>
+                  <span *ngIf="row.gpoL2Rebate" class="gpo-rebate-badge">{{ row.gpoL2Rebate }}% rebate</span>
+                </div>
               </td>
+
               <td style="white-space:nowrap;">
-                <span *ngIf="row.groupL3" class="gpo-text-sm">{{ row.groupL3 }}</span>
+                <span *ngIf="row.gpoL3" class="gpo-text-sm">{{ row.gpoL3 }}</span>
+                <div *ngIf="row.gpoL3" class="gpo-meta-row">
+                  <span class="gpo-level-status"
+                    [class.gpo-level-status--active]="isLevelActive(row.gpoL3End)"
+                    [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL3End)">
+                    ● {{ isLevelActive(row.gpoL3End) ? 'Active' : 'Inactive' }}
+                  </span>
+                  <span *ngIf="row.gpoL3Rebate" class="gpo-rebate-badge">{{ row.gpoL3Rebate }}% rebate</span>
+                </div>
               </td>
+
               <td style="white-space:nowrap;">
-                <span *ngIf="row.subGroupL4" class="gpo-text-sm">{{ row.subGroupL4 }}</span>
+                <span *ngIf="row.gpoL4" class="gpo-text-sm">{{ row.gpoL4 }}</span>
+                <div *ngIf="row.gpoL4" class="gpo-level-status"
+                  [class.gpo-level-status--active]="isLevelActive(row.gpoL4End)"
+                  [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL4End)">
+                  ● {{ isLevelActive(row.gpoL4End) ? 'Active' : 'Inactive' }}
+                </div>
               </td>
+
               <td style="white-space:nowrap;">
-                <span *ngIf="row.practiceL5" class="gpo-text-sm">{{ row.practiceL5 }}</span>
+                <span *ngIf="row.gpoL5" class="gpo-text-sm">{{ row.gpoL5 }}</span>
+                <div *ngIf="row.gpoL5" class="gpo-level-status"
+                  [class.gpo-level-status--active]="isLevelActive(row.gpoL5End)"
+                  [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL5End)">
+                  ● {{ isLevelActive(row.gpoL5End) ? 'Active' : 'Inactive' }}
+                </div>
               </td>
-              <td>
-                <span class="ib-chip">{{ row.channel }}</span>
-              </td>
+
               <td class="text-center px-3" style="white-space:nowrap;">
-                <button class="ib-icon-btn me-1" title="Edit row" (click)="openEdit(row)">
+                <button class="ib-icon-btn me-1" title="Edit" (click)="openEdit(row)">
                   <i class="bi bi-pencil"></i>
                 </button>
-                <!-- <button class="ib-icon-btn" title="Ship To Details" (click)="openDetails(row)">
-                  <i class="bi bi-card-list"></i>
-                </button> -->
+                <button class="ib-icon-btn ib-icon-btn--danger" title="Delete" (click)="deleteRow(row)">
+                  <i class="bi bi-trash3"></i>
+                </button>
               </td>
+
+            </tr>
+            <tr *ngIf="rows.length === 0">
+              <td colspan="6" class="text-center text-muted py-4">No GPO hierarchies defined.</td>
             </tr>
           </tbody>
         </table>
@@ -61,200 +101,190 @@
 </div>
 
 
-<!-- ── Edit Modal ─────────────────────────────────────────── -->
+<!-- ── Add / Edit Modal ───────────────────────────────────── -->
 <div *ngIf="editingRow" class="ib-modal-overlay" (click)="closeEdit()">
   <div class="ib-modal-shell gpo-edit-modal" (click)="$event.stopPropagation()">
 
     <div class="ib-modal-header">
-      <div class="d-flex flex-column gap-1">
-        <h5 class="ib-modal-title mb-0">Edit Account</h5>
-        <span class="text-muted small">BP {{ editingRow.bpNumber }}</span>
-      </div>
+      <h5 class="ib-modal-title mb-0">{{ isAddMode ? 'Add' : 'Edit' }} GPO Hierarchy</h5>
       <button type="button" class="btn-close" (click)="closeEdit()"></button>
     </div>
 
-    <div class="ib-modal-body">
-      <form #gpoEditForm="ngForm">
-        <div class="row g-3">
+    <div class="ib-modal-body p-0">
+      <form #gpoForm="ngForm">
 
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">BP Number</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.bpNumber" name="bpNumber">
+        <!-- GPO 1 -->
+        <div class="gpo-level-row">
+          <div class="gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="gpo-level-pill">L1</span>
+              <span class="gpo-level-title">GPO 1</span>
+            </div>
+            <span class="gpo-status-pill"
+              [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL1End)"
+              [class.gpo-status-pill--inactive]="!isLevelActive(editForm.gpoL1End)">
+              ● {{ isLevelActive(editForm.gpoL1End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
           </div>
-
-          <div class="col-md-8">
-            <label class="form-label fw-bold small text-muted">Ship To Name</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.shipToName" name="shipToName">
+          <div class="row g-3">
+            <div class="col-5">
+              <label class="gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editForm.gpoL1" name="gpoL1" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="gpo-field-label">REBATE %</label>
+              <div class="input-group">
+                <input type="number" class="form-control" [(ngModel)]="editForm.gpoL1Rebate" name="gpoL1Rebate" min="0" max="100" step="0.25" placeholder="0.00">
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+            <div class="col-2">
+              <label class="gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL1Start" name="gpoL1Start">
+            </div>
+            <div class="col-2">
+              <label class="gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL1End" name="gpoL1End">
+            </div>
           </div>
-
-          <div class="col-md-8">
-            <label class="form-label fw-bold small text-muted">Ship To Address 1</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.shipToAddress1" name="shipToAddress1">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">City</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.shipToCity" name="shipToCity">
-          </div>
-
-          <div class="col-md-2">
-            <label class="form-label fw-bold small text-muted">State</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.shipToState" name="shipToState">
-          </div>
-
-          <div class="col-md-2">
-            <label class="form-label fw-bold small text-muted">Zip</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.shipToZip" name="shipToZip">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Channel</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.channel" name="channel">
-          </div>
-
-          <div class="col-12">
-            <label class="form-label fw-bold small text-muted">GPO (L1)</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.gpoL1" name="gpoL1">
-          </div>
-          <div class="col-12">
-            <label class="form-label fw-bold small text-muted">Sub-GPO (Network) (L2)</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.subGpoL2" name="subGpoL2">
-          </div>
-          <div class="col-12">
-            <label class="form-label fw-bold small text-muted">Group (L3)</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.groupL3" name="groupL3">
-          </div>
-          <div class="col-12">
-            <label class="form-label fw-bold small text-muted">Sub-Group (L4)</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.subGroupL4" name="subGroupL4">
-          </div>
-          <div class="col-12">
-            <label class="form-label fw-bold small text-muted">Practice (L5)</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.practiceL5" name="practiceL5">
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">Full Account Name</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.fullAccountName" name="fullAccountName">
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">Community / Academic</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.communityAcademic" name="communityAcademic">
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">Notes</label>
-            <input type="text" class="form-control bg-light"
-              [(ngModel)]="editForm.notes" name="notes">
-          </div>
-
         </div>
+
+        <!-- GPO 2 -->
+        <div class="gpo-level-row">
+          <div class="gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="gpo-level-pill gpo-level-pill--l2">L2</span>
+              <span class="gpo-level-title">GPO 2</span>
+            </div>
+            <span class="gpo-status-pill"
+              [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL2End)"
+              [class.gpo-status-pill--inactive]="!isLevelActive(editForm.gpoL2End)">
+              ● {{ isLevelActive(editForm.gpoL2End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-5">
+              <label class="gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editForm.gpoL2" name="gpoL2" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="gpo-field-label">REBATE %</label>
+              <div class="input-group">
+                <input type="number" class="form-control" [(ngModel)]="editForm.gpoL2Rebate" name="gpoL2Rebate" min="0" max="100" step="0.25" placeholder="0.00">
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+            <div class="col-2">
+              <label class="gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL2Start" name="gpoL2Start">
+            </div>
+            <div class="col-2">
+              <label class="gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL2End" name="gpoL2End">
+            </div>
+          </div>
+        </div>
+
+        <!-- GPO 3 -->
+        <div class="gpo-level-row">
+          <div class="gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="gpo-level-pill gpo-level-pill--l3">L3</span>
+              <span class="gpo-level-title">GPO 3</span>
+            </div>
+            <span class="gpo-status-pill"
+              [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL3End)"
+              [class.gpo-status-pill--inactive]="!isLevelActive(editForm.gpoL3End)">
+              ● {{ isLevelActive(editForm.gpoL3End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-5">
+              <label class="gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editForm.gpoL3" name="gpoL3" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="gpo-field-label">REBATE %</label>
+              <div class="input-group">
+                <input type="number" class="form-control" [(ngModel)]="editForm.gpoL3Rebate" name="gpoL3Rebate" min="0" max="100" step="0.25" placeholder="0.00">
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+            <div class="col-2">
+              <label class="gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL3Start" name="gpoL3Start">
+            </div>
+            <div class="col-2">
+              <label class="gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL3End" name="gpoL3End">
+            </div>
+          </div>
+        </div>
+
+        <!-- GPO 4 -->
+        <div class="gpo-level-row">
+          <div class="gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="gpo-level-pill gpo-level-pill--l4">L4</span>
+              <span class="gpo-level-title">GPO 4</span>
+            </div>
+            <span class="gpo-status-pill"
+              [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL4End)"
+              [class.gpo-status-pill--inactive]="!isLevelActive(editForm.gpoL4End)">
+              ● {{ isLevelActive(editForm.gpoL4End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editForm.gpoL4" name="gpoL4" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL4Start" name="gpoL4Start">
+            </div>
+            <div class="col-3">
+              <label class="gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL4End" name="gpoL4End">
+            </div>
+          </div>
+        </div>
+
+        <!-- GPO 5 -->
+        <div class="gpo-level-row gpo-level-row--last">
+          <div class="gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="gpo-level-pill gpo-level-pill--l5">L5</span>
+              <span class="gpo-level-title">GPO 5</span>
+            </div>
+            <span class="gpo-status-pill"
+              [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL5End)"
+              [class.gpo-status-pill--inactive]="!isLevelActive(editForm.gpoL5End)">
+              ● {{ isLevelActive(editForm.gpoL5End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editForm.gpoL5" name="gpoL5" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL5Start" name="gpoL5Start">
+            </div>
+            <div class="col-3">
+              <label class="gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editForm.gpoL5End" name="gpoL5End">
+            </div>
+          </div>
+        </div>
+
       </form>
     </div>
 
     <div class="gpo-modal-footer">
       <button type="button" class="btn ib-btn-secondary" (click)="closeEdit()">Cancel</button>
       <button type="button" class="btn btn-primary" (click)="saveEdit()">Save Changes</button>
-    </div>
-
-  </div>
-</div>
-
-
-<!-- ── Details Modal ──────────────────────────────────────── -->
-<div *ngIf="detailsRow" class="ib-modal-overlay" (click)="closeDetails()">
-  <div class="ib-modal-shell" style="max-width: 460px; max-height: 85vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
-
-    <div class="ib-modal-header">
-      <div class="d-flex flex-column gap-1">
-        <h5 class="ib-modal-title mb-0">Account Details</h5>
-        <span class="text-muted small">BP {{ detailsRow.bpNumber }}</span>
-      </div>
-      <button type="button" class="btn-close" (click)="closeDetails()"></button>
-    </div>
-
-    <div class="ib-modal-body" style="overflow-y: auto; flex: 1;">
-      <div class="gpo-details-grid">
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">BP Number</span>
-          <span class="gpo-details-value fw-bold text-primary">{{ detailsRow.bpNumber || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Ship To Name</span>
-          <span class="gpo-details-value fw-bold">{{ detailsRow.shipToName || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Address</span>
-          <span class="gpo-details-value">{{ detailsRow.shipToAddress1 || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">City</span>
-          <span class="gpo-details-value">{{ detailsRow.shipToCity || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">State</span>
-          <span class="gpo-details-value fw-bold">{{ detailsRow.shipToState || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">ZIP</span>
-          <span class="gpo-details-value">{{ detailsRow.shipToZip || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Channel</span>
-          <span class="gpo-details-value">{{ detailsRow.channel || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">GPO (L1)</span>
-          <span class="gpo-details-value">{{ detailsRow.gpoL1 || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Sub-GPO (L2)</span>
-          <span class="gpo-details-value">{{ detailsRow.subGpoL2 || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Group (L3)</span>
-          <span class="gpo-details-value">{{ detailsRow.groupL3 || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Sub-Group (L4)</span>
-          <span class="gpo-details-value">{{ detailsRow.subGroupL4 || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Practice (L5)</span>
-          <span class="gpo-details-value">{{ detailsRow.practiceL5 || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Full Account Name</span>
-          <span class="gpo-details-value fw-bold">{{ detailsRow.fullAccountName || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Community / Academic</span>
-          <span class="gpo-details-value">{{ detailsRow.communityAcademic || '—' }}</span>
-        </div>
-        <div class="gpo-details-row">
-          <span class="gpo-details-label">Notes</span>
-          <span class="gpo-details-value">{{ detailsRow.notes || '—' }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="gpo-modal-footer">
-      <button type="button" class="btn ib-btn-secondary" (click)="closeDetails()">Close</button>
     </div>
 
   </div>

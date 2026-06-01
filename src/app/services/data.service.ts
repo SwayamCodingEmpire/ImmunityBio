@@ -126,7 +126,10 @@ export class DataService {
       shipDate: '2026-04-16',
       qty: 1,
       status: 'Referral',
-      date: '2026-04-23'
+      date: '2026-04-23',
+      enrollmentStatus: 'In Progress',
+      enrollmentDate: '2026-04-23',
+      enrollmentCompletionDate: ''
     },
     {
       id: 'PT-89202',
@@ -145,7 +148,10 @@ export class DataService {
       shipDate: '',
       qty: 1,
       status: 'Referral',
-      date: '2026-04-24'
+      date: '2026-04-24',
+      enrollmentStatus: 'Missing Information',
+      enrollmentDate: '2026-04-24',
+      enrollmentCompletionDate: ''
     },
     {
       id: 'PT-89190',
@@ -164,7 +170,10 @@ export class DataService {
       shipDate: '2026-04-10',
       qty: 1,
       status: 'Insurance Auth',
-      date: '2026-04-20'
+      date: '2026-04-20',
+      enrollmentStatus: 'Completed',
+      enrollmentDate: '2026-04-20',
+      enrollmentCompletionDate: '2026-04-28'
     },
     {
       id: 'PT-89155',
@@ -183,7 +192,10 @@ export class DataService {
       shipDate: '2026-04-01',
       qty: 2,
       status: 'First Dose',
-      date: '2026-04-10'
+      date: '2026-04-10',
+      enrollmentStatus: 'Completed',
+      enrollmentDate: '2026-04-10',
+      enrollmentCompletionDate: '2026-04-15'
     },
     {
       id: 'PT-89163',
@@ -202,7 +214,10 @@ export class DataService {
       shipDate: '2026-03-22',
       qty: 1,
       status: 'On Therapy',
-      date: '2026-04-05'
+      date: '2026-04-05',
+      enrollmentStatus: 'On Hold',
+      enrollmentDate: '2026-04-05',
+      enrollmentCompletionDate: ''
     }
   ];
 

@@ -436,6 +436,50 @@
   z-index: 1;
 }
 
+// ── Sortable column headers (#5) ─────────────────────────────
+.om-th-sort {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover { color: var(--ib-navy); }
+}
+
+.om-sort-icon {
+  font-size: 0.65rem;
+  margin-left: 3px;
+  opacity: 0.45;
+  vertical-align: middle;
+
+  .om-th-sort:hover & { opacity: 0.75; }
+
+  &.bi-arrow-up,
+  &.bi-arrow-down { opacity: 1; color: var(--ib-navy); }
+}
+
+// ── Invoice Date cell (#6) ────────────────────────────────────
+.om-invoice-date {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+// ── Shipment Issue Flag button (#7) ──────────────────────────
+.om-issue-btn {
+  color: var(--ib-muted);
+  transition: color 0.13s, background 0.13s, border-color 0.13s;
+
+  &--active {
+    background: #fff7ed;
+    border-color: #fdba74;
+    color: #c2410c;
+  }
+
+  &:not(.om-issue-btn--active):hover {
+    color: #c2410c;
+  }
+}
+
 .om-flag-badge {
   background: none;
   border: none;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -20,8 +20,21 @@ export interface AccredoAccount {
   zip: string;
 }
 
+export interface IbCareSite {
+  id: string;
+  name: string;
+}
+
 export interface MasterAccount {
   masterAccountName: string;
+  accountType: 'Community' | 'Hospital' | 'Academic' | '';
+  ibCareSiteId: string;
+  ibCareSiteName: string;
+  gpoL1: string; gpoL1Start: string; gpoL1End: string;
+  gpoL2: string; gpoL2Start: string; gpoL2End: string;
+  gpoL3: string; gpoL3Start: string; gpoL3End: string;
+  gpoL4: string; gpoL4Start: string; gpoL4End: string;
+  gpoL5: string; gpoL5Start: string; gpoL5End: string;
   icsAccounts: IcsAccount[];
   accredoAccounts: AccredoAccount[];
 }
@@ -44,11 +57,84 @@ export class CustomerMatrixComponent {
   searchQuery = '';
   channelFilter: 'all' | 'ics' | 'accredo' = 'all';
 
-  private sectionState = new Map<MasterAccount, { ics: boolean; accredo: boolean }>();
+  private sectionState = new Map<MasterAccount, { gpo: boolean; ics: boolean; accredo: boolean }>();
 
-  // Inline master-name editing
+  // IB Care Site master list
+  readonly ibCareSites: IbCareSite[] = [
+    { id: 'IB-SITE-001', name: 'Bartlett Urology Main' },
+    { id: 'IB-SITE-002', name: 'Adena Cancer Center' },
+    { id: 'IB-SITE-003', name: 'Coastal Oncology Hub' },
+    { id: 'IB-SITE-004', name: 'Atrium Advanced Urology' },
+    { id: 'IB-SITE-005', name: 'AHN Cancer Center' },
+    { id: 'IB-SITE-006', name: 'Allina Oncology Hub' },
+    { id: 'IB-SITE-007', name: 'American Oncology AR' },
+    { id: 'IB-SITE-008', name: 'American Oncology TX' },
+    { id: 'IB-SITE-009', name: 'Northeast Urology Hub' },
+    { id: 'IB-SITE-010', name: 'Central NY Urology Hub' },
+  ];
+
+  // IB Care Site searchable dropdown state
+  editingIbSiteValue  = '';   // "ID — Name" of selected site
+  ibSiteDropdownOpen  = false;
+  ibSiteSearchTerm    = '';
+
+  get filteredIbSites(): IbCareSite[] {
+    const q = this.ibSiteSearchTerm.trim().toLowerCase();
+    return !q ? this.ibCareSites : this.ibCareSites.filter(
+      s => s.id.toLowerCase().includes(q) || s.name.toLowerCase().includes(q)
+    );
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.ibSiteDropdownOpen = false;
+  }
+
+  openIbSiteDropdown(): void {
+    if (this.ibSiteDropdownOpen) {
+      this.ibSiteDropdownOpen = false;
+      this.ibSiteSearchTerm   = '';
+      return;
+    }
+    this.ibSiteDropdownOpen = true;
+    this.ibSiteSearchTerm   = '';
+    setTimeout(() => {
+      (document.querySelector('.cm-site-dropdown__search-input') as HTMLInputElement)?.focus();
+    }, 30);
+  }
+
+  selectIbSite(site: IbCareSite | null): void {
+    this.editingIbSiteValue = site ? `${site.id} — ${site.name}` : '';
+    this.ibSiteDropdownOpen = false;
+    this.ibSiteSearchTerm   = '';
+    // stop the click from bubbling to document and re-triggering close
+    event?.stopPropagation();
+  }
+
+  applyIbSiteToAccount(account: MasterAccount): void {
+    const site = this.ibCareSites.find(s => `${s.id} — ${s.name}` === this.editingIbSiteValue);
+    account.ibCareSiteId   = site?.id   ?? '';
+    account.ibCareSiteName = site?.name ?? '';
+  }
+
+  ibCareSiteDisplay(account: MasterAccount): string {
+    return account.ibCareSiteId ? `${account.ibCareSiteId} — ${account.ibCareSiteName}` : '';
+  }
+
+  // Inline master-name + account type editing
   editingNameAccount: MasterAccount | null = null;
   editingNameValue = '';
+  editingAccountType: 'Community' | 'Hospital' | 'Academic' | '' = '';
+
+  // GPO hierarchy modal editing
+  editingGpoAccount: MasterAccount | null = null;
+  editingGpoForm = {
+    gpoL1: '', gpoL1Start: '', gpoL1End: '',
+    gpoL2: '', gpoL2Start: '', gpoL2End: '',
+    gpoL3: '', gpoL3Start: '', gpoL3End: '',
+    gpoL4: '', gpoL4Start: '', gpoL4End: '',
+    gpoL5: '', gpoL5Start: '', gpoL5End: '',
+  };
 
   // Inline row editing
   editingIcsRow: { account: MasterAccount; index: number; form: IcsAccount } | null = null;
@@ -63,7 +149,12 @@ export class CustomerMatrixComponent {
   // ── Sample data ───────────────────────────────────────────────
   accounts: MasterAccount[] = [
     {
-      masterAccountName: 'BARTLETT UROLOGY ASSOCIATES',
+      masterAccountName: 'BARTLETT UROLOGY ASSOCIATES', accountType: 'Community', ibCareSiteId: 'IB-SITE-001', ibCareSiteName: 'Bartlett Urology Main',
+      gpoL1: 'Cornerstone', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'Urology Management Alliance (UMA)', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Minnesota Urology', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '420193847', shipToName: 'BARTLETT UROLOGY MAIN CAMPUS', address: '6025 LAKE RD', city: 'WOODBURY', state: 'MN', zip: '55125' },
         { bpNumber: '387204561', shipToName: 'BARTLETT UROLOGY SATELLITE', address: '6025 LAKE RD STE 2', city: 'WOODBURY', state: 'MN', zip: '55125' },
@@ -72,7 +163,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'ACCREDO HEALTH GROUP INC',
+      masterAccountName: 'ACCREDO HEALTH GROUP INC', accountType: 'Hospital', ibCareSiteId: '', ibCareSiteName: '',
+      gpoL1: '', gpoL1Start: '', gpoL1End: '',
+      gpoL2: '', gpoL2Start: '', gpoL2End: '',
+      gpoL3: '', gpoL3Start: '', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [],
       accredoAccounts: [
         { npiNumber: '1487392056', providerName: 'ACCREDO HEALTH MEMPHIS', address: '1620 CENTURY CENTER PKWY', city: 'MEMPHIS', state: 'TN', zip: '38134' },
@@ -81,7 +177,12 @@ export class CustomerMatrixComponent {
       ],
     },
     {
-      masterAccountName: 'ADENA REGIONAL MED CNTR',
+      masterAccountName: 'ADENA REGIONAL MED CNTR', accountType: 'Hospital', ibCareSiteId: 'IB-SITE-002', ibCareSiteName: 'Adena Cancer Center',
+      gpoL1: 'Cencora GPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'OneOncology', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Ohio Network', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '628374019', shipToName: 'ADENA REGIONAL MED CNTR MAIN', address: '4435 SR 159', city: 'CHILLICOTHE', state: 'OH', zip: '45601' },
         { bpNumber: '473920184', shipToName: 'ADENA CANCER CARE CTR', address: '272 N PAINT ST', city: 'CHILLICOTHE', state: 'OH', zip: '45601' },
@@ -91,7 +192,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'COASTAL ONCOLOGY PARTNERS',
+      masterAccountName: 'COASTAL ONCOLOGY PARTNERS', accountType: 'Community', ibCareSiteId: 'IB-SITE-003', ibCareSiteName: 'Coastal Oncology Hub',
+      gpoL1: 'UroGPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'US Urology Partners', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Southeast Network', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '748203916', shipToName: 'COASTAL ONCOLOGY MAIN', address: '3435 BRECKINRIDGE BLVD', city: 'DULUTH', state: 'GA', zip: '30096' },
         { bpNumber: '563019482', shipToName: 'COASTAL ONCOLOGY BUFORD', address: '2700 MALL OF GEORGIA BLVD', city: 'BUFORD', state: 'GA', zip: '30519' },
@@ -99,7 +205,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'ADVANCED UROLOGY ATRIUM HEALTH',
+      masterAccountName: 'ADVANCED UROLOGY ATRIUM HEALTH', accountType: 'Hospital', ibCareSiteId: 'IB-SITE-004', ibCareSiteName: 'Atrium Advanced Urology',
+      gpoL1: 'UroGPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'US Urology Partners', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Atlantic Region', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'Atrium Health', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '392018475', shipToName: 'ADVANCED UROLOGY LELAND', address: '144 POOLE RD', city: 'LELAND', state: 'NC', zip: '28451' },
         { bpNumber: '847361029', shipToName: 'ADVANCED UROLOGY WILMINGTON MAIN', address: '1800 MEDICAL CENTER DR', city: 'WILMINGTON', state: 'NC', zip: '28403' },
@@ -110,7 +221,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'ADVANCED UROLOGY PLLC',
+      masterAccountName: 'ADVANCED UROLOGY PLLC', accountType: 'Community', ibCareSiteId: '', ibCareSiteName: '',
+      gpoL1: 'Cencora GPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'OneOncology', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'United Urology Grp', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'Colorado Urology', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: 'Advanced Urology Pllc', gpoL5Start: '2025-01-01', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '782039146', shipToName: 'ADVANCED UROLOGY LONE TREE', address: '10535 PARK MEADOWS BLVD', city: 'LONE TREE', state: 'CO', zip: '80124' },
         { bpNumber: '930481726', shipToName: 'ADVANCED UROLOGY HIGHLANDS RANCH', address: '9336 DORCHESTER ST', city: 'HIGHLANDS RANCH', state: 'CO', zip: '80129' },
@@ -118,7 +234,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'HASSAN NADEEM MD',
+      masterAccountName: 'HASSAN NADEEM MD', accountType: 'Community', ibCareSiteId: '', ibCareSiteName: '',
+      gpoL1: '', gpoL1Start: '', gpoL1End: '',
+      gpoL2: '', gpoL2Start: '', gpoL2End: '',
+      gpoL3: '', gpoL3Start: '', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [],
       accredoAccounts: [
         { npiNumber: '1837264091', providerName: 'HASSAN NADEEM MD RICHARDSON', address: '3030 WATERVIEW PKWY', city: 'RICHARDSON', state: 'TX', zip: '75080' },
@@ -128,7 +249,12 @@ export class CustomerMatrixComponent {
       ],
     },
     {
-      masterAccountName: 'GARZA RAYMOND J MD',
+      masterAccountName: 'GARZA RAYMOND J MD', accountType: 'Community', ibCareSiteId: '', ibCareSiteName: '',
+      gpoL1: '', gpoL1Start: '', gpoL1End: '',
+      gpoL2: '', gpoL2Start: '', gpoL2End: '',
+      gpoL3: '', gpoL3Start: '', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [],
       accredoAccounts: [
         { npiNumber: '1374920583', providerName: 'GARZA RAYMOND J MD WATKINSVILLE', address: '1150 GOLDEN WAY', city: 'WATKINSVILLE', state: 'GA', zip: '30677' },
@@ -136,7 +262,12 @@ export class CustomerMatrixComponent {
       ],
     },
     {
-      masterAccountName: 'FELDMAN DAVID B MD',
+      masterAccountName: 'FELDMAN DAVID B MD', accountType: 'Community', ibCareSiteId: '', ibCareSiteName: '',
+      gpoL1: '', gpoL1Start: '', gpoL1End: '',
+      gpoL2: '', gpoL2Start: '', gpoL2End: '',
+      gpoL3: '', gpoL3Start: '', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [],
       accredoAccounts: [
         { npiNumber: '1647382910', providerName: 'FELDMAN DAVID B MD MONROEVILLE', address: '2790 MOSSIDE BLVD', city: 'MONROEVILLE', state: 'PA', zip: '15146' },
@@ -145,7 +276,12 @@ export class CustomerMatrixComponent {
       ],
     },
     {
-      masterAccountName: 'ALLEGHENY HEALTH NETWORK CANCER',
+      masterAccountName: 'ALLEGHENY HEALTH NETWORK CANCER', accountType: 'Hospital', ibCareSiteId: 'IB-SITE-005', ibCareSiteName: 'AHN Cancer Center',
+      gpoL1: 'Cencora GPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'OneOncology', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Pennsylvania Group', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'AHN', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '874013629', shipToName: 'AHN CANCER CTR MONACA', address: '81 WAGNER RD', city: 'MONACA', state: 'PA', zip: '15061' },
         { bpNumber: '531029847', shipToName: 'AHN CANCER CTR PITTSBURGH', address: '4818 LIBERTY AVE', city: 'PITTSBURGH', state: 'PA', zip: '15224' },
@@ -155,7 +291,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'ALLINA HEALTH SYSTEM',
+      masterAccountName: 'ALLINA HEALTH SYSTEM', accountType: 'Hospital', ibCareSiteId: 'IB-SITE-006', ibCareSiteName: 'Allina Oncology Hub',
+      gpoL1: 'Cornerstone', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'Urology Management Alliance (UMA)', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Minnesota Urology', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'Allina Group', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '419203857', shipToName: 'ALLINA ABBOTT NORTHWESTERN HOSP', address: '800 E 28TH ST', city: 'MINNEAPOLIS', state: 'MN', zip: '55407' },
         { bpNumber: '736481029', shipToName: 'ALLINA UNITY HOSPITAL', address: '550 OSBORNE RD NE', city: 'FRIDLEY', state: 'MN', zip: '55432' },
@@ -166,7 +307,12 @@ export class CustomerMatrixComponent {
       ],
     },
     {
-      masterAccountName: 'AMERICAN ONC ARKANSAS',
+      masterAccountName: 'AMERICAN ONC ARKANSAS', accountType: 'Community', ibCareSiteId: 'IB-SITE-007', ibCareSiteName: 'American Oncology AR',
+      gpoL1: 'Cencora GPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'OneOncology', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'South Central Group', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'AR Oncology', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '904738261', shipToName: 'AMERICAN ONC AR HOT SPRINGS', address: '133 HARMONY PARK CIR', city: 'HOT SPRINGS', state: 'AR', zip: '71913' },
         { bpNumber: '371829046', shipToName: 'AMERICAN ONC AR LITTLE ROCK', address: '9500 KANIS RD', city: 'LITTLE ROCK', state: 'AR', zip: '72205' },
@@ -174,7 +320,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'AMERICAN ONC TEXAS',
+      masterAccountName: 'AMERICAN ONC TEXAS', accountType: 'Community', ibCareSiteId: 'IB-SITE-008', ibCareSiteName: 'American Oncology TX',
+      gpoL1: 'Cencora GPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'OneOncology', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Texas Group', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'TX Oncology', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '658302914', shipToName: 'AMERICAN ONC TX HOUSTON MAIN', address: '2130 W HOLCOMBE BLVD 10TH FL', city: 'HOUSTON', state: 'TX', zip: '77030' },
         { bpNumber: '192847036', shipToName: 'AMERICAN ONC TX HOUSTON WEST', address: '2130 W HOLCOMBE BLVD 9TH FL', city: 'HOUSTON', state: 'TX', zip: '77030' },
@@ -186,7 +337,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'NORTHEAST UROLOGY ASSOCIATES',
+      masterAccountName: 'NORTHEAST UROLOGY ASSOCIATES', accountType: 'Community', ibCareSiteId: 'IB-SITE-009', ibCareSiteName: 'Northeast Urology Hub',
+      gpoL1: 'UroGPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'US Urology Partners', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Associated Medical Professionals', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '620394817', shipToName: 'NORTHEAST UROLOGY HARTFORD', address: '2 ELLINWOOD DRIVE', city: 'HARTFORD', state: 'NY', zip: '13413' },
         { bpNumber: '847201396', shipToName: 'NORTHEAST UROLOGY NEW HARTFORD', address: '35 CLINTON RD', city: 'NEW HARTFORD', state: 'NY', zip: '13413' },
@@ -195,7 +351,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'CENTRAL NY UROLOGY GROUP',
+      masterAccountName: 'CENTRAL NY UROLOGY GROUP', accountType: 'Community', ibCareSiteId: 'IB-SITE-010', ibCareSiteName: 'Central NY Urology Hub',
+      gpoL1: 'UroGPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'US Urology Partners', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Associated Medical Professionals', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '739201485', shipToName: 'CENTRAL NY UROLOGY SYRACUSE', address: '1226 EAST WATER ST', city: 'SYRACUSE', state: 'NY', zip: '13210' },
         { bpNumber: '481930276', shipToName: 'CENTRAL NY UROLOGY DEWITT', address: '4900 BROAD RD', city: 'DEWITT', state: 'NY', zip: '13214' },
@@ -203,7 +364,12 @@ export class CustomerMatrixComponent {
       accredoAccounts: [],
     },
     {
-      masterAccountName: 'PATEL VIKRAM R MD',
+      masterAccountName: 'PATEL VIKRAM R MD', accountType: 'Community', ibCareSiteId: '', ibCareSiteName: '',
+      gpoL1: '', gpoL1Start: '', gpoL1End: '',
+      gpoL2: '', gpoL2Start: '', gpoL2End: '',
+      gpoL3: '', gpoL3Start: '', gpoL3End: '',
+      gpoL4: '', gpoL4Start: '', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [],
       accredoAccounts: [
         { npiNumber: '1203847596', providerName: 'PATEL VIKRAM R MD JOHNSON CITY', address: '1301 SUNSET DR STE 3', city: 'JOHNSON CITY', state: 'TN', zip: '37604' },
@@ -213,7 +379,12 @@ export class CustomerMatrixComponent {
       ],
     },
     {
-      masterAccountName: 'ANNE ARUNDEL UROLOGY PA',
+      masterAccountName: 'ANNE ARUNDEL UROLOGY PA', accountType: 'Community', ibCareSiteId: '', ibCareSiteName: '',
+      gpoL1: 'UroGPO', gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'Urology Alliance', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Solaris', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'Anne Arundel Urology', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: '', gpoL5Start: '', gpoL5End: '',
       icsAccounts: [
         { bpNumber: '362019847', shipToName: 'ANNE ARUNDEL UROLOGY ANNAPOLIS', address: '600 RIDGELY AVE', city: 'ANNAPOLIS', state: 'MD', zip: '21401' },
         { bpNumber: '819304726', shipToName: 'ANNE ARUNDEL UROLOGY GLEN BURNIE', address: '1 HOSPITAL DR', city: 'GLEN BURNIE', state: 'MD', zip: '21061' },
@@ -236,52 +407,88 @@ export class CustomerMatrixComponent {
   }
 
   // ── Section expand / collapse ─────────────────────────────────
-  isSectionOpen(account: MasterAccount, section: 'ics' | 'accredo'): boolean {
+  isSectionOpen(account: MasterAccount, section: 'gpo' | 'ics' | 'accredo'): boolean {
     return this.sectionState.get(account)?.[section] ?? false;
   }
 
-  toggleSection(account: MasterAccount, section: 'ics' | 'accredo'): void {
+  toggleSection(account: MasterAccount, section: 'gpo' | 'ics' | 'accredo'): void {
     const current = this.isSectionOpen(account, section);
-    const existing = this.sectionState.get(account) ?? { ics: false, accredo: false };
+    const existing = this.sectionState.get(account) ?? { gpo: false, ics: false, accredo: false };
     this.sectionState.set(account, { ...existing, [section]: !current });
   }
 
   get allExpanded(): boolean {
     return this.filteredAccounts.every(a => {
       const s = this.sectionState.get(a);
-      return s?.ics && s?.accredo;
+      return s?.gpo && s?.ics && s?.accredo;
     });
   }
 
   expandAll(): void {
     this.filteredAccounts.forEach(a =>
-      this.sectionState.set(a, { ics: true, accredo: true })
+      this.sectionState.set(a, { gpo: true, ics: true, accredo: true })
     );
   }
 
   collapseAll(): void {
     this.filteredAccounts.forEach(a =>
-      this.sectionState.set(a, { ics: false, accredo: false })
+      this.sectionState.set(a, { gpo: false, ics: false, accredo: false })
     );
   }
 
   // ── Inline master-name editing ────────────────────────────────
   startEditName(account: MasterAccount): void {
-    this.editingNameAccount = account;
-    this.editingNameValue = account.masterAccountName;
+    this.editingNameAccount  = account;
+    this.editingNameValue    = account.masterAccountName;
+    this.editingAccountType  = account.accountType;
+    this.editingIbSiteValue  = this.ibCareSiteDisplay(account);
   }
 
   saveEditName(): void {
     if (this.editingNameAccount && this.editingNameValue.trim()) {
       this.editingNameAccount.masterAccountName = this.editingNameValue.trim();
+      this.editingNameAccount.accountType       = this.editingAccountType;
+      this.applyIbSiteToAccount(this.editingNameAccount);
     }
     this.editingNameAccount = null;
-    this.editingNameValue = '';
+    this.editingNameValue   = '';
+    this.editingAccountType = '';
+    this.editingIbSiteValue = '';
   }
 
   cancelEditName(): void {
     this.editingNameAccount = null;
-    this.editingNameValue = '';
+    this.editingNameValue   = '';
+    this.editingAccountType = '';
+    this.editingIbSiteValue = '';
+  }
+
+  // ── GPO level active/inactive ─────────────────────────────────
+  isLevelActive(endDate: string): boolean {
+    if (!endDate) return true;
+    return new Date(endDate) > new Date();
+  }
+
+  // ── GPO hierarchy modal editing ──────────────────────────────
+  openGpoEdit(account: MasterAccount): void {
+    this.editingGpoAccount = account;
+    this.editingGpoForm = {
+      gpoL1: account.gpoL1, gpoL1Start: account.gpoL1Start, gpoL1End: account.gpoL1End,
+      gpoL2: account.gpoL2, gpoL2Start: account.gpoL2Start, gpoL2End: account.gpoL2End,
+      gpoL3: account.gpoL3, gpoL3Start: account.gpoL3Start, gpoL3End: account.gpoL3End,
+      gpoL4: account.gpoL4, gpoL4Start: account.gpoL4Start, gpoL4End: account.gpoL4End,
+      gpoL5: account.gpoL5, gpoL5Start: account.gpoL5Start, gpoL5End: account.gpoL5End,
+    };
+  }
+
+  saveEditGpo(): void {
+    if (!this.editingGpoAccount) return;
+    Object.assign(this.editingGpoAccount, this.editingGpoForm);
+    this.editingGpoAccount = null;
+  }
+
+  cancelEditGpo(): void {
+    this.editingGpoAccount = null;
   }
 
   // ── ICS row actions ───────────────────────────────────────────
@@ -318,7 +525,7 @@ export class CustomerMatrixComponent {
     this.addingIcsAccount = account;
     this.newIcsRow = emptyIcs();
     this.editingIcsRow = null;
-    const existing = this.sectionState.get(account) ?? { ics: false, accredo: false };
+    const existing = this.sectionState.get(account) ?? { gpo: false, ics: false, accredo: false };
     this.sectionState.set(account, { ...existing, ics: true });
   }
 
@@ -368,7 +575,7 @@ export class CustomerMatrixComponent {
     this.addingAccredoAccount = account;
     this.newAccredoRow = emptyAccredo();
     this.editingAccredoRow = null;
-    const existing = this.sectionState.get(account) ?? { ics: false, accredo: false };
+    const existing = this.sectionState.get(account) ?? { gpo: false, ics: false, accredo: false };
     this.sectionState.set(account, { ...existing, accredo: true });
   }
 

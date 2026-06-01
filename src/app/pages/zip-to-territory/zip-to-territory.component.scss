@@ -1,8 +1,123 @@
-.ztt-chip--legacy {
-  background: #f1f5f9;
-  color: #64748b;
+// ── Expand toggle column ──────────────────────────────────────
+.ztt-th-expand {
+  width: 36px;
+  padding-left: 0.75rem !important;
 }
 
+.ztt-td-expand {
+  padding-left: 0.75rem !important;
+  padding-right: 0 !important;
+  text-align: center;
+  width: 36px;
+}
+
+.ztt-expand-btn {
+  align-items: center;
+  background: var(--ib-surface-muted);
+  border: 1px solid var(--ib-border);
+  border-radius: var(--ib-radius-sm);
+  color: var(--ib-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.7rem;
+  justify-content: center;
+  padding: 3px 5px;
+  transition: color 0.13s, background 0.13s, border-color 0.13s;
+
+  .bi { transition: transform 0.2s ease; }
+
+  &:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+    color: var(--ib-navy);
+  }
+
+  &--open {
+    background: #e0e7ff;
+    border-color: #a5b4fc;
+    color: #4338ca;
+    .bi { transform: rotate(90deg); }
+  }
+}
+
+// ── Row states ────────────────────────────────────────────────
+.ztt-row-expanded {
+  background: #f8fafc !important;
+}
+
+// ── History panel — matches GPO section body style ────────────
+.ztt-history-row > td {
+  padding: 0 !important;
+}
+
+.ztt-history-panel {
+  background: #f8fafc;
+  border-bottom: 2px solid var(--ib-border);
+  border-left: 3px solid #6366f1;
+  border-top: 1px solid var(--ib-border);
+}
+
+.ztt-history-section-header {
+  align-items: center;
+  border-bottom: 1px solid var(--ib-border);
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+
+  .bi {
+    color: #6366f1;
+    font-size: 0.75rem;
+  }
+}
+
+.ztt-history-label {
+  color: #4338ca;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ztt-history-sub {
+  color: var(--ib-muted);
+  font-size: 0.72rem;
+}
+
+.ztt-history-body {
+  padding: 0.75rem 1.5rem 1rem;
+
+  .table-responsive {
+    border: 1px solid var(--ib-border);
+    border-radius: var(--ib-radius-md);
+    overflow: hidden;
+  }
+}
+
+.ztt-history-table {
+  font-size: 0.8rem;
+  margin-bottom: 0;
+
+  td, th { vertical-align: middle; }
+}
+
+// ── Veeva Area ID chip ────────────────────────────────────────
+.ztt-chip--veeva {
+  background: #f0f9ff;
+  border-color: #7dd3fc;
+  color: #0369a1;
+  font-family: ui-monospace, monospace;
+  font-size: 0.71rem;
+}
+
+// ── Footer note ───────────────────────────────────────────────
+.ztt-footer-note {
+  border-top: 1px solid var(--ib-border);
+  color: var(--ib-muted);
+  font-size: 0.78rem;
+  padding: 0.55rem 1.25rem;
+}
+
+// ── Modal footer ──────────────────────────────────────────────
 .ztt-modal-footer {
   border-top: 1px solid var(--ib-border);
   display: flex;

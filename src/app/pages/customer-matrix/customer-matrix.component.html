@@ -35,27 +35,112 @@
     </div>
 
     <div class="cm-master-card ib-section-card" *ngFor="let account of filteredAccounts; let i = index"
-         [style.animation-delay]="i * 40 + 'ms'">
+         [style.animation-delay]="i * 40 + 'ms'"
+         [class.cm-master-card--editing]="editingNameAccount === account">
 
       <!-- Card header -->
-      <div class="ib-section-card__header">
+      <div class="ib-section-card__header cm-card-header">
 
-        <!-- View mode -->
+        <!-- ── View mode ── -->
         <ng-container *ngIf="editingNameAccount !== account">
           <h5 class="ib-section-card__title mb-0">{{ account.masterAccountName }}</h5>
-          <button class="cm-name-edit-btn" (click)="startEditName(account)" title="Rename master account">
+          <span class="cm-acct-type-badge"
+            [class.cm-acct-type-badge--community]="account.accountType === 'Community'"
+            [class.cm-acct-type-badge--hospital]="account.accountType === 'Hospital'"
+            [class.cm-acct-type-badge--academic]="account.accountType === 'Academic'"
+            [class.cm-acct-type-badge--empty]="!account.accountType">
+            {{ account.accountType || 'No Type' }}
+          </span>
+          <span class="cm-header-sep">·</span>
+          <span class="cm-ib-site-view" *ngIf="account.ibCareSiteId">
+            <i class="bi bi-geo-alt" style="font-size:0.7rem;"></i>
+            <span class="cm-ib-site-id">{{ account.ibCareSiteId }}</span>
+            <span class="text-muted">—</span>
+            <span>{{ account.ibCareSiteName }}</span>
+          </span>
+          <span class="cm-ib-site-view cm-ib-site-view--empty" *ngIf="!account.ibCareSiteId">
+            <i class="bi bi-geo-alt" style="font-size:0.7rem;"></i> No IB Site
+          </span>
+          <button class="cm-name-edit-btn ms-auto" (click)="startEditName(account)" title="Edit">
             <i class="bi bi-pencil-fill"></i>
           </button>
         </ng-container>
 
-        <!-- Edit mode -->
+        <!-- ── Edit mode: single row ── -->
         <ng-container *ngIf="editingNameAccount === account">
+          <div class="cm-edit-field flex-grow-1">
+            <label class="cm-edit-field__label">Master Account Name</label>
           <input class="form-control form-control-sm cm-name-input"
             [(ngModel)]="editingNameValue"
             (keydown.enter)="saveEditName()"
             (keydown.escape)="cancelEditName()"
+            placeholder="Master account name"
             autocomplete="off">
-          <button class="cm-name-icon-btn cm-name-icon-btn--save" (click)="saveEditName()" title="Save">
+          </div>
+
+          <div class="cm-edit-field">
+            <label class="cm-edit-field__label">Account Type</label>
+            <select class="form-select form-select-sm cm-acct-type-select"
+                [(ngModel)]="editingAccountType"
+                name="editAccountType"
+                [class.cm-acct-type-select--community]="editingAccountType === 'Community'"
+                [class.cm-acct-type-select--hospital]="editingAccountType === 'Hospital'"
+                [class.cm-acct-type-select--academic]="editingAccountType === 'Academic'">
+                <option value="">Select type…</option>
+                <option value="Community">Community</option>
+                <option value="Hospital">Hospital</option>
+                <option value="Academic">Academic</option>
+              </select>
+            </div>
+
+            <div class="cm-edit-field">
+              <label class="cm-edit-field__label">IB Care Site</label>
+              <div class="cm-site-dropdown" [class.cm-site-dropdown--open]="ibSiteDropdownOpen" (click)="$event.stopPropagation()">
+
+                <!-- Trigger -->
+                <button type="button" class="cm-site-trigger" (click)="openIbSiteDropdown()">
+                  <ng-container *ngIf="editingIbSiteValue">
+                    <span class="cm-ib-site-id-sm">{{ editingIbSiteValue.split(' — ')[0] }}</span>
+                    <span class="cm-site-trigger__name">{{ editingIbSiteValue.split(' — ')[1] }}</span>
+                  </ng-container>
+                  <span *ngIf="!editingIbSiteValue" class="cm-site-trigger__placeholder">— Select site —</span>
+                  <i class="bi bi-chevron-down cm-site-trigger__caret"></i>
+                </button>
+
+                <!-- Panel -->
+                <div class="cm-site-dropdown__panel" *ngIf="ibSiteDropdownOpen">
+                  <div class="cm-site-dropdown__search">
+                    <i class="bi bi-search cm-site-dropdown__search-icon"></i>
+                    <input type="text"
+                      class="cm-site-dropdown__search-input"
+                      [(ngModel)]="ibSiteSearchTerm"
+                      name="ibSiteSearch"
+                      placeholder="Search by ID or name…"
+                      autocomplete="off">
+                  </div>
+                  <ul class="cm-site-dropdown__list">
+                    <li *ngIf="editingIbSiteValue"
+                      class="cm-site-dropdown__item cm-site-dropdown__item--clear"
+                      (mousedown)="selectIbSite(null)">
+                      <i class="bi bi-x-circle"></i> Clear
+                    </li>
+                    <li *ngFor="let s of filteredIbSites"
+                      class="cm-site-dropdown__item"
+                      [class.cm-site-dropdown__item--selected]="editingIbSiteValue === s.id + ' — ' + s.name"
+                      (mousedown)="selectIbSite(s)">
+                      <span class="cm-ib-site-id-sm">{{ s.id }}</span>
+                      <span>{{ s.name }}</span>
+                    </li>
+                    <li *ngIf="filteredIbSites.length === 0" class="cm-site-dropdown__empty">
+                      No sites match "{{ ibSiteSearchTerm }}"
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+          <button class="cm-name-icon-btn cm-name-icon-btn--save ms-auto" (click)="saveEditName()" title="Save">
             <i class="bi bi-check-lg"></i>
           </button>
           <button class="cm-name-icon-btn cm-name-icon-btn--cancel" (click)="cancelEditName()" title="Cancel">
@@ -65,7 +150,108 @@
 
       </div>
 
-      <!-- ICS Accounts section -->
+      <!-- ── GPO Hierarchy section ──────────────────────────── -->
+      <div class="cm-section cm-section--gpo">
+        <button class="cm-section__header" (click)="toggleSection(account, 'gpo')" type="button">
+          <i class="bi bi-chevron-right cm-section__chevron"
+            [class.cm-section__chevron--open]="isSectionOpen(account, 'gpo')"></i>
+          <span class="cm-section__label">GPO Hierarchy</span>
+          <span class="cm-section__badge" [class.cm-section__badge--gpo]="account.gpoL1">
+            {{ account.gpoL1 || '—' }}
+          </span>
+        </button>
+
+        <div class="cm-section__body" *ngIf="isSectionOpen(account, 'gpo')">
+          <ng-container *ngIf="account.gpoL1; else noGpo">
+          <div class="table-responsive">
+            <table class="table table-hover table-sm align-middle mb-0 ib-data-table cm-gpo-table">
+              <thead class="ib-table-header">
+                <tr>
+                  <th class="py-2 px-3" style="white-space:nowrap;">GPO (L1)</th>
+                  <th class="py-2" style="white-space:nowrap;">Sub-GPO (L2)</th>
+                  <th class="py-2" style="white-space:nowrap;">Group (L3)</th>
+                  <th class="py-2" style="white-space:nowrap;">Sub-Group (L4)</th>
+                  <th class="py-2" style="white-space:nowrap;">Practice (L5)</th>
+                  <th class="py-2 text-center px-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="px-3">
+                    <ng-container *ngIf="account.gpoL1">
+                      <span class="ib-chip">{{ account.gpoL1 }}</span>
+                      <div class="cm-gpo-level-status"
+                        [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL1End)"
+                        [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL1End)">
+                        ● {{ isLevelActive(account.gpoL1End) ? 'Active' : 'Inactive' }}
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td style="white-space:nowrap;">
+                    <ng-container *ngIf="account.gpoL2">
+                      <span class="cm-gpo-text">{{ account.gpoL2 }}</span>
+                      <div class="cm-gpo-level-status"
+                        [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL2End)"
+                        [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL2End)">
+                        ● {{ isLevelActive(account.gpoL2End) ? 'Active' : 'Inactive' }}
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td style="white-space:nowrap;">
+                    <ng-container *ngIf="account.gpoL3">
+                      <span class="cm-gpo-text">{{ account.gpoL3 }}</span>
+                      <div class="cm-gpo-level-status"
+                        [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL3End)"
+                        [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL3End)">
+                        ● {{ isLevelActive(account.gpoL3End) ? 'Active' : 'Inactive' }}
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td style="white-space:nowrap;">
+                    <ng-container *ngIf="account.gpoL4">
+                      <span class="cm-gpo-text">{{ account.gpoL4 }}</span>
+                      <div class="cm-gpo-level-status"
+                        [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL4End)"
+                        [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL4End)">
+                        ● {{ isLevelActive(account.gpoL4End) ? 'Active' : 'Inactive' }}
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td style="white-space:nowrap;">
+                    <ng-container *ngIf="account.gpoL5">
+                      <span class="cm-gpo-text">{{ account.gpoL5 }}</span>
+                      <div class="cm-gpo-level-status"
+                        [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL5End)"
+                        [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL5End)">
+                        ● {{ isLevelActive(account.gpoL5End) ? 'Active' : 'Inactive' }}
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td class="text-center px-3">
+                    <button class="ib-icon-btn" (click)="openGpoEdit(account)" title="Edit GPO hierarchy">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          </ng-container>
+
+          <ng-template #noGpo>
+            <p class="cm-empty-section">No GPO hierarchy linked to this master.</p>
+          </ng-template>
+
+          <div class="cm-inline-add-bar" *ngIf="!account.gpoL1">
+            <button class="cm-text-add-btn cm-text-add-btn--gpo" (click)="openGpoEdit(account)" type="button">
+              <i class="bi bi-plus-lg"></i> Add GPO Hierarchy
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ICS Accounts section ────────────────────────────── -->
       <div class="cm-section cm-section--ics">
         <button class="cm-section__header" (click)="toggleSection(account, 'ics')" type="button">
           <i class="bi bi-chevron-right cm-section__chevron"
@@ -170,7 +356,7 @@
         </div>
       </div>
 
-      <!-- Accredo Accounts section -->
+      <!-- ── Accredo Accounts section ───────────────────────── -->
       <div class="cm-section cm-section--accredo cm-section--last">
         <button class="cm-section__header" (click)="toggleSection(account, 'accredo')" type="button">
           <i class="bi bi-chevron-right cm-section__chevron"
@@ -278,3 +464,176 @@
     </div>
   </div>
 </div>
+
+
+<!-- ── GPO Hierarchy Edit Modal ────────────────────────────────── -->
+<div *ngIf="editingGpoAccount" class="ib-modal-overlay" (click)="cancelEditGpo()">
+  <div class="ib-modal-shell cm-gpo-modal" (click)="$event.stopPropagation()">
+
+    <div class="ib-modal-header">
+      <div class="d-flex flex-column gap-1">
+        <h5 class="ib-modal-title mb-0">{{ editingGpoAccount?.gpoL1 ? 'Edit' : 'Add' }} GPO Hierarchy</h5>
+        <span class="text-muted small">{{ editingGpoAccount.masterAccountName }}</span>
+      </div>
+      <button type="button" class="btn-close" (click)="cancelEditGpo()"></button>
+    </div>
+
+    <div class="ib-modal-body">
+      <form #gpoEditForm="ngForm">
+
+        <!-- L1 -->
+        <div class="cm-gpo-level-row">
+          <div class="cm-gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="cm-gpo-level-pill">L1</span>
+              <span class="cm-gpo-level-title">GPO</span>
+            </div>
+            <span class="cm-gpo-status-pill"
+              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL1End)"
+              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL1End)">
+              ● {{ isLevelActive(editingGpoForm.gpoL1End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="cm-gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL1" name="gpoL1" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL1Start" name="gpoL1Start">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL1End" name="gpoL1End">
+            </div>
+          </div>
+        </div>
+
+        <!-- L2 -->
+        <div class="cm-gpo-level-row">
+          <div class="cm-gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="cm-gpo-level-pill cm-gpo-level-pill--l2">L2</span>
+              <span class="cm-gpo-level-title">SUB-GPO (NETWORK)</span>
+            </div>
+            <span class="cm-gpo-status-pill"
+              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL2End)"
+              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL2End)">
+              ● {{ isLevelActive(editingGpoForm.gpoL2End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="cm-gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL2" name="gpoL2" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL2Start" name="gpoL2Start">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL2End" name="gpoL2End">
+            </div>
+          </div>
+        </div>
+
+        <!-- L3 -->
+        <div class="cm-gpo-level-row">
+          <div class="cm-gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="cm-gpo-level-pill cm-gpo-level-pill--l3">L3</span>
+              <span class="cm-gpo-level-title">GROUP</span>
+            </div>
+            <span class="cm-gpo-status-pill"
+              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL3End)"
+              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL3End)">
+              ● {{ isLevelActive(editingGpoForm.gpoL3End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="cm-gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL3" name="gpoL3" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL3Start" name="gpoL3Start">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL3End" name="gpoL3End">
+            </div>
+          </div>
+        </div>
+
+        <!-- L4 -->
+        <div class="cm-gpo-level-row">
+          <div class="cm-gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="cm-gpo-level-pill cm-gpo-level-pill--l4">L4</span>
+              <span class="cm-gpo-level-title">SUB-GROUP</span>
+            </div>
+            <span class="cm-gpo-status-pill"
+              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL4End)"
+              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL4End)">
+              ● {{ isLevelActive(editingGpoForm.gpoL4End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="cm-gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL4" name="gpoL4" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL4Start" name="gpoL4Start">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL4End" name="gpoL4End">
+            </div>
+          </div>
+        </div>
+
+        <!-- L5 -->
+        <div class="cm-gpo-level-row cm-gpo-level-row--last">
+          <div class="cm-gpo-level-row__header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="cm-gpo-level-pill cm-gpo-level-pill--l5">L5</span>
+              <span class="cm-gpo-level-title">PRACTICE</span>
+            </div>
+            <span class="cm-gpo-status-pill"
+              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL5End)"
+              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL5End)">
+              ● {{ isLevelActive(editingGpoForm.gpoL5End) ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="cm-gpo-field-label">VALUE</label>
+              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL5" name="gpoL5" autocomplete="off">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">START DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL5Start" name="gpoL5Start">
+            </div>
+            <div class="col-3">
+              <label class="cm-gpo-field-label">END DATE</label>
+              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL5End" name="gpoL5End">
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="cm-gpo-modal-footer">
+      <button type="button" class="btn ib-btn-secondary" (click)="cancelEditGpo()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="saveEditGpo()">Save Changes</button>
+    </div>
+
+  </div>
+</div>
+

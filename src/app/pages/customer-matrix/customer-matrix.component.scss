@@ -59,8 +59,6 @@
 
   &--ics#{&}--active     { background: #059669; }
   &--accredo#{&}--active { background: #2563eb; }
-  &--both#{&}--active    { background: #6d28d9; }
-  &--neither#{&}--active { background: var(--ib-muted); }
 }
 
 // ── Card list ─────────────────────────────────────────────────
@@ -78,7 +76,11 @@
 .cm-master-card {
   animation: cm-card-in 0.3s ease-out both;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.05);
+  overflow: visible !important;
+  position: relative;
   transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+
+  &--editing { z-index: 10; }
 
   &:hover {
     border-color: #c7d2fe !important;
@@ -87,11 +89,232 @@
   }
 }
 
+// ── Card header layout ────────────────────────────────────────
+.cm-card-header {
+  align-items: flex-end;
+  gap: 0.6rem;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow: visible;   // allow dropdown panel to escape card bounds
+}
+
+.cm-field-label {
+  color: var(--ib-muted);
+  flex-shrink: 0;
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cm-header-sep {
+  color: var(--ib-muted-soft);
+  font-size: 0.8rem;
+}
+
+// ── Account Type badge (view) ─────────────────────────────────
+.cm-acct-type-badge {
+  border-radius: 999px;
+  border: 1px solid;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 9px;
+
+  &--community { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+  &--hospital  { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+  &--academic  { background: #fdf4ff; border-color: #d8b4fe; color: #7e22ce; }
+  &--empty     { background: #f8fafc; border-color: #e2e8f0; color: #94a3b8; font-style: italic; }
+}
+
+// ── IB Care Site display (view) ───────────────────────────────
+.cm-ib-site-view {
+  align-items: center;
+  color: var(--ib-muted);
+  display: inline-flex;
+  font-size: 0.73rem;
+  gap: 0.3rem;
+
+  &--empty { font-style: italic; color: var(--ib-muted-soft); }
+}
+
+.cm-ib-site-id {
+  background: #f0f9ff;
+  border: 1px solid #7dd3fc;
+  border-radius: 4px;
+  color: #0369a1;
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0 5px;
+}
+
+// ── Edit field group (Account Type / IB Site) ────────────────
+.cm-edit-field {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 3px;
+}
+
+.cm-name-icon-btn {
+  flex-shrink: 0;
+  height: 31px;
+  margin-bottom: 1px;
+  width: 31px;
+}
+
+.cm-edit-field__label {
+  color: var(--ib-muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+// ── Account Type select (edit) ────────────────────────────────
+.cm-acct-type-select {
+  font-size: 0.73rem;
+  font-weight: 600;
+  height: 31px !important;
+  max-width: 145px;
+  padding-block: 0;
+
+  &.cm-acct-type-select--community { background-color: #f0fdf4; border-color: #86efac; color: #15803d; }
+  &.cm-acct-type-select--hospital  { background-color: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+  &.cm-acct-type-select--academic  { background-color: #fdf4ff; border-color: #d8b4fe; color: #7e22ce; }
+}
+
+// ── IB Care Site searchable dropdown ─────────────────────────
+.cm-site-dropdown {
+  position: relative;
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.cm-site-trigger {
+  align-items: center;
+  background: var(--ib-white);
+  border: 1px solid #ced4da;
+  border-radius: var(--ib-radius-sm);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.73rem;
+  gap: 0.35rem;
+  height: 31px;
+  padding: 0 0.55rem;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+
+  &:hover { border-color: #adb5bd; }
+
+  .cm-site-dropdown--open & {
+    border-color: var(--ib-teal);
+    box-shadow: var(--ib-focus-ring);
+  }
+}
+
+.cm-site-trigger__name     { color: var(--ib-text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cm-site-trigger__placeholder { color: #adb5bd; }
+.cm-site-trigger__caret    { color: var(--ib-muted); font-size: 0.6rem; margin-left: auto; flex-shrink: 0; transition: transform 0.15s; }
+.cm-site-dropdown--open .cm-site-trigger__caret { transform: rotate(180deg); }
+
+.cm-site-dropdown__panel {
+  background: var(--ib-white);
+  border: 1px solid var(--ib-border);
+  border-radius: var(--ib-radius-md);
+  box-shadow: var(--ib-shadow-md);
+  left: 0;
+  max-height: 260px;
+  overflow: hidden;
+  position: absolute;
+  top: calc(100% + 4px);
+  width: 100%;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.cm-site-dropdown__search {
+  align-items: center;
+  border-bottom: 1px solid var(--ib-border);
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.45rem 0.65rem;
+}
+
+.cm-site-dropdown__search-icon {
+  color: var(--ib-muted-soft);
+  flex-shrink: 0;
+  font-size: 0.72rem;
+}
+
+.cm-site-dropdown__search-input {
+  background: transparent;
+  border: none;
+  color: var(--ib-text);
+  flex: 1;
+  font-size: 0.77rem;
+  outline: none;
+  padding: 0;
+}
+
+.cm-site-dropdown__list {
+  list-style: none;
+  margin: 0;
+  overflow-y: auto;
+  padding: 0.25rem 0;
+}
+
+.cm-site-dropdown__item {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.76rem;
+  gap: 0.5rem;
+  padding: 0.38rem 0.75rem;
+  transition: background 0.1s;
+
+  &:hover { background: #f1f5f9; }
+
+  &--selected { background: #eff6ff; font-weight: 600; }
+
+  &--clear {
+    color: var(--ib-muted);
+    font-size: 0.72rem;
+    border-bottom: 1px solid var(--ib-border);
+    padding-bottom: 0.45rem;
+    margin-bottom: 0.15rem;
+
+    &:hover { background: #fef2f2; color: #dc2626; }
+  }
+}
+
+.cm-site-dropdown__empty {
+  color: var(--ib-muted-soft);
+  font-size: 0.76rem;
+  font-style: italic;
+  padding: 0.55rem 0.75rem;
+}
+
+.cm-ib-site-id-sm {
+  background: #f0f9ff;
+  border: 1px solid #7dd3fc;
+  border-radius: 3px;
+  color: #0369a1;
+  flex-shrink: 0;
+  font-family: ui-monospace, monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0 4px;
+}
 
 // ── Card header — rename controls ─────────────────────────────
 .cm-name-input {
-  flex: 1;
+  flex: 1 1 0;          // grow to fill all remaining space
   font-weight: 600;
+  min-width: 0;         // allow shrinking past content width
 }
 
 .cm-name-edit-btn {
@@ -130,7 +353,6 @@
     background: #059669;
     border-color: #059669;
     color: #ffffff;
-
     &:hover { background: #047857; border-color: #047857; }
   }
 
@@ -139,16 +361,20 @@
     border-color: #fca5a5;
     color: #ef4444;
     font-size: 0.75rem;
-
     &:hover { background: #fee2e2; border-color: #f87171; color: #dc2626; }
   }
 }
 
-// ── Section (ICS / Accredo) ───────────────────────────────────
+// ── Sections (GPO / ICS / Accredo) ───────────────────────────
 .cm-section {
   border-bottom: 1px solid var(--ib-border);
 
   &--last { border-bottom: none; }
+
+  &--gpo {
+    border-right: 3px solid #6366f1;
+    .cm-section__label { color: #4338ca; }
+  }
 
   &--ics {
     border-right: 3px solid #10b981;
@@ -203,6 +429,7 @@
   padding: 1px 7px;
   transition: background 0.15s, color 0.15s;
 
+  &--gpo     { background: #ede9fe; color: #4338ca; }
   &--ics     { background: #d1fae5; color: #065f46; }
   &--accredo { background: #dbeafe; color: #1e40af; }
 }
@@ -212,13 +439,112 @@
   padding: 0 2rem 0.75rem;
 }
 
-
 @keyframes cm-fade-in {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-// ── BP / NPI chips (extend ib-chip) ──────────────────────────
+// ── GPO table (mirrors gpo.component) ────────────────────────
+.cm-gpo-table {
+  font-size: 0.8rem;
+
+  td, th { vertical-align: top; }
+}
+
+.cm-gpo-text {
+  color: var(--ib-navy);
+  font-size: 0.78rem;
+}
+
+.cm-gpo-level-status {
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-top: 3px;
+  white-space: nowrap;
+
+  &--active   { color: #059669; }
+  &--inactive { color: #94a3b8; }
+}
+
+
+// ── GPO edit modal ────────────────────────────────────────────
+.cm-gpo-modal {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  max-width: 860px;
+  width: 100%;
+
+  .ib-modal-body { overflow-y: auto; flex: 1; padding: 0; }
+}
+
+.cm-gpo-modal-footer {
+  border-top: 1px solid var(--ib-border);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+}
+
+// ── GPO level rows ────────────────────────────────────────────
+.cm-gpo-level-row {
+  border-bottom: 1px solid var(--ib-border);
+  padding: 1.1rem 1.4rem;
+
+  &--last { border-bottom: none; }
+}
+
+.cm-gpo-level-row__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.cm-gpo-level-title {
+  color: var(--ib-navy);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cm-gpo-level-pill {
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  background: #ede9fe; color: #5b21b6;
+
+  &--l2 { background: #e0f2fe; color: #0369a1; }
+  &--l3 { background: #f0fdf4; color: #166534; }
+  &--l4 { background: #fff7ed; color: #9a3412; }
+  &--l5 { background: #fdf4ff; color: #7e22ce; }
+}
+
+.cm-gpo-status-pill {
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+
+  &--active   { background: #d1fae5; color: #065f46; }
+  &--inactive { background: #f1f5f9; color: #64748b; }
+}
+
+.cm-gpo-field-label {
+  color: var(--ib-muted);
+  display: block;
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+// ── BP / NPI chips ────────────────────────────────────────────
 .cm-bp-chip {
   background: #f0fdf4;
   border-color: #86efac;
@@ -251,7 +577,6 @@
 }
 
 // ── Row states ────────────────────────────────────────────────
-
 .cm-row-editing {
   background: #fffbeb !important;
   outline: 1.5px solid #fcd34d;
@@ -288,19 +613,13 @@
     background: var(--ib-surface-muted);
     border-color: var(--ib-border);
     color: var(--ib-muted);
-
-    &:hover {
-      background: #eef2ff;
-      border-color: #a5b4fc;
-      color: #4338ca;
-    }
+    &:hover { background: #eef2ff; border-color: #a5b4fc; color: #4338ca; }
   }
 
   &--delete {
     background: #fef2f2;
     border-color: #fca5a5;
     color: #ef4444;
-
     &:hover { background: #fee2e2; border-color: #f87171; color: #dc2626; }
   }
 
@@ -309,7 +628,6 @@
     border-color: #059669;
     color: #ffffff;
     font-size: 0.85rem;
-
     &:hover:not(:disabled) { background: #047857; border-color: #047857; }
     &:disabled { cursor: default; opacity: 0.45; }
   }
@@ -317,7 +635,6 @@
   &--save-npi {
     background: #3b82f6;
     border-color: #3b82f6;
-
     &:hover:not(:disabled) { background: #2563eb; border-color: #2563eb; }
   }
 
@@ -326,7 +643,6 @@
     border-color: #fca5a5;
     color: #ef4444;
     font-size: 0.72rem;
-
     &:hover { background: #fee2e2; border-color: #f87171; color: #dc2626; }
   }
 }
@@ -335,7 +651,7 @@
 .cm-state-input { max-width: 52px; text-transform: uppercase; }
 .cm-zip-input   { max-width: 82px; }
 
-// ── Empty section text ────────────────────────────────────────
+// ── Empty section / add bar ───────────────────────────────────
 .cm-empty-section {
   color: var(--ib-muted-soft);
   font-size: 0.8rem;
@@ -344,7 +660,6 @@
   padding: 0 1.25rem;
 }
 
-// ── Add row text-link ─────────────────────────────────────────
 .cm-inline-add-bar {
   padding: 0.1rem 1.25rem 0;
 }
@@ -363,6 +678,7 @@
 
   &:hover { opacity: 0.65; text-decoration: underline; }
 
-  &--ics    { color: #059669; }
+  &--ics     { color: #059669; }
   &--accredo { color: #2563eb; }
+  &--gpo     { color: #4338ca; }
 }

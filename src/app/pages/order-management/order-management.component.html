@@ -50,13 +50,55 @@
       <table class="table table-hover table-sm align-middle ib-data-table w-100">
         <thead class="ib-table-header">
           <tr>
-            <th class="py-2 px-3 om-th-nowrap">Ship To Name</th>
-            <th class="py-2 om-th-nowrap">Business Manager</th>
-            <th class="py-2 om-th-nowrap">Territory</th>
-            <th class="py-2 text-center om-th-nowrap">Delivery Qty</th>
-            <th class="py-2 text-center om-th-nowrap">Units Assigned</th>
-            <th class="py-2 om-th-nowrap">Channel</th>
-            <th class="py-2 om-th-nowrap">Status</th>
+            <th class="py-2 px-3 om-th-nowrap om-th-sort" (click)="sortBy('shipToName')">
+              Ship To Name
+              <i class="bi om-sort-icon"
+                [class.bi-arrow-down]="sortColumn === 'shipToName' && sortDirection === 'desc'"
+                [class.bi-arrow-up]="sortColumn === 'shipToName' && sortDirection === 'asc'"
+                [class.bi-arrow-down-up]="sortColumn !== 'shipToName'"></i>
+            </th>
+            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('invoiceDate')">
+              Invoice Date
+              <i class="bi om-sort-icon"
+                [class.bi-arrow-down]="sortColumn === 'invoiceDate' && sortDirection === 'desc'"
+                [class.bi-arrow-up]="sortColumn === 'invoiceDate' && sortDirection === 'asc'"
+                [class.bi-arrow-down-up]="sortColumn !== 'invoiceDate'"></i>
+            </th>
+            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('businessManager')">
+              Business Manager
+              <i class="bi om-sort-icon"
+                [class.bi-arrow-down]="sortColumn === 'businessManager' && sortDirection === 'desc'"
+                [class.bi-arrow-up]="sortColumn === 'businessManager' && sortDirection === 'asc'"
+                [class.bi-arrow-down-up]="sortColumn !== 'businessManager'"></i>
+            </th>
+            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('territory')">
+              Territory
+              <i class="bi om-sort-icon"
+                [class.bi-arrow-down]="sortColumn === 'territory' && sortDirection === 'desc'"
+                [class.bi-arrow-up]="sortColumn === 'territory' && sortDirection === 'asc'"
+                [class.bi-arrow-down-up]="sortColumn !== 'territory'"></i>
+            </th>
+            <th class="py-2 text-center om-th-nowrap om-th-sort" (click)="sortBy('deliveryQty')">
+              Delivery Qty
+              <i class="bi om-sort-icon"
+                [class.bi-arrow-down]="sortColumn === 'deliveryQty' && sortDirection === 'desc'"
+                [class.bi-arrow-up]="sortColumn === 'deliveryQty' && sortDirection === 'asc'"
+                [class.bi-arrow-down-up]="sortColumn !== 'deliveryQty'"></i>
+            </th>
+            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('distribution')">
+              Channel
+              <i class="bi om-sort-icon"
+                [class.bi-arrow-down]="sortColumn === 'distribution' && sortDirection === 'desc'"
+                [class.bi-arrow-up]="sortColumn === 'distribution' && sortDirection === 'asc'"
+                [class.bi-arrow-down-up]="sortColumn !== 'distribution'"></i>
+            </th>
+            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('status')">
+              Status
+              <i class="bi om-sort-icon"
+                [class.bi-arrow-down]="sortColumn === 'status' && sortDirection === 'desc'"
+                [class.bi-arrow-up]="sortColumn === 'status' && sortDirection === 'asc'"
+                [class.bi-arrow-down-up]="sortColumn !== 'status'"></i>
+            </th>
             <th class="py-2 om-th-nowrap">Commercial</th>
             <th class="py-2 om-th-nowrap">IC Eligible</th>
             <th class="py-2 text-end px-3 om-th-nowrap">Actions</th>
@@ -65,6 +107,10 @@
         <tbody>
           <tr *ngFor="let order of filteredOrders">
             <td class="px-3 om-ship-name-cell">{{ order.shipToName }}</td>
+            <td class="om-th-nowrap">
+              <span *ngIf="order.invoiceDate" class="om-invoice-date">{{ order.invoiceDate }}</span>
+              <span *ngIf="!order.invoiceDate" class="text-muted fst-italic small">—</span>
+            </td>
             <td>
               <span [class.text-muted]="order.businessManager === 'OPEN'" [class.fst-italic]="order.businessManager === 'OPEN'">
                 {{ order.businessManager }}
@@ -72,7 +118,6 @@
             </td>
             <td>{{ order.territory }}</td>
             <td class="text-center">{{ order.deliveryQty }}</td>
-            <td class="text-center">{{ order.unitsAssigned }}</td>
             <td class="small">{{ order.distribution }}</td>
             <td>
               <span class="ib-status-badge" [ngClass]="{
@@ -84,20 +129,26 @@
             <td>
               <span class="om-flag-badge"
                 [class.om-flag-badge--on]="order.isCommercial"
-                [class.om-flag-badge--off]="!order.isCommercial"
-                [title]="order.isCommercial ? 'Commercial' : 'Non-Commercial'">
+                [class.om-flag-badge--off]="!order.isCommercial">
                 <i class="bi" [class.bi-check-circle-fill]="order.isCommercial" [class.bi-x-circle-fill]="!order.isCommercial"></i>
               </span>
             </td>
             <td>
               <span class="om-flag-badge"
                 [class.om-flag-badge--on]="order.icEligible"
-                [class.om-flag-badge--off]="!order.icEligible"
-                [title]="order.icEligible ? 'IC Eligible' : 'Not IC Eligible'">
+                [class.om-flag-badge--off]="!order.icEligible">
                 <i class="bi" [class.bi-check-circle-fill]="order.icEligible" [class.bi-x-circle-fill]="!order.icEligible"></i>
               </span>
             </td>
-            <td class="px-3 text-end" style="white-space: nowrap;">
+            <td class="px-3 text-end" style="white-space:nowrap;">
+              <!-- Shipment Issue Flag (#7) -->
+              <span class="om-tooltip-wrap" [attr.data-tip]="order.shipmentIssueFlag ? 'Issue: ' + order.shipmentIssueStatus : 'Flag Shipment Issue'">
+                <button class="ib-icon-btn me-1 om-issue-btn"
+                  [class.om-issue-btn--active]="order.shipmentIssueFlag"
+                  (click)="openIssueFlagModal(order)">
+                  <i class="bi" [class.bi-flag-fill]="order.shipmentIssueFlag" [class.bi-flag]="!order.shipmentIssueFlag"></i>
+                </button>
+              </span>
               <span class="om-tooltip-wrap" data-tip="Track Shipment">
                 <button class="ib-icon-btn me-1" (click)="openTrackModal(order)">
                   <i class="bi bi-truck"></i>
@@ -122,11 +173,6 @@
                   </svg>
                 </button>
               </span>
-              <!-- <span class="om-tooltip-wrap" data-tip="Ship To Details">
-                <button class="ib-icon-btn" (click)="openDetailsModal(order)">
-                  <i class="bi bi-card-list"></i>
-                </button>
-              </span> -->
             </td>
           </tr>
           <tr *ngIf="filteredOrders.length === 0">
@@ -162,19 +208,14 @@
             <label class="form-label fw-bold small text-muted">Distribution</label>
             <select class="form-select" [(ngModel)]="addForm.distribution" name="addDist">
               <option value="">— Select —</option>
-              <option>ICS</option>
-              <option>Accredo</option>
-              <option>IB Care</option>
+              <option>ICS</option><option>Accredo</option><option>IB Care</option>
             </select>
           </div>
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">Status</label>
             <select class="form-select" [(ngModel)]="addForm.status" name="addStatus">
               <option value="">— Select —</option>
-              <option>Shipped</option>
-              <option>Pending</option>
-              <option>Credit Hold</option>
-              <option>Cancelled</option>
+              <option>Shipped</option><option>Pending</option><option>Credit Hold</option><option>Cancelled</option>
             </select>
           </div>
 
@@ -214,7 +255,7 @@
             <label class="form-label fw-bold small text-muted">Business Manager</label>
             <select class="form-select" [(ngModel)]="addForm.businessManager" name="addMgr">
               <option value="">— Select —</option>
-              <option *ngFor="let opt of managerOptions">{{ opt }}</option>
+              <option *ngFor="let opt of allManagerOptions">{{ opt }}</option>
             </select>
           </div>
           <div class="col-md-6">
@@ -235,6 +276,10 @@
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">Order Date</label>
             <input type="date" class="form-control" [(ngModel)]="addForm.orderDate" name="addOrderDate">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Invoice Date</label>
+            <input type="date" class="form-control" [(ngModel)]="addForm.invoiceDate" name="addInvoiceDate">
           </div>
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">Delivery Date</label>
@@ -400,6 +445,10 @@
             <input type="date" class="form-control om-readonly" [(ngModel)]="editForm.orderDate" name="editOrderDate" readonly>
           </div>
           <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Invoice Date</label>
+            <input type="date" class="form-control om-readonly" [(ngModel)]="editForm.invoiceDate" name="editInvoiceDate" readonly>
+          </div>
+          <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">Delivery Date</label>
             <input type="date" class="form-control om-editable" [(ngModel)]="editForm.deliveryDate" name="editDeliveryDate">
           </div>
@@ -436,7 +485,7 @@
 </div>
 
 
-<!-- ══ MODAL 3 — Split Order ═════════════════════════════════ -->
+<!-- ══ MODAL 3 — Split Order (#4 ABD→TBM) ════════════════════ -->
 <div *ngIf="splittingOrder" class="ib-modal-overlay" (click)="closeSplitModal()">
   <div class="ib-modal-shell om-modal" style="max-width: 820px;" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
@@ -473,7 +522,10 @@
         </div>
         <div class="om-split-row" *ngFor="let row of splitAssignments; let i = index">
           <div>
-            <select class="form-select form-select-sm bg-light" [(ngModel)]="row.abd" [name]="'splitAbd_'+i">
+            <select class="form-select form-select-sm bg-light"
+              [(ngModel)]="row.abd"
+              [name]="'splitAbd_'+i"
+              (ngModelChange)="onSplitAbdChange(row)">
               <option value="">— ABD —</option>
               <option *ngFor="let opt of abdOptions" [value]="opt">{{ opt }}</option>
             </select>
@@ -481,7 +533,7 @@
           <div>
             <select class="form-select form-select-sm bg-light" [(ngModel)]="row.businessManager" [name]="'splitMgr_'+i">
               <option value="">— Manager —</option>
-              <option *ngFor="let opt of managerOptions" [value]="opt">{{ opt }}</option>
+              <option *ngFor="let opt of getManagersForAbd(row.abd)" [value]="opt">{{ opt }}</option>
             </select>
           </div>
           <div>
@@ -509,7 +561,45 @@
 </div>
 
 
-<!-- ══ MODAL 4 — Order Details ══════════════════════════════ -->
+<!-- ══ MODAL 4 — Shipment Issue Flag (#7) ════════════════════ -->
+<div *ngIf="issueFlagOrder" class="ib-modal-overlay" (click)="closeIssueFlagModal()">
+  <div class="ib-modal-shell om-modal" style="max-width: 480px;" (click)="$event.stopPropagation()">
+    <div class="ib-modal-header">
+      <div class="d-flex flex-column gap-1">
+        <h5 class="ib-modal-title mb-0">Shipment Issue</h5>
+        <span class="text-muted small">{{ issueFlagOrder.accountNo || issueFlagOrder.id }} &mdash; {{ issueFlagOrder.shipToName }}</span>
+      </div>
+      <button type="button" class="btn-close" (click)="closeIssueFlagModal()"></button>
+    </div>
+    <div class="ib-modal-body">
+      <form #issueFlagFormRef="ngForm">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label fw-bold small text-muted">Issue Status</label>
+            <select class="form-select" [(ngModel)]="issueFlagForm.status" name="issueStatus">
+              <option value="">— No issue / clear flag —</option>
+              <option>Open</option>
+              <option>In Review</option>
+              <option>Resolved</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-bold small text-muted">Notes</label>
+            <textarea class="form-control" [(ngModel)]="issueFlagForm.notes" name="issueNotes"
+              rows="4" placeholder="Describe the shipment issue…"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="ib-modal-footer">
+      <button type="button" class="btn ib-btn-secondary" (click)="closeIssueFlagModal()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="saveIssueFlag()">Save</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ MODAL 5 — Order Details ══════════════════════════════ -->
 <div *ngIf="detailsOrder" class="ib-modal-overlay" (click)="closeDetailsModal()">
   <div class="ib-modal-shell om-modal" style="max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
@@ -526,32 +616,20 @@
           <span class="om-details-value fw-bold text-primary">{{ detailsOrder.accountNo }}</span>
         </div>
         <div class="om-details-row">
+          <span class="om-details-label">Invoice Date</span>
+          <span class="om-details-value">{{ detailsOrder.invoiceDate || '—' }}</span>
+        </div>
+        <div class="om-details-row">
           <span class="om-details-label">Ship To Name</span>
           <span class="om-details-value fw-bold">{{ detailsOrder.shipToName || '—' }}</span>
         </div>
         <div class="om-details-row">
           <span class="om-details-label">Address</span>
-          <span class="om-details-value">{{ detailsOrder.shipToAddress || '—' }}</span>
-        </div>
-        <div class="om-details-row">
-          <span class="om-details-label">City</span>
-          <span class="om-details-value">{{ detailsOrder.shipToCity || '—' }}</span>
-        </div>
-        <div class="om-details-row">
-          <span class="om-details-label">State</span>
-          <span class="om-details-value fw-bold">{{ detailsOrder.shipToState || '—' }}</span>
-        </div>
-        <div class="om-details-row">
-          <span class="om-details-label">ZIP</span>
-          <span class="om-details-value">{{ detailsOrder.shipToZip || '—' }}</span>
+          <span class="om-details-value">{{ detailsOrder.shipToAddress || '—' }}, {{ detailsOrder.shipToCity }}, {{ detailsOrder.shipToState }} {{ detailsOrder.shipToZip }}</span>
         </div>
         <div class="om-details-row">
           <span class="om-details-label">Channel</span>
           <span class="om-details-value">{{ detailsOrder.distribution }}</span>
-        </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Area</span>
-          <span class="om-details-value">{{ detailsOrder.area }}</span>
         </div>
         <div class="om-details-row">
           <span class="om-details-label">ABD</span>
@@ -564,10 +642,6 @@
         <div class="om-details-row">
           <span class="om-details-label">Territory</span>
           <span class="om-details-value">{{ detailsOrder.territory }}</span>
-        </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Units Assigned</span>
-          <span class="om-details-value fw-bold">{{ detailsOrder.unitsAssigned }}</span>
         </div>
         <div class="om-details-row">
           <span class="om-details-label">Delivery Qty</span>

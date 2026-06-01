@@ -1,23 +1,25 @@
 import { Component } from '@angular/core';
-import { CommonModule, NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-interface GpoRow {
-  bpNumber: string;
-  shipToName: string;
-  shipToAddress1: string;
-  shipToCity: string;
-  shipToState: string;
-  shipToZip: string;
-  gpoL1: string;
-  subGpoL2: string;
-  groupL3: string;
-  subGroupL4: string;
-  practiceL5: string;
-  channel: string;
-  communityAcademic: string;
-  notes: string;
-  fullAccountName: string;
+interface GpoHierarchy {
+  id: string;
+  gpoL1: string; gpoL1Start: string; gpoL1End: string; gpoL1Rebate: string;
+  gpoL2: string; gpoL2Start: string; gpoL2End: string; gpoL2Rebate: string;
+  gpoL3: string; gpoL3Start: string; gpoL3End: string; gpoL3Rebate: string;
+  gpoL4: string; gpoL4Start: string; gpoL4End: string;
+  gpoL5: string; gpoL5Start: string; gpoL5End: string;
+}
+
+function emptyHierarchy(id = ''): GpoHierarchy {
+  return {
+    id,
+    gpoL1: '', gpoL1Start: '', gpoL1End: '', gpoL1Rebate: '',
+    gpoL2: '', gpoL2Start: '', gpoL2End: '', gpoL2Rebate: '',
+    gpoL3: '', gpoL3Start: '', gpoL3End: '', gpoL3Rebate: '',
+    gpoL4: '', gpoL4Start: '', gpoL4End: '',
+    gpoL5: '', gpoL5Start: '', gpoL5End: '',
+  };
 }
 
 @Component({
@@ -28,46 +30,88 @@ interface GpoRow {
 })
 export class GpoComponent {
 
-  editingRow: GpoRow | null = null;
-  editForm: Partial<GpoRow> = {};
+  editingRow: GpoHierarchy | null = null;
+  editForm: GpoHierarchy = emptyHierarchy();
+  isAddMode = false;
 
-  detailsRow: GpoRow | null = null;
-  openDetails(row: GpoRow): void  { this.detailsRow = row; }
-  closeDetails(): void            { this.detailsRow = null; }
-
-  readonly rows: GpoRow[] = [
-    { bpNumber: '510182311',   shipToName: 'AARON JEREMY MILBANK MD',           shipToAddress1: '6025 LAKE RD',                    shipToCity: 'WOODBURY',      shipToState: 'MN', shipToZip: '55125', gpoL1: 'Cornerstone', subGpoL2: 'Urology Management Alliance (UMA)', groupL3: 'Minnesota Urology',              subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Aaron Jeremy Milbank Md'      },
-    { bpNumber: '510180334',   shipToName: 'ACCREDO HEALTH GROUP INC',           shipToAddress1: '1620 CENTURY CENTER PARKWAY',     shipToCity: 'MEMPHIS',       shipToState: 'TN', shipToZip: '38134', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Accredo Health Group Inc'      },
-    { bpNumber: '510184432',   shipToName: 'ADENA REGIONAL MED CNTR ADENA',     shipToAddress1: '4435 SR 159',                     shipToCity: 'CHILLICOTHE',   shipToState: 'OH', shipToZip: '45601', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: ''                              },
-    { bpNumber: '510181600',   shipToName: 'ADVANCED MGMT SOLUTIONS WARE',      shipToAddress1: '3435 BRECKINRIDGE BLVD',          shipToCity: 'DULUTH',        shipToState: 'GA', shipToZip: '30096', gpoL1: 'UroGPO',      subGpoL2: 'Urology Management Alliance (UMA)', groupL3: 'Georgia Urology',                subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Advanced Mgmt Solutions Ware'  },
-    { bpNumber: '510183414',   shipToName: 'ADVANCED UROLOGY ATRIUM HEALTH',    shipToAddress1: '144 POOLE RD',                    shipToCity: 'LELAND',        shipToState: 'NC', shipToZip: '28451', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Advanced Urology Atrium Health' },
-    { bpNumber: '510182823',   shipToName: 'ADVANCED UROLOGY PLLC',             shipToAddress1: '10535 PARK MEADOWS BLVD',         shipToCity: 'LONE TREE',     shipToState: 'CO', shipToZip: '80124', gpoL1: 'Cencora GPO', subGpoL2: 'OneOncology',                      groupL3: 'United Urology Grp',             subGroupL4: 'Colorado Urology',  practiceL5: 'Advanced Urology Pllc',channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Advanced Urology Pllc'         },
-    { bpNumber: '1669822136',  shipToName: 'AFFAN ZAFAR',                       shipToAddress1: '3030 WATERVIEW PKWY',             shipToCity: 'RICHARDSON',    shipToState: 'TX', shipToZip: '75080', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ACC',communityAcademic: '', notes: '', fullAccountName: ''                              },
-    { bpNumber: '1295140747',  shipToName: 'ALAN CARNES, JR',                   shipToAddress1: '1150 GOLDEN WAY',                 shipToCity: 'WATKINSVILLE',  shipToState: 'GA', shipToZip: '30677', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ACC',communityAcademic: '', notes: '', fullAccountName: 'Athens Area Urology'           },
-    { bpNumber: '1124556972',  shipToName: 'ALBERT GESKIN',                     shipToAddress1: '2790 MOSSIDE BLVD',               shipToCity: 'MONROEVILLE',   shipToState: 'PA', shipToZip: '15146', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ACC',communityAcademic: '', notes: '', fullAccountName: ''                              },
-    { bpNumber: '510184003',   shipToName: 'ALLEGHENY HLTH NETWORK CANCER',     shipToAddress1: '81 WAGNER RD',                    shipToCity: 'MONACA',        shipToState: 'PA', shipToZip: '15061', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Allegheny Hlth Network Cancer'  },
-    { bpNumber: '510183265',   shipToName: 'ALLINA HEALTH SYSTEM DBA',          shipToAddress1: '800 E 28TH ST',                   shipToCity: 'MINNEAPOLIS',   shipToState: 'MN', shipToZip: '55407', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Allina Health System Dba'       },
-    { bpNumber: '510184175',   shipToName: 'AMERICAN ONC ARHSH HARMONY',        shipToAddress1: '133 HARMONY PARK CIR',            shipToCity: 'HOT SPRINGS',   shipToState: 'AR', shipToZip: '71913', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: ''                              },
-    { bpNumber: '510184667',   shipToName: 'AMERICAN ONC TXCCO TEXAS',          shipToAddress1: '2130 W HOLOCOMBE BLVD 10TH FL',   shipToCity: 'HOUSTON',       shipToState: 'TX', shipToZip: '77030', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: ''                              },
-    { bpNumber: '510183439',   shipToName: 'AMP UROLOGY NH DOWN',               shipToAddress1: '2 ELLINWOOD DRIVE',               shipToCity: 'HARTFORD',      shipToState: 'NY', shipToZip: '13413', gpoL1: 'UroGPO',      subGpoL2: 'US Urology Partners',              groupL3: 'Associated Medical Professionals',subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Amp Urology Nh Down'           },
-    { bpNumber: '510181595',   shipToName: 'AMP UROLOGY SYRACUSE',              shipToAddress1: '1226 EAST WATER STREEET',         shipToCity: 'SYRACUSE',      shipToState: 'NY', shipToZip: '13210', gpoL1: 'UroGPO',      subGpoL2: 'US Urology Partners',              groupL3: 'Associated Medical Professionals',subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Amp Urology Syracuse'          },
-    { bpNumber: '510183671',   shipToName: 'ANIL V TUMKUR MD',                  shipToAddress1: '1301 SUNSET DR STE 3',            shipToCity: 'JOHNSON CITY',  shipToState: 'TN', shipToZip: '37604', gpoL1: '',            subGpoL2: '',                                 groupL3: '',                               subGroupL4: '',                  practiceL5: '',                    channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Anil V Tumkur Md'              },
-    { bpNumber: '510183247',   shipToName: 'ANNE ARUNDEL UROLOGY PA',           shipToAddress1: '600 RIDGELY AVE',                 shipToCity: 'ANNAPOLIS',     shipToState: 'MD', shipToZip: '21401', gpoL1: 'UroGPO',      subGpoL2: 'Urology Alliance',                 groupL3: 'Solaris',                        subGroupL4: 'Anne Arundel Urology', practiceL5: '',                  channel: 'ICS', communityAcademic: '', notes: '', fullAccountName: 'Anne Arundel Urology Pa'       }
+  rows: GpoHierarchy[] = [
+    {
+      id: 'GPO-001',
+      gpoL1: 'Cornerstone',         gpoL1Start: '2025-01-01', gpoL1End: '',        gpoL1Rebate: '3.0',
+      gpoL2: 'Urology Management Alliance (UMA)', gpoL2Start: '2025-01-01', gpoL2End: '', gpoL2Rebate: '2.5',
+      gpoL3: 'Minnesota Urology',   gpoL3Start: '2025-01-01', gpoL3End: '',        gpoL3Rebate: '1.5',
+      gpoL4: '',                    gpoL4Start: '',            gpoL4End: '',
+      gpoL5: '',                    gpoL5Start: '',            gpoL5End: '',
+    },
+    {
+      id: 'GPO-002',
+      gpoL1: 'UroGPO',              gpoL1Start: '2025-01-01', gpoL1End: '',        gpoL1Rebate: '4.0',
+      gpoL2: 'US Urology Partners', gpoL2Start: '2025-01-01', gpoL2End: '',        gpoL2Rebate: '3.0',
+      gpoL3: 'Associated Medical Professionals', gpoL3Start: '2025-01-01', gpoL3End: '', gpoL3Rebate: '2.0',
+      gpoL4: '',                    gpoL4Start: '',            gpoL4End: '',
+      gpoL5: '',                    gpoL5Start: '',            gpoL5End: '',
+    },
+    {
+      id: 'GPO-003',
+      gpoL1: 'Cencora GPO',         gpoL1Start: '2025-01-01', gpoL1End: '',        gpoL1Rebate: '3.5',
+      gpoL2: 'OneOncology',         gpoL2Start: '2025-01-01', gpoL2End: '',        gpoL2Rebate: '2.75',
+      gpoL3: 'United Urology Grp',  gpoL3Start: '2025-01-01', gpoL3End: '',        gpoL3Rebate: '1.5',
+      gpoL4: 'Colorado Urology',    gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: 'Advanced Urology Pllc', gpoL5Start: '2025-01-01', gpoL5End: '',
+    },
+    {
+      id: 'GPO-004',
+      gpoL1: 'UroGPO',              gpoL1Start: '2025-01-01', gpoL1End: '',        gpoL1Rebate: '4.0',
+      gpoL2: 'Urology Alliance',    gpoL2Start: '2025-01-01', gpoL2End: '',        gpoL2Rebate: '3.25',
+      gpoL3: 'Solaris',             gpoL3Start: '2025-01-01', gpoL3End: '',        gpoL3Rebate: '2.5',
+      gpoL4: 'Anne Arundel Urology', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: '',                    gpoL5Start: '',            gpoL5End: '',
+    },
+    {
+      id: 'GPO-005',
+      gpoL1: 'UroGPO',              gpoL1Start: '2024-01-01', gpoL1End: '',        gpoL1Rebate: '4.0',
+      gpoL2: 'Urology Management Alliance (UMA)', gpoL2Start: '2024-01-01', gpoL2End: '', gpoL2Rebate: '2.5',
+      gpoL3: 'Georgia Urology',     gpoL3Start: '2024-01-01', gpoL3End: '2025-12-31', gpoL3Rebate: '1.0',
+      gpoL4: '',                    gpoL4Start: '',            gpoL4End: '',
+      gpoL5: '',                    gpoL5Start: '',            gpoL5End: '',
+    },
   ];
 
-  openEdit(row: GpoRow): void {
+  isLevelActive(endDate: string): boolean {
+    if (!endDate) return true;
+    return new Date(endDate) > new Date();
+  }
+
+  openEdit(row: GpoHierarchy): void {
+    this.isAddMode  = false;
     this.editingRow = row;
-    this.editForm = { ...row };
+    this.editForm   = { ...row };
+  }
+
+  openAdd(): void {
+    this.isAddMode  = true;
+    this.editingRow = emptyHierarchy('__new__');
+    this.editForm   = emptyHierarchy();
   }
 
   closeEdit(): void {
     this.editingRow = null;
-    this.editForm = {};
+    this.editForm   = emptyHierarchy();
   }
 
   saveEdit(): void {
     if (!this.editingRow) return;
-    Object.assign(this.editingRow, this.editForm);
+    if (this.isAddMode) {
+      const next = this.rows.length + 1;
+      this.rows.push({ ...this.editForm, id: `GPO-${String(next).padStart(3, '0')}` });
+    } else {
+      Object.assign(this.editingRow, this.editForm);
+    }
     this.closeEdit();
+  }
+
+  deleteRow(row: GpoHierarchy): void {
+    if (!confirm(`Delete GPO hierarchy "${row.gpoL1}"? This cannot be undone.`)) return;
+    this.rows = this.rows.filter(r => r.id !== row.id);
   }
 }
