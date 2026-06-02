@@ -61,7 +61,18 @@
           <span class="cm-ib-site-view cm-ib-site-view--empty" *ngIf="!account.ibCareSiteId">
             <i class="bi bi-geo-alt" style="font-size:0.7rem;"></i> No IB Site
           </span>
-          <button class="cm-name-edit-btn ms-auto" (click)="startEditName(account)" title="Edit">
+          <button class="cm-gpo-header-btn ms-auto" type="button"
+            [class.cm-gpo-header-btn--open]="isSectionOpen(account, 'gpo')"
+            (click)="toggleSection(account, 'gpo')">
+            <i class="bi bi-diagram-3-fill"></i>
+            <span class="cm-gpo-header-btn__label">GPO Hierarchy</span>
+            <ng-container *ngIf="account.gpoL1">
+              <span class="cm-gpo-header-btn__sep">|</span>
+              <span class="cm-gpo-header-btn__l1">{{ account.gpoL1 }}</span>
+            </ng-container>
+            <i class="bi" [class.bi-chevron-down]="!isSectionOpen(account, 'gpo')" [class.bi-chevron-up]="isSectionOpen(account, 'gpo')"></i>
+          </button>
+          <button class="cm-name-edit-btn cm-name-edit-btn--fixed-h" (click)="startEditName(account)" title="Edit">
             <i class="bi bi-pencil-fill"></i>
           </button>
         </ng-container>
@@ -150,19 +161,9 @@
 
       </div>
 
-      <!-- ── GPO Hierarchy section ──────────────────────────── -->
-      <div class="cm-section cm-section--gpo">
-        <button class="cm-section__header" (click)="toggleSection(account, 'gpo')" type="button">
-          <i class="bi bi-chevron-right cm-section__chevron"
-            [class.cm-section__chevron--open]="isSectionOpen(account, 'gpo')"></i>
-          <span class="cm-section__label">GPO Hierarchy</span>
-          <span class="cm-section__badge" [class.cm-section__badge--gpo]="account.gpoL1">
-            {{ account.gpoL1 || '—' }}
-          </span>
-        </button>
-
-        <div class="cm-section__body" *ngIf="isSectionOpen(account, 'gpo')">
-          <ng-container *ngIf="account.gpoL1; else noGpo">
+      <!-- ── GPO Hierarchy panel (toggled from header button) ── -->
+      <div class="cm-gpo-panel" *ngIf="isSectionOpen(account, 'gpo')">
+        <ng-container *ngIf="account.gpoL1; else noGpo">
           <div class="table-responsive">
             <table class="table table-hover table-sm align-middle mb-0 ib-data-table cm-gpo-table">
               <thead class="ib-table-header">
@@ -236,18 +237,16 @@
               </tbody>
             </table>
           </div>
+        </ng-container>
 
-          </ng-container>
+        <ng-template #noGpo>
+          <p class="cm-empty-section">No GPO hierarchy linked to this master.</p>
+        </ng-template>
 
-          <ng-template #noGpo>
-            <p class="cm-empty-section">No GPO hierarchy linked to this master.</p>
-          </ng-template>
-
-          <div class="cm-inline-add-bar" *ngIf="!account.gpoL1">
-            <button class="cm-text-add-btn cm-text-add-btn--gpo" (click)="openGpoEdit(account)" type="button">
-              <i class="bi bi-plus-lg"></i> Add GPO Hierarchy
-            </button>
-          </div>
+        <div class="cm-inline-add-bar" *ngIf="!account.gpoL1">
+          <button class="cm-text-add-btn cm-text-add-btn--gpo" (click)="openGpoEdit(account)" type="button">
+            <i class="bi bi-plus-lg"></i> Add GPO Hierarchy
+          </button>
         </div>
       </div>
 

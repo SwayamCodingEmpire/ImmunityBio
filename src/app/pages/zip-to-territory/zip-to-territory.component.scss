@@ -53,7 +53,7 @@
 .ztt-history-panel {
   background: #f8fafc;
   border-bottom: 2px solid var(--ib-border);
-  border-left: 3px solid #6366f1;
+  border-right: 3px solid #6366f1;
   border-top: 1px solid var(--ib-border);
 }
 
@@ -98,6 +98,17 @@
   margin-bottom: 0;
 
   td, th { vertical-align: middle; }
+}
+
+// ── Territory ID chip ─────────────────────────────────────────
+.ztt-chip--territory {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #15803d;
+  font-family: ui-monospace, monospace;
+  font-size: 0.71rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 // ── Veeva Area ID chip ────────────────────────────────────────

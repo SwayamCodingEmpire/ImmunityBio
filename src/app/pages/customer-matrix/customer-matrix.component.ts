@@ -420,20 +420,22 @@ export class CustomerMatrixComponent {
   get allExpanded(): boolean {
     return this.filteredAccounts.every(a => {
       const s = this.sectionState.get(a);
-      return s?.gpo && s?.ics && s?.accredo;
+      return s?.ics && s?.accredo;
     });
   }
 
   expandAll(): void {
-    this.filteredAccounts.forEach(a =>
-      this.sectionState.set(a, { gpo: true, ics: true, accredo: true })
-    );
+    this.filteredAccounts.forEach(a => {
+      const existing = this.sectionState.get(a) ?? { gpo: false, ics: false, accredo: false };
+      this.sectionState.set(a, { ...existing, ics: true, accredo: true });
+    });
   }
 
   collapseAll(): void {
-    this.filteredAccounts.forEach(a =>
-      this.sectionState.set(a, { gpo: false, ics: false, accredo: false })
-    );
+    this.filteredAccounts.forEach(a => {
+      const existing = this.sectionState.get(a) ?? { gpo: false, ics: false, accredo: false };
+      this.sectionState.set(a, { ...existing, ics: false, accredo: false });
+    });
   }
 
   // ── Inline master-name editing ────────────────────────────────

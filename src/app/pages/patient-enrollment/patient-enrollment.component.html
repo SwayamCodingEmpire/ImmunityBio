@@ -16,7 +16,7 @@
 
     <div class="ib-filter-card ib-filter-card--compact mb-4">
       <div class="row g-2 align-items-end">
-        <div class="col-lg-3">
+        <div class="col-lg-2">
           <label class="form-label ib-compact-filter__label fw-bold small text-muted">Status</label>
           <select class="form-select form-select-sm bg-light ib-compact-filter__control"
             [(ngModel)]="pendingStatusFilter" name="directoryStatusFilter">
@@ -24,6 +24,21 @@
             <option value="Completed">Completed</option>
             <option value="Cancelled">Cancelled</option>
           </select>
+        </div>
+        <div class="col-lg-3">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">HCP Name</label>
+          <input type="text" class="form-control form-control-sm bg-light ib-compact-filter__control"
+            [(ngModel)]="pendingHcpName" name="directoryHcpName" placeholder="e.g. Dr. Pieczonka" />
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Completion From</label>
+          <input type="date" class="form-control form-control-sm bg-light ib-compact-filter__control"
+            [(ngModel)]="pendingCompletionFrom" name="directoryCompletionFrom" />
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label ib-compact-filter__label fw-bold small text-muted">Completion To</label>
+          <input type="date" class="form-control form-control-sm bg-light ib-compact-filter__control"
+            [(ngModel)]="pendingCompletionTo" name="directoryCompletionTo" />
         </div>
         <div class="col-lg-2 d-flex align-items-end">
           <button class="btn btn-primary btn-sm ib-compact-filter__button w-100" (click)="applyDirectoryFilter()">

@@ -43,6 +43,7 @@
             <tr>
               <th class="py-2 ztt-th-expand"></th>
               <th class="py-2 px-3" style="white-space:nowrap;">MDO ZIP</th>
+              <th class="py-2" style="white-space:nowrap;">Territory ID</th>
               <th class="py-2" style="white-space:nowrap;">City</th>
               <th class="py-2" style="white-space:nowrap;">State</th>
               <th class="py-2" style="white-space:nowrap;">Curr Terr</th>
@@ -50,7 +51,6 @@
               <th class="py-2" style="white-space:nowrap;">TBM</th>
               <th class="py-2" style="white-space:nowrap;">Start Date</th>
               <th class="py-2" style="white-space:nowrap;">End Date</th>
-              <th class="py-2" style="white-space:nowrap;">Source</th>
               <th class="py-2 text-center px-3">Actions</th>
             </tr>
           </thead>
@@ -69,6 +69,7 @@
                   </button>
                 </td>
                 <td class="px-3 fw-bold text-primary" style="white-space:nowrap;">{{ row.mdoZip }}</td>
+                <td style="white-space:nowrap;"><span class="ib-chip ztt-chip--territory">{{ row.territoryId }}</span></td>
                 <td style="white-space:nowrap;">{{ row.city }}</td>
                 <td>{{ row.state }}</td>
                 <td><span class="ib-chip">{{ row.currTerr }}</span></td>
@@ -80,13 +81,6 @@
                     {{ row.endDate || 'Open' }}
                   </span>
                 </td>
-                <td>
-                  <span class="ib-status-badge"
-                    [class.ib-status-badge--info]="row.source === 'Veeva'"
-                    [class.ib-status-badge--warning]="row.source !== 'Veeva'">
-                    {{ row.source }}
-                  </span>
-                </td>
                 <td class="text-center px-3">
                   <button class="ib-icon-btn" title="Edit row" (click)="openEdit(row)">
                     <i class="bi bi-pencil"></i>
@@ -96,7 +90,7 @@
 
               <!-- History panel — styled like GPO section body -->
               <tr *ngIf="isExpanded(row.mdoZip) && row.history.length > 0" class="ztt-history-row">
-                <td colspan="12" class="p-0">
+                <td colspan="11" class="p-0">
                   <div class="ztt-history-panel">
                     <div class="ztt-history-section-header">
                       <i class="bi bi-clock-history"></i>
@@ -108,20 +102,30 @@
                         <table class="table table-hover table-sm align-middle mb-0 ib-data-table ztt-history-table">
                           <thead class="ib-table-header">
                             <tr>
-                              <th class="py-2 px-3" style="white-space:nowrap;">Start Date</th>
+                              <th class="py-2 px-3" style="white-space:nowrap;">MDO ZIP</th>
+                              <th class="py-2" style="white-space:nowrap;">Territory ID</th>
+                              <th class="py-2" style="white-space:nowrap;">City</th>
+                              <th class="py-2" style="white-space:nowrap;">State</th>
+                              <th class="py-2" style="white-space:nowrap;">Curr Terr</th>
+                              <th class="py-2" style="white-space:nowrap;">Veeva Area ID</th>
+                              <th class="py-2" style="white-space:nowrap;">TBM</th>
+                              <th class="py-2" style="white-space:nowrap;">Start Date</th>
                               <th class="py-2" style="white-space:nowrap;">End Date</th>
-                              <th class="py-2" style="white-space:nowrap;">Source</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr *ngFor="let h of row.history">
-                              <td class="px-3" style="white-space:nowrap;">{{ h.startDate }}</td>
-                              <td style="white-space:nowrap;">{{ h.endDate }}</td>
-                              <td>
-                                <span class="ib-status-badge"
-                                  [class.ib-status-badge--info]="h.source === 'Veeva'"
-                                  [class.ib-status-badge--warning]="h.source !== 'Veeva'">
-                                  {{ h.source }}
+                              <td class="px-3 fw-bold text-primary" style="white-space:nowrap;">{{ row.mdoZip }}</td>
+                              <td style="white-space:nowrap;"><span class="ib-chip ztt-chip--territory">{{ h.territoryId }}</span></td>
+                              <td style="white-space:nowrap;">{{ row.city }}</td>
+                              <td>{{ row.state }}</td>
+                              <td><span class="ib-chip">{{ h.currTerr }}</span></td>
+                              <td><span class="ib-chip ztt-chip--veeva">{{ h.veevaAreaId }}</span></td>
+                              <td style="white-space:nowrap;">{{ h.tbm }}</td>
+                              <td style="white-space:nowrap;">{{ h.startDate }}</td>
+                              <td style="white-space:nowrap;">
+                                <span [class.text-muted]="!h.endDate" [class.fst-italic]="!h.endDate">
+                                  {{ h.endDate || 'Open' }}
                                 </span>
                               </td>
                             </tr>
@@ -136,7 +140,7 @@
             </ng-container>
 
             <tr *ngIf="filteredRows.length === 0">
-              <td colspan="12" class="text-center text-muted py-4">No records match the current filters.</td>
+              <td colspan="11" class="text-center text-muted py-4">No records match the current filters.</td>
             </tr>
           </tbody>
         </table>
@@ -172,6 +176,10 @@
             <input type="text" class="form-control bg-light" [(ngModel)]="editForm.mdoZip" name="mdoZip">
           </div>
 
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted">Territory ID</label>
+            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.territoryId" name="territoryId" maxlength="6">
+          </div>
 
           <div class="col-md-4">
             <label class="form-label fw-bold small text-muted">City</label>
@@ -196,11 +204,6 @@
           <div class="col-md-6">
             <label class="form-label fw-bold small text-muted">TBM</label>
             <input type="text" class="form-control bg-light" [(ngModel)]="editForm.tbm" name="tbm">
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">Source</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.source" name="source">
           </div>
 
           <div class="col-12"><hr class="my-1"></div>

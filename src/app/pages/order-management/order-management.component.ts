@@ -92,8 +92,58 @@ export class OrderManagementComponent implements OnInit {
 
   // ── Track modal ──────────────────────────────────────────────
   trackingOrder: OrderRow | null = null;
-  openTrackModal(order: OrderRow): void { this.trackingOrder = order; }
-  closeTrackModal(): void               { this.trackingOrder = null;  }
+  trackingSteps: TimelineStep[] = [];
+
+  openTrackModal(order: OrderRow): void {
+    this.trackingOrder = order;
+    this.trackingSteps = this.getTimelineSteps(order);
+  }
+  closeTrackModal(): void {
+    this.trackingOrder = null;
+    this.trackingSteps = [];
+    this.closeFlagForm();
+  }
+
+  // ── Step flag UI ─────────────────────────────────────────────
+  stepFlags: Record<string, { status: string; notes: string }> = {};
+  flaggingKey: string | null = null;
+  flagForm = { status: '', notes: '' };
+
+  readonly issueStatusOptions = [
+    'Delayed', 'Damaged', 'Lost in Transit',
+    'Documentation Error', 'Address Issue',
+    'Temperature Excursion', 'Other'
+  ];
+
+  getFlagKey(orderId: string, stepIndex: number): string {
+    return `${orderId}-${stepIndex}`;
+  }
+
+  getStepFlag(orderId: string, stepIndex: number): { status: string; notes: string } | null {
+    return this.stepFlags[this.getFlagKey(orderId, stepIndex)] ?? null;
+  }
+
+  openFlagForm(orderId: string, stepIndex: number): void {
+    const key = this.getFlagKey(orderId, stepIndex);
+    const existing = this.stepFlags[key];
+    this.flagForm = existing ? { ...existing } : { status: '', notes: '' };
+    this.flaggingKey = key;
+  }
+
+  closeFlagForm(): void {
+    this.flaggingKey = null;
+    this.flagForm = { status: '', notes: '' };
+  }
+
+  saveFlagForm(orderId: string, stepIndex: number): void {
+    if (!this.flagForm.status) return;
+    this.stepFlags[this.getFlagKey(orderId, stepIndex)] = { ...this.flagForm };
+    this.closeFlagForm();
+  }
+
+  clearFlag(orderId: string, stepIndex: number): void {
+    delete this.stepFlags[this.getFlagKey(orderId, stepIndex)];
+  }
 
   getTimelineSteps(order: OrderRow): TimelineStep[] {
     const base    = new Date(order.orderDate);

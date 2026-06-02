@@ -3,13 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 interface ZipHistory {
+  territoryId: string;
+  currTerr: string;
+  veevaAreaId: string;
+  tbm: string;
   startDate: string;
   endDate: string;
-  source: string;
 }
 
 interface ZipRow {
   mdoZip: string;
+  territoryId: string;
   city: string;
   state: string;
   currTerr: string;
@@ -17,7 +21,6 @@ interface ZipRow {
   tbm: string;
   startDate: string;
   endDate: string;
-  source: string;
   history: ZipHistory[];
 }
 
@@ -41,53 +44,53 @@ export class ZipToTerritoryComponent {
 
   readonly rows: ZipRow[] = [
     {
-      mdoZip: '75082', city: 'Richardson',    state: 'TX',
+      mdoZip: '75082', territoryId: 'TX3829', city: 'Richardson',    state: 'TX',
       currTerr: 'NC1', veevaAreaId: 'VA-NC01', tbm: 'A. Rippy',
-      startDate: '2026-04-01', endDate: '', source: 'Veeva',
+      startDate: '2026-04-01', endDate: '',
       history: [
-        { startDate: '2025-01-01', endDate: '2025-12-31', source: 'Veeva' }
+        { territoryId: 'TX1247', currTerr: 'SW1', veevaAreaId: 'VA-SW01', tbm: 'D. Martinez', startDate: '2025-01-01', endDate: '2025-12-31' }
       ]
     },
     {
-      mdoZip: '27701', city: 'Durham',        state: 'NC',
+      mdoZip: '27701', territoryId: 'NC4712', city: 'Durham',        state: 'NC',
       currTerr: 'EA1', veevaAreaId: 'VA-EA01', tbm: 'L. Volomino',
-      startDate: '2026-04-01', endDate: '', source: 'Veeva',
+      startDate: '2026-04-01', endDate: '',
       history: []
     },
     {
-      mdoZip: '75201', city: 'Dallas',        state: 'TX',
+      mdoZip: '75201', territoryId: 'TX8043', city: 'Dallas',        state: 'TX',
       currTerr: 'SW1', veevaAreaId: 'VA-SW01', tbm: 'K. Denor-Alcala',
-      startDate: '2026-04-01', endDate: '', source: 'Veeva',
+      startDate: '2026-04-01', endDate: '',
       history: [
-        { startDate: '2025-07-01', endDate: '2026-03-31', source: 'Veeva' }
+        { territoryId: 'TX6091', currTerr: 'NC1', veevaAreaId: 'VA-NC01', tbm: 'P. Chen', startDate: '2025-07-01', endDate: '2026-03-31' }
       ]
     },
     {
-      mdoZip: '15224', city: 'Pittsburgh',    state: 'PA',
+      mdoZip: '15224', territoryId: 'PA2156', city: 'Pittsburgh',    state: 'PA',
       currTerr: 'EA1', veevaAreaId: 'VA-EA01', tbm: 'H. Ritter',
-      startDate: '2026-03-01', endDate: '', source: 'Veeva',
+      startDate: '2026-03-01', endDate: '',
       history: [
-        { startDate: '2025-01-01', endDate: '2026-02-28', source: 'Veeva' }
+        { territoryId: 'PA8834', currTerr: 'NE1', veevaAreaId: 'VA-NE01', tbm: 'S. Walsh', startDate: '2025-01-01', endDate: '2026-02-28' }
       ]
     },
     {
-      mdoZip: '21201', city: 'Baltimore',     state: 'MD',
+      mdoZip: '21201', territoryId: 'MD7394', city: 'Baltimore',     state: 'MD',
       currTerr: 'NC1', veevaAreaId: 'VA-NC01', tbm: 'B. Girbes',
-      startDate: '2026-01-01', endDate: '2026-03-31', source: 'Realigned Q2',
+      startDate: '2026-01-01', endDate: '2026-03-31',
       history: [
-        { startDate: '2025-06-01', endDate: '2025-12-31', source: 'Veeva' }
+        { territoryId: 'MD3156', currTerr: 'EA1', veevaAreaId: 'VA-EA01', tbm: 'T. Brown', startDate: '2025-06-01', endDate: '2025-12-31' }
       ]
     },
     {
-      mdoZip: '60430', city: 'Homewood',      state: 'IL',
+      mdoZip: '60430', territoryId: 'IL5628', city: 'Homewood',      state: 'IL',
       currTerr: 'NC1', veevaAreaId: 'VA-NC01', tbm: 'R. Evans',
-      startDate: '2026-01-01', endDate: '2026-04-30', source: 'Veeva',
+      startDate: '2026-01-01', endDate: '2026-04-30',
       history: []
     },
     {
-      mdoZip: '30043', city: 'Lawrenceville', state: 'GA',
+      mdoZip: '30043', territoryId: 'GA9017', city: 'Lawrenceville', state: 'GA',
       currTerr: 'SC1', veevaAreaId: 'VA-SC01', tbm: 'M. Real',
-      startDate: '2026-01-01', endDate: '', source: 'Veeva',
+      startDate: '2026-01-01', endDate: '',
       history: []
     },
   ];
@@ -119,11 +122,11 @@ export class ZipToTerritoryComponent {
   }
 
   exportCsv(): void {
-    const headers = ['MDO ZIP', 'City', 'State', 'Curr Terr', 'Veeva Area ID', 'TBM', 'Start Date', 'End Date', 'Source'];
+    const headers = ['MDO ZIP', 'Territory ID', 'City', 'State', 'Curr Terr', 'Veeva Area ID', 'TBM', 'Start Date', 'End Date'];
     const escape  = (v: string) => `"${v.replace(/"/g, '""')}"`;
     const rows    = this.filteredRows.map(r => [
-      r.mdoZip, r.city, r.state, r.currTerr,
-      r.veevaAreaId, r.tbm, r.startDate, r.endDate, r.source
+      r.mdoZip, r.territoryId, r.city, r.state, r.currTerr,
+      r.veevaAreaId, r.tbm, r.startDate, r.endDate
     ].map(escape).join(','));
     const csv  = [headers.map(escape).join(','), ...rows].join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

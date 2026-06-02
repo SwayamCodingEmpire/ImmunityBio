@@ -318,15 +318,18 @@
 }
 
 .cm-name-edit-btn {
+  align-items: center;
+  align-self: stretch;
   background: var(--ib-surface-muted);
   border: 1px solid var(--ib-border);
   border-radius: var(--ib-radius-sm);
   color: var(--ib-muted);
   cursor: pointer;
+  display: inline-flex;
   flex-shrink: 0;
   font-size: 0.68rem;
-  line-height: 1;
-  padding: 4px 6px;
+  justify-content: center;
+  padding: 0 8px;
   transition: color 0.12s, background 0.12s, border-color 0.12s;
 
   &:hover {
@@ -363,6 +366,61 @@
     font-size: 0.75rem;
     &:hover { background: #fee2e2; border-color: #f87171; color: #dc2626; }
   }
+}
+
+// ── GPO Hierarchy header button ──────────────────────────────
+.cm-gpo-header-btn {
+  align-items: center;
+  background: #ede9fe;
+  border: 1px solid #c4b5fd;
+  border-radius: var(--ib-radius-sm);
+  color: #4338ca;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.68rem;
+  font-weight: 700;
+  gap: 0.3rem;
+  letter-spacing: 0.03em;
+  padding: 4px 10px;
+  transition: background 0.13s, border-color 0.13s;
+  white-space: nowrap;
+
+  &:hover, &--open {
+    background: #ddd6fe;
+    border-color: #a78bfa;
+  }
+
+  &__label {
+    color: #6d28d9;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    opacity: 0.85;
+  }
+
+  &__sep {
+    color: #a78bfa;
+    font-weight: 300;
+    opacity: 0.7;
+  }
+
+  &__l1 {
+    color: #3730a3;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// ── GPO Hierarchy panel ──────────────────────────────────────
+.cm-gpo-panel {
+  animation: cm-fade-in 0.15s ease-out;
+  background: #faf5ff;
+  border-bottom: 1px solid #ddd6fe;
+  border-right: 3px solid #6366f1;
+  padding: 0.75rem 2rem;
 }
 
 // ── Sections (GPO / ICS / Accredo) ───────────────────────────

@@ -153,11 +153,20 @@ export class PatientEnrollmentComponent implements OnInit {
     endDate: ''
   };
 
-  directoryStatusFilter = 'All';
-  pendingStatusFilter   = 'All';
+  directoryStatusFilter  = 'All';
+  pendingStatusFilter    = 'All';
+  filterHcpName          = '';
+  pendingHcpName         = '';
+  filterCompletionFrom   = '';
+  pendingCompletionFrom  = '';
+  filterCompletionTo     = '';
+  pendingCompletionTo    = '';
 
   applyDirectoryFilter(): void {
     this.directoryStatusFilter = this.pendingStatusFilter;
+    this.filterHcpName         = this.pendingHcpName;
+    this.filterCompletionFrom  = this.pendingCompletionFrom;
+    this.filterCompletionTo    = this.pendingCompletionTo;
   }
 
   readonly patientRows: PatientRow[] = [
@@ -197,9 +206,22 @@ export class PatientEnrollmentComponent implements OnInit {
   }
 
   get filteredPatientRows(): PatientRow[] {
-    return this.patientRows.filter(r =>
-      this.directoryStatusFilter === 'All' || r.status === this.directoryStatusFilter
-    );
+    const hcp = this.filterHcpName.trim().toLowerCase();
+    return this.patientRows.filter(r => {
+      const completionIso = this.parseCompletionDate(r.enrollmentCompletionDate);
+      return (this.directoryStatusFilter === 'All' || r.status === this.directoryStatusFilter)
+        && (!hcp || r.hcpName.toLowerCase().includes(hcp))
+        && (!this.filterCompletionFrom || completionIso >= this.filterCompletionFrom)
+        && (!this.filterCompletionTo   || completionIso <= this.filterCompletionTo);
+    });
+  }
+
+  private parseCompletionDate(d: string): string {
+    if (!d || d === 'N/A') return '';
+    const parts = d.split('/');
+    if (parts.length !== 3) return '';
+    const [m, day, y] = parts;
+    return `${y}-${m.padStart(2, '0')}-${day.padStart(2, '0')}`;
   }
 
   patientForm: PatientFormModel = {
