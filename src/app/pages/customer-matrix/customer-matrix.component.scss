@@ -381,13 +381,26 @@
   font-weight: 700;
   gap: 0.3rem;
   letter-spacing: 0.03em;
-  padding: 4px 10px;
+  padding: 6px 10px;
   transition: background 0.13s, border-color 0.13s;
   white-space: nowrap;
 
   &:hover, &--open {
     background: #ddd6fe;
     border-color: #a78bfa;
+  }
+
+  &--disabled {
+    background: var(--ib-surface-muted);
+    border-color: var(--ib-border);
+    color: var(--ib-muted);
+    cursor: not-allowed;
+    opacity: 0.55;
+    pointer-events: none;
+
+    .cm-gpo-header-btn__label,
+    .cm-gpo-header-btn__l1,
+    .cm-gpo-header-btn__sep { color: inherit; }
   }
 
   &__label {
@@ -420,7 +433,7 @@
   background: #faf5ff;
   border-bottom: 1px solid #ddd6fe;
   border-right: 3px solid #6366f1;
-  padding: 0.75rem 2rem;
+  padding: 0;
 }
 
 // ── Sections (GPO / ICS / Accredo) ───────────────────────────

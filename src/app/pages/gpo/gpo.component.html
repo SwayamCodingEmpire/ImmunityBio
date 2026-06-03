@@ -15,11 +15,11 @@
         <table class="table table-hover table-sm align-middle mb-0 ib-data-table gpo-table">
           <thead class="ib-table-header">
             <tr>
-              <th class="py-2 px-3" style="white-space:nowrap;">GPO 1</th>
-              <th class="py-2" style="white-space:nowrap;">GPO 2</th>
-              <th class="py-2" style="white-space:nowrap;">GPO 3</th>
-              <th class="py-2" style="white-space:nowrap;">GPO 4</th>
-              <th class="py-2" style="white-space:nowrap;">GPO 5</th>
+              <th class="py-2 px-3" style="white-space:nowrap;">GPO (L1)</th>
+              <th class="py-2" style="white-space:nowrap;">Sub-GPO (L2)</th>
+              <th class="py-2" style="white-space:nowrap;">Group (L3)</th>
+              <th class="py-2" style="white-space:nowrap;">Sub-Group (L4)</th>
+              <th class="py-2" style="white-space:nowrap;">Practice (L5)</th>
               <th class="py-2 text-center px-3">Actions</th>
             </tr>
           </thead>
@@ -118,7 +118,7 @@
           <div class="gpo-level-row__header">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill">L1</span>
-              <span class="gpo-level-title">GPO 1</span>
+              <span class="gpo-level-title">GPO (L1)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL1End)"
@@ -154,7 +154,7 @@
           <div class="gpo-level-row__header">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill gpo-level-pill--l2">L2</span>
-              <span class="gpo-level-title">GPO 2</span>
+              <span class="gpo-level-title">Sub-GPO (L2)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL2End)"
@@ -190,7 +190,7 @@
           <div class="gpo-level-row__header">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill gpo-level-pill--l3">L3</span>
-              <span class="gpo-level-title">GPO 3</span>
+              <span class="gpo-level-title">Group (L3)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL3End)"
@@ -226,7 +226,7 @@
           <div class="gpo-level-row__header">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill gpo-level-pill--l4">L4</span>
-              <span class="gpo-level-title">GPO 4</span>
+              <span class="gpo-level-title">Sub-Group (L4)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL4End)"
@@ -255,7 +255,7 @@
           <div class="gpo-level-row__header">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill gpo-level-pill--l5">L5</span>
-              <span class="gpo-level-title">GPO 5</span>
+              <span class="gpo-level-title">Practice (L5)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL5End)"
