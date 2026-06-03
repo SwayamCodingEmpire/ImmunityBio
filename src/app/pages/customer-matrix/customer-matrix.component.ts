@@ -395,6 +395,10 @@ export class CustomerMatrixComponent {
   ];
 
   // ── Computed ──────────────────────────────────────────────────
+  get masterAccountNames(): string[] {
+    return this.accounts.map(a => a.masterAccountName);
+  }
+
   get filteredAccounts(): MasterAccount[] {
     const q = this.searchQuery.trim().toLowerCase();
     let list = q ? this.accounts.filter(a => a.masterAccountName.toLowerCase().includes(q)) : this.accounts;

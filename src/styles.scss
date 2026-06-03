@@ -320,6 +320,7 @@ main {
   font-weight: 700;
   line-height: 1;
   padding: 0.34rem 0.58rem;
+  white-space: nowrap;
 }
 
 .ib-status-badge--neutral {
@@ -367,6 +368,13 @@ main {
 
 .ib-icon-btn--danger {
   color: var(--ib-danger);
+}
+
+.ib-icon-btn--disabled,
+.ib-icon-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .ib-icon-btn:hover {

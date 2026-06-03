@@ -81,12 +81,11 @@
         <ng-container *ngIf="editingNameAccount === account">
           <div class="cm-edit-field flex-grow-1">
             <label class="cm-edit-field__label">Master Account Name</label>
-          <input class="form-control form-control-sm cm-name-input"
-            [(ngModel)]="editingNameValue"
-            (keydown.enter)="saveEditName()"
-            (keydown.escape)="cancelEditName()"
-            placeholder="Master account name"
-            autocomplete="off">
+            <select class="form-select form-select-sm cm-name-input"
+              [(ngModel)]="editingNameValue"
+              name="editMasterAccountName">
+              <option *ngFor="let name of masterAccountNames" [value]="name">{{ name }}</option>
+            </select>
           </div>
 
           <div class="cm-edit-field">
@@ -238,7 +237,9 @@
                     </ng-container>
                   </td>
                   <td class="text-center px-3">
-                    <button class="ib-icon-btn" (click)="openGpoEdit(account)" title="Edit GPO hierarchy">
+                    <button class="ib-icon-btn" (click)="openGpoEdit(account)" title="Edit GPO hierarchy"
+                      [disabled]="editingNameAccount === account"
+                      [class.ib-icon-btn--disabled]="editingNameAccount === account">
                       <i class="bi bi-pencil"></i>
                     </button>
                   </td>

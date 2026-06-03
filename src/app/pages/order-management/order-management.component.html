@@ -92,7 +92,7 @@
                 [class.bi-arrow-up]="sortColumn === 'distribution' && sortDirection === 'asc'"
                 [class.bi-arrow-down-up]="sortColumn !== 'distribution'"></i>
             </th>
-            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('status')">
+            <th class="py-2 om-th-nowrap om-th-sort" style="min-width:110px;" (click)="sortBy('status')">
               Status
               <i class="bi om-sort-icon"
                 [class.bi-arrow-down]="sortColumn === 'status' && sortDirection === 'desc'"
