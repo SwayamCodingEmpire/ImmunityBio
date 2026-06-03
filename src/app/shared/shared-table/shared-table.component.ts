@@ -1,3 +1,4 @@
+import { ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +9,8 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   templateUrl: './shared-table.component.html',
   styleUrl: './shared-table.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SharedTableComponent {
   @Input() title = '';
@@ -38,4 +40,6 @@ export class SharedTableComponent {
   onAddClick(): void {
     this.addClick.emit();
   }
+
+  trackByIndex(index: number): number { return index; }
 }

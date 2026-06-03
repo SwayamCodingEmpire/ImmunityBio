@@ -6,31 +6,31 @@
 
   <!-- <p class="sidebar-section-title text-uppercase fw-bold small mb-2 px-4 flex-shrink-0">Main Menu</p> -->
 
-  <div class="sidebar-body">
+  <div class="sidebar-body flex-grow-1">
     <nav class="sidebar-nav">
       <ul class="sidebar-scroll nav-list">
         @for (item of menuItems; track item.label) {
           @if (item.section) {
-            <li class="nav-section">{{ item.section }}</li>
+            <li class="nav-section fw-bold text-uppercase">{{ item.section }}</li>
           } @else {
             <li class="nav-item">
               @if (item.children?.length) {
                 <div
-                  class="nav-link nav-link--menu"
+                  class="nav-link nav-link--menu d-flex align-items-center"
                   [class.nav-link--collapsed]="collapsed"
                   [class.active]="isMenuActive(item)"
                   [attr.title]="collapsed ? item.label : null"
                   (click)="toggleMenu(item.label)">
-                  <div class="nav-link-main">
+                  <div class="nav-link-main d-flex align-items-center flex-grow-1">
                     <i [class]="item.icon"></i>
                     @if (!collapsed) {
-                      <span class="nav-text">{{ item.label }}</span>
+                      <span class="nav-text text-nowrap">{{ item.label }}</span>
                     }
                   </div>
                   @if (!collapsed) {
                     <button
                       type="button"
-                      class="nav-link-toggle ms-auto"
+                      class="nav-link-toggle ms-auto d-inline-flex align-items-center justify-content-center"
                       (click)="toggleMenu(item.label); $event.stopPropagation()"
                       [attr.aria-label]="'Toggle ' + item.label">
                       <i
@@ -45,9 +45,9 @@
                         <a
                           [routerLink]="child.route"
                           [queryParams]="child.queryParams"
-                          class="nav-link submenu-link"
+                          class="nav-link submenu-link d-flex align-items-center"
                           [class.active]="isChildActive(child)">
-                          <span class="nav-text">{{ child.label }}</span>
+                          <span class="nav-text text-nowrap">{{ child.label }}</span>
                         </a>
                       </li>
                     }
@@ -56,13 +56,13 @@
               } @else {
                 <a
                   [routerLink]="item.route"
-                  class="nav-link"
+                  class="nav-link d-flex align-items-center"
                   [class.nav-link--collapsed]="collapsed"
                   [class.active]="isLinkActive(item)"
                   [attr.title]="collapsed ? item.label : null">
                   <i [class]="item.icon"></i>
                   @if (!collapsed) {
-                    <span class="nav-text">{{ item.label }}</span>
+                    <span class="nav-text text-nowrap">{{ item.label }}</span>
                   }
                 </a>
               }

@@ -353,6 +353,9 @@ export class OrderManagementComponent implements OnInit {
     this.closeSplitModal();
   }
 
+  trackByOrderId(_index: number, order: OrderRow): string { return order.id; }
+  trackByIndex(index: number): number { return index; }
+
   // ── Filters ──────────────────────────────────────────────────
   readonly statusOptions       = ['All', 'Shipped', 'Pending', 'Credit Hold', 'Cancelled'];
   readonly distributionOptions = ['All', 'ICS', 'Accredo', 'IB Care'];

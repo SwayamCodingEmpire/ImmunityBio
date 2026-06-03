@@ -7,8 +7,8 @@
       <span class="ib-table-toolbar__meta">{{ filteredAccounts.length }} account{{ filteredAccounts.length !== 1 ? 's' : '' }}</span>
 
       <!-- Channel filter -->
-      <div class="cm-filter-group" role="group" aria-label="Filter by channel">
-        <button class="cm-filter-btn" [class.cm-filter-btn--active]="channelFilter === 'all'"
+      <div class="cm-filter-group d-inline-flex overflow-hidden" role="group" aria-label="Filter by channel">
+        <button class="cm-filter-btn text-nowrap" [class.cm-filter-btn--active]="channelFilter === 'all'"
           (click)="channelFilter = 'all'" type="button">All</button>
         <button class="cm-filter-btn cm-filter-btn--ics" [class.cm-filter-btn--active]="channelFilter === 'ics'"
           (click)="channelFilter = 'ics'" type="button">ICS</button>
@@ -16,8 +16,8 @@
           (click)="channelFilter = 'accredo'" type="button">Accredo</button>
       </div>
 
-      <button class="cm-expand-btn" (click)="allExpanded ? collapseAll() : expandAll()" type="button">
-        <i class="bi" [class.bi-chevron-bar-expand]="!allExpanded" [class.bi-chevron-bar-contract]="allExpanded"></i>
+      <button class="cm-expand-btn d-inline-flex align-items-center text-nowrap" (click)="allExpanded ? collapseAll() : expandAll()" type="button">
+        <i class="bi" [class.bi-chevron-bar-expand]="!allExpanded" [class.bi-chevron-bar-contract]="allExpanded" aria-hidden="true"></i>
         {{ allExpanded ? 'Collapse All' : 'Expand All' }}
       </button>
       <input type="text" class="form-control form-control-sm bg-light cm-search-input"
@@ -26,11 +26,11 @@
   </div>
 
   <!-- Card list -->
-  <div class="cm-card-list">
+  <div class="cm-card-list d-flex flex-column">
 
     <!-- No results -->
     <div class="ib-empty-state" *ngIf="filteredAccounts.length === 0">
-      <i class="bi bi-search ib-empty-state__icon" style="font-size:2rem;"></i>
+      <i class="bi bi-search ib-empty-state__icon cm-empty-state-icon" aria-hidden="true"></i>
       <p class="mt-2 mb-0 text-muted">No accounts match <strong>{{ searchQuery }}</strong></p>
     </div>
 
@@ -52,35 +52,35 @@
             {{ account.accountType || 'No Type' }}
           </span>
           <span class="cm-header-sep">·</span>
-          <span class="cm-ib-site-view" *ngIf="account.ibCareSiteId">
-            <i class="bi bi-geo-alt" style="font-size:0.7rem;"></i>
+          <span class="cm-ib-site-view d-inline-flex align-items-center" *ngIf="account.ibCareSiteId">
+            <i class="bi bi-geo-alt cm-geo-icon" aria-hidden="true"></i>
             <span class="cm-ib-site-id">{{ account.ibCareSiteId }}</span>
             <span class="text-muted">—</span>
             <span>{{ account.ibCareSiteName }}</span>
           </span>
-          <span class="cm-ib-site-view cm-ib-site-view--empty" *ngIf="!account.ibCareSiteId">
-            <i class="bi bi-geo-alt" style="font-size:0.7rem;"></i> No IB Site
+          <span class="cm-ib-site-view cm-ib-site-view--empty d-inline-flex align-items-center" *ngIf="!account.ibCareSiteId">
+            <i class="bi bi-geo-alt cm-geo-icon" aria-hidden="true"></i> No IB Site
           </span>
-          <button class="cm-gpo-header-btn ms-auto" type="button"
+          <button class="cm-gpo-header-btn ms-auto d-inline-flex align-items-center text-nowrap" type="button"
             [class.cm-gpo-header-btn--open]="isSectionOpen(account, 'gpo')"
             (click)="toggleSection(account, 'gpo')">
-            <i class="bi bi-diagram-3-fill"></i>
+            <i class="bi bi-diagram-3-fill" aria-hidden="true"></i>
             <span class="cm-gpo-header-btn__label">GPO Hierarchy</span>
             <ng-container *ngIf="account.gpoL1">
               <span class="cm-gpo-header-btn__sep">|</span>
               <span class="cm-gpo-header-btn__l1">{{ account.gpoL1 }}</span>
             </ng-container>
-            <i class="bi" [class.bi-chevron-down]="!isSectionOpen(account, 'gpo')" [class.bi-chevron-up]="isSectionOpen(account, 'gpo')"></i>
+            <i class="bi" [class.bi-chevron-down]="!isSectionOpen(account, 'gpo')" [class.bi-chevron-up]="isSectionOpen(account, 'gpo')" aria-hidden="true"></i>
           </button>
-          <button class="cm-name-edit-btn cm-name-edit-btn--fixed-h" (click)="startEditName(account)" title="Edit">
-            <i class="bi bi-pencil-fill"></i>
+          <button class="cm-name-edit-btn cm-name-edit-btn--fixed-h d-inline-flex align-items-center justify-content-center" (click)="startEditName(account)" title="Edit">
+            <i class="bi bi-pencil-fill" aria-hidden="true"></i>
           </button>
         </ng-container>
 
         <!-- ── Edit mode: single row ── -->
         <ng-container *ngIf="editingNameAccount === account">
-          <div class="cm-edit-field flex-grow-1">
-            <label class="cm-edit-field__label">Master Account Name</label>
+          <div class="cm-edit-field flex-grow-1 d-flex flex-column flex-grow-1">
+            <label class="cm-edit-field__label text-uppercase">Master Account Name</label>
             <select class="form-select form-select-sm cm-name-input"
               [(ngModel)]="editingNameValue"
               name="editMasterAccountName">
@@ -88,8 +88,8 @@
             </select>
           </div>
 
-          <div class="cm-edit-field">
-            <label class="cm-edit-field__label">Account Type</label>
+          <div class="cm-edit-field d-flex flex-column">
+            <label class="cm-edit-field__label text-uppercase">Account Type</label>
             <select class="form-select form-select-sm cm-acct-type-select"
                 [(ngModel)]="editingAccountType"
                 name="editAccountType"
@@ -103,24 +103,24 @@
               </select>
             </div>
 
-            <div class="cm-edit-field">
-              <label class="cm-edit-field__label">IB Care Site</label>
+            <div class="cm-edit-field d-flex flex-column">
+              <label class="cm-edit-field__label text-uppercase">IB Care Site</label>
               <div class="cm-site-dropdown" [class.cm-site-dropdown--open]="ibSiteDropdownOpen" (click)="$event.stopPropagation()">
 
                 <!-- Trigger -->
-                <button type="button" class="cm-site-trigger" (click)="openIbSiteDropdown()">
+                <button type="button" class="cm-site-trigger d-flex align-items-center" (click)="openIbSiteDropdown()">
                   <ng-container *ngIf="editingIbSiteValue">
                     <span class="cm-ib-site-id-sm">{{ editingIbSiteValue.split(' — ')[0] }}</span>
                     <span class="cm-site-trigger__name">{{ editingIbSiteValue.split(' — ')[1] }}</span>
                   </ng-container>
                   <span *ngIf="!editingIbSiteValue" class="cm-site-trigger__placeholder">— Select site —</span>
-                  <i class="bi bi-chevron-down cm-site-trigger__caret"></i>
+                  <i class="bi bi-chevron-down cm-site-trigger__caret" aria-hidden="true"></i>
                 </button>
 
                 <!-- Panel -->
-                <div class="cm-site-dropdown__panel" *ngIf="ibSiteDropdownOpen">
-                  <div class="cm-site-dropdown__search">
-                    <i class="bi bi-search cm-site-dropdown__search-icon"></i>
+                <div class="cm-site-dropdown__panel d-flex flex-column overflow-hidden" *ngIf="ibSiteDropdownOpen">
+                  <div class="cm-site-dropdown__search d-flex align-items-center">
+                    <i class="bi bi-search cm-site-dropdown__search-icon" aria-hidden="true"></i>
                     <input type="text"
                       class="cm-site-dropdown__search-input"
                       [(ngModel)]="ibSiteSearchTerm"
@@ -132,10 +132,10 @@
                     <li *ngIf="editingIbSiteValue"
                       class="cm-site-dropdown__item cm-site-dropdown__item--clear"
                       (mousedown)="selectIbSite(null)">
-                      <i class="bi bi-x-circle"></i> Clear
+                      <i class="bi bi-x-circle" aria-hidden="true"></i> Clear
                     </li>
                     <li *ngFor="let s of filteredIbSites"
-                      class="cm-site-dropdown__item"
+                      class="cm-site-dropdown__item d-flex align-items-center"
                       [class.cm-site-dropdown__item--selected]="editingIbSiteValue === s.id + ' — ' + s.name"
                       (mousedown)="selectIbSite(s)">
                       <span class="cm-ib-site-id-sm">{{ s.id }}</span>
@@ -150,20 +150,20 @@
               </div>
             </div>
 
-          <button class="cm-gpo-header-btn cm-gpo-header-btn--disabled ms-auto" type="button" disabled>
-            <i class="bi bi-diagram-3-fill"></i>
+          <button class="cm-gpo-header-btn cm-gpo-header-btn--disabled ms-auto d-inline-flex align-items-center text-nowrap" type="button" disabled>
+            <i class="bi bi-diagram-3-fill" aria-hidden="true"></i>
             <span class="cm-gpo-header-btn__label">GPO Hierarchy</span>
             <ng-container *ngIf="account.gpoL1">
               <span class="cm-gpo-header-btn__sep">|</span>
               <span class="cm-gpo-header-btn__l1">{{ account.gpoL1 }}</span>
             </ng-container>
-            <i class="bi bi-chevron-down"></i>
+            <i class="bi bi-chevron-down" aria-hidden="true"></i>
           </button>
-          <button class="cm-name-icon-btn cm-name-icon-btn--save" (click)="saveEditName()" title="Save">
-            <i class="bi bi-check-lg"></i>
+          <button class="cm-name-icon-btn cm-name-icon-btn--save d-inline-flex align-items-center justify-content-center" (click)="saveEditName()" title="Save">
+            <i class="bi bi-check-lg" aria-hidden="true"></i>
           </button>
-          <button class="cm-name-icon-btn cm-name-icon-btn--cancel" (click)="cancelEditName()" title="Cancel">
-            <i class="bi bi-x-lg"></i>
+          <button class="cm-name-icon-btn cm-name-icon-btn--cancel d-inline-flex align-items-center justify-content-center" (click)="cancelEditName()" title="Cancel">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
           </button>
         </ng-container>
 
@@ -176,11 +176,11 @@
             <table class="table table-hover table-sm align-middle mb-0 ib-data-table cm-gpo-table">
               <thead class="ib-table-header">
                 <tr>
-                  <th class="py-2 px-3" style="white-space:nowrap;">GPO (L1)</th>
-                  <th class="py-2" style="white-space:nowrap;">Sub-GPO (L2)</th>
-                  <th class="py-2" style="white-space:nowrap;">Group (L3)</th>
-                  <th class="py-2" style="white-space:nowrap;">Sub-Group (L4)</th>
-                  <th class="py-2" style="white-space:nowrap;">Practice (L5)</th>
+                  <th class="py-2 px-3 text-nowrap">GPO (L1)</th>
+                  <th class="py-2 text-nowrap">Sub-GPO (L2)</th>
+                  <th class="py-2 text-nowrap">Group (L3)</th>
+                  <th class="py-2 text-nowrap">Sub-Group (L4)</th>
+                  <th class="py-2 text-nowrap">Practice (L5)</th>
                   <th class="py-2 text-center px-3">Actions</th>
                 </tr>
               </thead>
@@ -189,47 +189,47 @@
                   <td class="px-3">
                     <ng-container *ngIf="account.gpoL1">
                       <span class="ib-chip">{{ account.gpoL1 }}</span>
-                      <div class="cm-gpo-level-status"
+                      <div class="cm-gpo-level-status text-nowrap"
                         [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL1End)"
                         [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL1End)">
                         ● {{ isLevelActive(account.gpoL1End) ? 'Active' : 'Inactive' }}
                       </div>
                     </ng-container>
                   </td>
-                  <td style="white-space:nowrap;">
+                  <td class="text-nowrap">
                     <ng-container *ngIf="account.gpoL2">
                       <span class="cm-gpo-text">{{ account.gpoL2 }}</span>
-                      <div class="cm-gpo-level-status"
+                      <div class="cm-gpo-level-status text-nowrap"
                         [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL2End)"
                         [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL2End)">
                         ● {{ isLevelActive(account.gpoL2End) ? 'Active' : 'Inactive' }}
                       </div>
                     </ng-container>
                   </td>
-                  <td style="white-space:nowrap;">
+                  <td class="text-nowrap">
                     <ng-container *ngIf="account.gpoL3">
                       <span class="cm-gpo-text">{{ account.gpoL3 }}</span>
-                      <div class="cm-gpo-level-status"
+                      <div class="cm-gpo-level-status text-nowrap"
                         [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL3End)"
                         [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL3End)">
                         ● {{ isLevelActive(account.gpoL3End) ? 'Active' : 'Inactive' }}
                       </div>
                     </ng-container>
                   </td>
-                  <td style="white-space:nowrap;">
+                  <td class="text-nowrap">
                     <ng-container *ngIf="account.gpoL4">
                       <span class="cm-gpo-text">{{ account.gpoL4 }}</span>
-                      <div class="cm-gpo-level-status"
+                      <div class="cm-gpo-level-status text-nowrap"
                         [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL4End)"
                         [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL4End)">
                         ● {{ isLevelActive(account.gpoL4End) ? 'Active' : 'Inactive' }}
                       </div>
                     </ng-container>
                   </td>
-                  <td style="white-space:nowrap;">
+                  <td class="text-nowrap">
                     <ng-container *ngIf="account.gpoL5">
                       <span class="cm-gpo-text">{{ account.gpoL5 }}</span>
-                      <div class="cm-gpo-level-status"
+                      <div class="cm-gpo-level-status text-nowrap"
                         [class.cm-gpo-level-status--active]="isLevelActive(account.gpoL5End)"
                         [class.cm-gpo-level-status--inactive]="!isLevelActive(account.gpoL5End)">
                         ● {{ isLevelActive(account.gpoL5End) ? 'Active' : 'Inactive' }}
@@ -240,7 +240,7 @@
                     <button class="ib-icon-btn" (click)="openGpoEdit(account)" title="Edit GPO hierarchy"
                       [disabled]="editingNameAccount === account"
                       [class.ib-icon-btn--disabled]="editingNameAccount === account">
-                      <i class="bi bi-pencil"></i>
+                      <i class="bi bi-pencil" aria-hidden="true"></i>
                     </button>
                   </td>
                 </tr>
@@ -254,18 +254,18 @@
         </ng-template>
 
         <div class="cm-inline-add-bar" *ngIf="!account.gpoL1">
-          <button class="cm-text-add-btn cm-text-add-btn--gpo" (click)="openGpoEdit(account)" type="button">
-            <i class="bi bi-plus-lg"></i> Add GPO Hierarchy
+          <button class="cm-text-add-btn cm-text-add-btn--gpo d-inline-flex align-items-center" (click)="openGpoEdit(account)" type="button">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add GPO Hierarchy
           </button>
         </div>
       </div>
 
       <!-- ── ICS Accounts section ────────────────────────────── -->
       <div class="cm-section cm-section--ics">
-        <button class="cm-section__header" (click)="toggleSection(account, 'ics')" type="button">
+        <button class="cm-section__header d-flex align-items-center" (click)="toggleSection(account, 'ics')" type="button">
           <i class="bi bi-chevron-right cm-section__chevron"
-            [class.cm-section__chevron--open]="isSectionOpen(account, 'ics')"></i>
-          <span class="cm-section__label">ICS Accounts</span>
+            [class.cm-section__chevron--open]="isSectionOpen(account, 'ics')" aria-hidden="true"></i>
+          <span class="cm-section__label text-uppercase">ICS Accounts</span>
           <span class="cm-section__badge" [class.cm-section__badge--ics]="account.icsAccounts.length > 0">
             {{ account.icsAccounts.length }}
           </span>
@@ -299,12 +299,12 @@
                       <td>{{ row.city }}</td>
                       <td>{{ row.state }}</td>
                       <td class="text-muted">{{ row.zip }}</td>
-                      <td class="cm-action-cell">
-                        <button class="cm-row-btn cm-row-btn--edit" (click)="startEditIcsRow(account, i)" title="Edit">
-                          <i class="bi bi-pencil"></i>
+                      <td class="cm-action-cell text-nowrap">
+                        <button class="cm-row-btn cm-row-btn--edit d-inline-flex align-items-center justify-content-center" (click)="startEditIcsRow(account, i)" title="Edit">
+                          <i class="bi bi-pencil" aria-hidden="true"></i>
                         </button>
                         <button class="cm-row-btn cm-row-btn--delete" (click)="deleteIcsRow(account, i)" title="Delete">
-                          <i class="bi bi-trash3"></i>
+                          <i class="bi bi-trash3" aria-hidden="true"></i>
                         </button>
                       </td>
                     </ng-container>
@@ -317,12 +317,12 @@
                       <td><input class="form-control form-control-sm" [(ngModel)]="editingIcsRow!.form.city" [name]="'eics_city_'+i"></td>
                       <td><input class="form-control form-control-sm cm-state-input" [(ngModel)]="editingIcsRow!.form.state" [name]="'eics_state_'+i" maxlength="2"></td>
                       <td><input class="form-control form-control-sm cm-zip-input" [(ngModel)]="editingIcsRow!.form.zip" [name]="'eics_zip_'+i"></td>
-                      <td class="cm-action-cell">
-                        <button class="cm-row-btn cm-row-btn--save" (click)="saveEditIcsRow()" title="Save">
-                          <i class="bi bi-check-lg"></i>
+                      <td class="cm-action-cell text-nowrap">
+                        <button class="cm-row-btn cm-row-btn--save d-inline-flex align-items-center justify-content-center" (click)="saveEditIcsRow()" title="Save">
+                          <i class="bi bi-check-lg" aria-hidden="true"></i>
                         </button>
-                        <button class="cm-row-btn cm-row-btn--cancel" (click)="cancelEditIcsRow()" title="Cancel">
-                          <i class="bi bi-x-lg"></i>
+                        <button class="cm-row-btn cm-row-btn--cancel d-inline-flex align-items-center justify-content-center" (click)="cancelEditIcsRow()" title="Cancel">
+                          <i class="bi bi-x-lg" aria-hidden="true"></i>
                         </button>
                       </td>
                     </ng-container>
@@ -337,12 +337,12 @@
                     <td><input class="form-control form-control-sm" [(ngModel)]="newIcsRow.city" name="newBpCity" placeholder="City" autocomplete="off"></td>
                     <td><input class="form-control form-control-sm cm-state-input" [(ngModel)]="newIcsRow.state" name="newBpState" placeholder="ST" maxlength="2" autocomplete="off"></td>
                     <td><input class="form-control form-control-sm cm-zip-input" [(ngModel)]="newIcsRow.zip" name="newBpZip" placeholder="Zip" autocomplete="off"></td>
-                    <td class="cm-action-cell">
-                      <button class="cm-row-btn cm-row-btn--save" (click)="confirmAddIcsRow()" [disabled]="!newIcsRow.bpNumber.trim()" title="Add">
-                        <i class="bi bi-check-lg"></i>
+                    <td class="cm-action-cell text-nowrap">
+                      <button class="cm-row-btn cm-row-btn--save d-inline-flex align-items-center justify-content-center" (click)="confirmAddIcsRow()" [disabled]="!newIcsRow.bpNumber.trim()" title="Add">
+                        <i class="bi bi-check-lg" aria-hidden="true"></i>
                       </button>
-                      <button class="cm-row-btn cm-row-btn--cancel" (click)="cancelAddIcsRow()" title="Cancel">
-                        <i class="bi bi-x-lg"></i>
+                      <button class="cm-row-btn cm-row-btn--cancel d-inline-flex align-items-center justify-content-center" (click)="cancelAddIcsRow()" title="Cancel">
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
                       </button>
                     </td>
                   </tr>
@@ -357,8 +357,8 @@
           </ng-template>
 
           <div class="cm-inline-add-bar" *ngIf="addingIcsAccount !== account">
-            <button class="cm-text-add-btn cm-text-add-btn--ics" (click)="startAddIcsRow(account)" type="button">
-              <i class="bi bi-plus-lg"></i> Add ICS Account
+            <button class="cm-text-add-btn cm-text-add-btn--ics d-inline-flex align-items-center" (click)="startAddIcsRow(account)" type="button">
+              <i class="bi bi-plus-lg" aria-hidden="true"></i> Add ICS Account
             </button>
           </div>
 
@@ -367,10 +367,10 @@
 
       <!-- ── Accredo Accounts section ───────────────────────── -->
       <div class="cm-section cm-section--accredo cm-section--last">
-        <button class="cm-section__header" (click)="toggleSection(account, 'accredo')" type="button">
+        <button class="cm-section__header d-flex align-items-center" (click)="toggleSection(account, 'accredo')" type="button">
           <i class="bi bi-chevron-right cm-section__chevron"
-            [class.cm-section__chevron--open]="isSectionOpen(account, 'accredo')"></i>
-          <span class="cm-section__label">Accredo Accounts</span>
+            [class.cm-section__chevron--open]="isSectionOpen(account, 'accredo')" aria-hidden="true"></i>
+          <span class="cm-section__label text-uppercase">Accredo Accounts</span>
           <span class="cm-section__badge" [class.cm-section__badge--accredo]="account.accredoAccounts.length > 0">
             {{ account.accredoAccounts.length }}
           </span>
@@ -404,12 +404,12 @@
                       <td>{{ row.city }}</td>
                       <td>{{ row.state }}</td>
                       <td class="text-muted">{{ row.zip }}</td>
-                      <td class="cm-action-cell">
-                        <button class="cm-row-btn cm-row-btn--edit" (click)="startEditAccredoRow(account, i)" title="Edit">
-                          <i class="bi bi-pencil"></i>
+                      <td class="cm-action-cell text-nowrap">
+                        <button class="cm-row-btn cm-row-btn--edit d-inline-flex align-items-center justify-content-center" (click)="startEditAccredoRow(account, i)" title="Edit">
+                          <i class="bi bi-pencil" aria-hidden="true"></i>
                         </button>
                         <button class="cm-row-btn cm-row-btn--delete" (click)="deleteAccredoRow(account, i)" title="Delete">
-                          <i class="bi bi-trash3"></i>
+                          <i class="bi bi-trash3" aria-hidden="true"></i>
                         </button>
                       </td>
                     </ng-container>
@@ -422,12 +422,12 @@
                       <td><input class="form-control form-control-sm" [(ngModel)]="editingAccredoRow!.form.city" [name]="'enpi_city_'+i"></td>
                       <td><input class="form-control form-control-sm cm-state-input" [(ngModel)]="editingAccredoRow!.form.state" [name]="'enpi_state_'+i" maxlength="2"></td>
                       <td><input class="form-control form-control-sm cm-zip-input" [(ngModel)]="editingAccredoRow!.form.zip" [name]="'enpi_zip_'+i"></td>
-                      <td class="cm-action-cell">
-                        <button class="cm-row-btn cm-row-btn--save cm-row-btn--save-npi" (click)="saveEditAccredoRow()" title="Save">
-                          <i class="bi bi-check-lg"></i>
+                      <td class="cm-action-cell text-nowrap">
+                        <button class="cm-row-btn cm-row-btn--save cm-row-btn--save-npi d-inline-flex align-items-center justify-content-center" (click)="saveEditAccredoRow()" title="Save">
+                          <i class="bi bi-check-lg" aria-hidden="true"></i>
                         </button>
-                        <button class="cm-row-btn cm-row-btn--cancel" (click)="cancelEditAccredoRow()" title="Cancel">
-                          <i class="bi bi-x-lg"></i>
+                        <button class="cm-row-btn cm-row-btn--cancel d-inline-flex align-items-center justify-content-center" (click)="cancelEditAccredoRow()" title="Cancel">
+                          <i class="bi bi-x-lg" aria-hidden="true"></i>
                         </button>
                       </td>
                     </ng-container>
@@ -442,12 +442,12 @@
                     <td><input class="form-control form-control-sm" [(ngModel)]="newAccredoRow.city" name="newNpiCity" placeholder="City" autocomplete="off"></td>
                     <td><input class="form-control form-control-sm cm-state-input" [(ngModel)]="newAccredoRow.state" name="newNpiState" placeholder="ST" maxlength="2" autocomplete="off"></td>
                     <td><input class="form-control form-control-sm cm-zip-input" [(ngModel)]="newAccredoRow.zip" name="newNpiZip" placeholder="Zip" autocomplete="off"></td>
-                    <td class="cm-action-cell">
-                      <button class="cm-row-btn cm-row-btn--save cm-row-btn--save-npi" (click)="confirmAddAccredoRow()" [disabled]="!newAccredoRow.npiNumber.trim()" title="Add">
-                        <i class="bi bi-check-lg"></i>
+                    <td class="cm-action-cell text-nowrap">
+                      <button class="cm-row-btn cm-row-btn--save cm-row-btn--save-npi d-inline-flex align-items-center justify-content-center" (click)="confirmAddAccredoRow()" [disabled]="!newAccredoRow.npiNumber.trim()" title="Add">
+                        <i class="bi bi-check-lg" aria-hidden="true"></i>
                       </button>
-                      <button class="cm-row-btn cm-row-btn--cancel" (click)="cancelAddAccredoRow()" title="Cancel">
-                        <i class="bi bi-x-lg"></i>
+                      <button class="cm-row-btn cm-row-btn--cancel d-inline-flex align-items-center justify-content-center" (click)="cancelAddAccredoRow()" title="Cancel">
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
                       </button>
                     </td>
                   </tr>
@@ -462,8 +462,8 @@
           </ng-template>
 
           <div class="cm-inline-add-bar" *ngIf="addingAccredoAccount !== account">
-            <button class="cm-text-add-btn cm-text-add-btn--accredo" (click)="startAddAccredoRow(account)" type="button">
-              <i class="bi bi-plus-lg"></i> Add Accredo Account
+            <button class="cm-text-add-btn cm-text-add-btn--accredo d-inline-flex align-items-center" (click)="startAddAccredoRow(account)" type="button">
+              <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Accredo Account
             </button>
           </div>
 
@@ -477,7 +477,7 @@
 
 <!-- ── GPO Hierarchy Edit Modal ────────────────────────────────── -->
 <div *ngIf="editingGpoAccount" class="ib-modal-overlay" (click)="cancelEditGpo()">
-  <div class="ib-modal-shell cm-gpo-modal" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell cm-gpo-modal d-flex flex-column" (click)="$event.stopPropagation()">
 
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
@@ -492,10 +492,10 @@
 
         <!-- L1 -->
         <div class="cm-gpo-level-row">
-          <div class="cm-gpo-level-row__header">
+          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="cm-gpo-level-pill">L1</span>
-              <span class="cm-gpo-level-title">GPO</span>
+              <span class="cm-gpo-level-title fw-bold text-uppercase">GPO</span>
             </div>
             <span class="cm-gpo-status-pill"
               [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL1End)"
@@ -505,15 +505,15 @@
           </div>
           <div class="row g-3">
             <div class="col-6">
-              <label class="cm-gpo-field-label">VALUE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL1" name="gpoL1" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">START DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL1Start" name="gpoL1Start">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">END DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL1End" name="gpoL1End">
             </div>
           </div>
@@ -521,10 +521,10 @@
 
         <!-- L2 -->
         <div class="cm-gpo-level-row">
-          <div class="cm-gpo-level-row__header">
+          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="cm-gpo-level-pill cm-gpo-level-pill--l2">L2</span>
-              <span class="cm-gpo-level-title">SUB-GPO (NETWORK)</span>
+              <span class="cm-gpo-level-title fw-bold text-uppercase">SUB-GPO (NETWORK)</span>
             </div>
             <span class="cm-gpo-status-pill"
               [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL2End)"
@@ -534,15 +534,15 @@
           </div>
           <div class="row g-3">
             <div class="col-6">
-              <label class="cm-gpo-field-label">VALUE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL2" name="gpoL2" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">START DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL2Start" name="gpoL2Start">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">END DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL2End" name="gpoL2End">
             </div>
           </div>
@@ -550,10 +550,10 @@
 
         <!-- L3 -->
         <div class="cm-gpo-level-row">
-          <div class="cm-gpo-level-row__header">
+          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="cm-gpo-level-pill cm-gpo-level-pill--l3">L3</span>
-              <span class="cm-gpo-level-title">GROUP</span>
+              <span class="cm-gpo-level-title fw-bold text-uppercase">GROUP</span>
             </div>
             <span class="cm-gpo-status-pill"
               [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL3End)"
@@ -563,15 +563,15 @@
           </div>
           <div class="row g-3">
             <div class="col-6">
-              <label class="cm-gpo-field-label">VALUE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL3" name="gpoL3" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">START DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL3Start" name="gpoL3Start">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">END DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL3End" name="gpoL3End">
             </div>
           </div>
@@ -579,10 +579,10 @@
 
         <!-- L4 -->
         <div class="cm-gpo-level-row">
-          <div class="cm-gpo-level-row__header">
+          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="cm-gpo-level-pill cm-gpo-level-pill--l4">L4</span>
-              <span class="cm-gpo-level-title">SUB-GROUP</span>
+              <span class="cm-gpo-level-title fw-bold text-uppercase">SUB-GROUP</span>
             </div>
             <span class="cm-gpo-status-pill"
               [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL4End)"
@@ -592,15 +592,15 @@
           </div>
           <div class="row g-3">
             <div class="col-6">
-              <label class="cm-gpo-field-label">VALUE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL4" name="gpoL4" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">START DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL4Start" name="gpoL4Start">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">END DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL4End" name="gpoL4End">
             </div>
           </div>
@@ -608,10 +608,10 @@
 
         <!-- L5 -->
         <div class="cm-gpo-level-row cm-gpo-level-row--last">
-          <div class="cm-gpo-level-row__header">
+          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="cm-gpo-level-pill cm-gpo-level-pill--l5">L5</span>
-              <span class="cm-gpo-level-title">PRACTICE</span>
+              <span class="cm-gpo-level-title fw-bold text-uppercase">PRACTICE</span>
             </div>
             <span class="cm-gpo-status-pill"
               [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL5End)"
@@ -621,15 +621,15 @@
           </div>
           <div class="row g-3">
             <div class="col-6">
-              <label class="cm-gpo-field-label">VALUE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL5" name="gpoL5" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">START DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL5Start" name="gpoL5Start">
             </div>
             <div class="col-3">
-              <label class="cm-gpo-field-label">END DATE</label>
+              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL5End" name="gpoL5End">
             </div>
           </div>
@@ -638,7 +638,7 @@
       </form>
     </div>
 
-    <div class="cm-gpo-modal-footer">
+    <div class="cm-gpo-modal-footer d-flex justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="cancelEditGpo()">Cancel</button>
       <button type="button" class="btn btn-primary" (click)="saveEditGpo()">Save Changes</button>
     </div>

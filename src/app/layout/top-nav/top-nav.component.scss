@@ -1,10 +1,9 @@
 .top-nav-shell {
-  background: #ffffff;
+  background: var(--ib-white);
   border-bottom: 1px solid var(--ib-border);
 }
 
 .top-nav-brand-wrap {
-  flex-wrap: nowrap;
   min-width: 0;
   white-space: nowrap;
 }
@@ -22,14 +21,11 @@
 }
 
 .top-nav-sidebar-btn {
-  align-items: center;
-  background: #f8fafc;
+  background: var(--ib-bg);
   border: 1px solid var(--ib-border);
   border-radius: 10px;
   color: var(--ib-navy);
-  display: inline-flex;
   height: 36px;
-  justify-content: center;
   transition: background-color 0.2s ease, border-color 0.2s ease;
   width: 36px;
 }
@@ -50,9 +46,7 @@
 .top-nav-subtitle {
   color: var(--ib-muted);
   font-size: 0.72rem;
-  font-weight: 600;
   letter-spacing: 0.8px;
-  text-transform: uppercase;
 }
 
 .top-nav-search {
@@ -60,7 +54,7 @@
 
   .input-group-text,
   .form-control {
-    background: #f8fafc;
+    background: var(--ib-bg);
     border-color: var(--ib-border);
     color: var(--ib-text);
   }

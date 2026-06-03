@@ -4,7 +4,7 @@
     <div class="ib-page-header__actions">
       <span class="ib-table-toolbar__meta">{{ rows.length }} hierarchies</span>
       <button class="btn btn-primary btn-sm" (click)="openAdd()">
-        <i class="bi bi-plus-lg me-1"></i>Add GPO Hierarchy
+        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add GPO Hierarchy
       </button>
     </div>
   </div>
@@ -15,11 +15,11 @@
         <table class="table table-hover table-sm align-middle mb-0 ib-data-table gpo-table">
           <thead class="ib-table-header">
             <tr>
-              <th class="py-2 px-3" style="white-space:nowrap;">GPO (L1)</th>
-              <th class="py-2" style="white-space:nowrap;">Sub-GPO (L2)</th>
-              <th class="py-2" style="white-space:nowrap;">Group (L3)</th>
-              <th class="py-2" style="white-space:nowrap;">Sub-Group (L4)</th>
-              <th class="py-2" style="white-space:nowrap;">Practice (L5)</th>
+              <th class="py-2 px-3 text-nowrap">GPO (L1)</th>
+              <th class="py-2 text-nowrap">Sub-GPO (L2)</th>
+              <th class="py-2 text-nowrap">Group (L3)</th>
+              <th class="py-2 text-nowrap">Sub-Group (L4)</th>
+              <th class="py-2 text-nowrap">Practice (L5)</th>
               <th class="py-2 text-center px-3">Actions</th>
             </tr>
           </thead>
@@ -28,8 +28,8 @@
 
               <td class="px-3">
                 <span *ngIf="row.gpoL1" class="ib-chip">{{ row.gpoL1 }}</span>
-                <div *ngIf="row.gpoL1" class="gpo-meta-row">
-                  <span class="gpo-level-status"
+                <div *ngIf="row.gpoL1" class="gpo-meta-row d-flex align-items-center">
+                  <span class="gpo-level-status fw-semibold text-nowrap"
                     [class.gpo-level-status--active]="isLevelActive(row.gpoL1End)"
                     [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL1End)">
                     ● {{ isLevelActive(row.gpoL1End) ? 'Active' : 'Inactive' }}
@@ -38,10 +38,10 @@
                 </div>
               </td>
 
-              <td style="white-space:nowrap;">
+              <td class="text-nowrap">
                 <span *ngIf="row.gpoL2" class="gpo-text-sm">{{ row.gpoL2 }}</span>
-                <div *ngIf="row.gpoL2" class="gpo-meta-row">
-                  <span class="gpo-level-status"
+                <div *ngIf="row.gpoL2" class="gpo-meta-row d-flex align-items-center">
+                  <span class="gpo-level-status fw-semibold text-nowrap"
                     [class.gpo-level-status--active]="isLevelActive(row.gpoL2End)"
                     [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL2End)">
                     ● {{ isLevelActive(row.gpoL2End) ? 'Active' : 'Inactive' }}
@@ -50,10 +50,10 @@
                 </div>
               </td>
 
-              <td style="white-space:nowrap;">
+              <td class="text-nowrap">
                 <span *ngIf="row.gpoL3" class="gpo-text-sm">{{ row.gpoL3 }}</span>
-                <div *ngIf="row.gpoL3" class="gpo-meta-row">
-                  <span class="gpo-level-status"
+                <div *ngIf="row.gpoL3" class="gpo-meta-row d-flex align-items-center">
+                  <span class="gpo-level-status fw-semibold text-nowrap"
                     [class.gpo-level-status--active]="isLevelActive(row.gpoL3End)"
                     [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL3End)">
                     ● {{ isLevelActive(row.gpoL3End) ? 'Active' : 'Inactive' }}
@@ -62,30 +62,30 @@
                 </div>
               </td>
 
-              <td style="white-space:nowrap;">
+              <td class="text-nowrap">
                 <span *ngIf="row.gpoL4" class="gpo-text-sm">{{ row.gpoL4 }}</span>
-                <div *ngIf="row.gpoL4" class="gpo-level-status"
+                <div *ngIf="row.gpoL4" class="gpo-level-status fw-semibold text-nowrap"
                   [class.gpo-level-status--active]="isLevelActive(row.gpoL4End)"
                   [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL4End)">
                   ● {{ isLevelActive(row.gpoL4End) ? 'Active' : 'Inactive' }}
                 </div>
               </td>
 
-              <td style="white-space:nowrap;">
+              <td class="text-nowrap">
                 <span *ngIf="row.gpoL5" class="gpo-text-sm">{{ row.gpoL5 }}</span>
-                <div *ngIf="row.gpoL5" class="gpo-level-status"
+                <div *ngIf="row.gpoL5" class="gpo-level-status fw-semibold text-nowrap"
                   [class.gpo-level-status--active]="isLevelActive(row.gpoL5End)"
                   [class.gpo-level-status--inactive]="!isLevelActive(row.gpoL5End)">
                   ● {{ isLevelActive(row.gpoL5End) ? 'Active' : 'Inactive' }}
                 </div>
               </td>
 
-              <td class="text-center px-3" style="white-space:nowrap;">
+              <td class="text-center px-3 text-nowrap">
                 <button class="ib-icon-btn me-1" title="Edit" (click)="openEdit(row)">
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-pencil" aria-hidden="true"></i>
                 </button>
                 <button class="ib-icon-btn ib-icon-btn--danger" title="Delete" (click)="deleteRow(row)">
-                  <i class="bi bi-trash3"></i>
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
                 </button>
               </td>
 
@@ -103,7 +103,7 @@
 
 <!-- ── Add / Edit Modal ───────────────────────────────────── -->
 <div *ngIf="editingRow" class="ib-modal-overlay" (click)="closeEdit()">
-  <div class="ib-modal-shell gpo-edit-modal" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell gpo-edit-modal d-flex flex-column" (click)="$event.stopPropagation()">
 
     <div class="ib-modal-header">
       <h5 class="ib-modal-title mb-0">{{ isAddMode ? 'Add' : 'Edit' }} GPO Hierarchy</h5>
@@ -115,10 +115,10 @@
 
         <!-- GPO 1 -->
         <div class="gpo-level-row">
-          <div class="gpo-level-row__header">
+          <div class="gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill">L1</span>
-              <span class="gpo-level-title">GPO (L1)</span>
+              <span class="gpo-level-title fw-bold text-uppercase">GPO (L1)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL1End)"
@@ -128,22 +128,22 @@
           </div>
           <div class="row g-3">
             <div class="col-5">
-              <label class="gpo-field-label">VALUE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editForm.gpoL1" name="gpoL1" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="gpo-field-label">REBATE %</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">REBATE %</label>
               <div class="input-group">
                 <input type="number" class="form-control" [(ngModel)]="editForm.gpoL1Rebate" name="gpoL1Rebate" min="0" max="100" step="0.25" placeholder="0.00">
                 <span class="input-group-text">%</span>
               </div>
             </div>
             <div class="col-2">
-              <label class="gpo-field-label">START DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL1Start" name="gpoL1Start">
             </div>
             <div class="col-2">
-              <label class="gpo-field-label">END DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL1End" name="gpoL1End">
             </div>
           </div>
@@ -151,10 +151,10 @@
 
         <!-- GPO 2 -->
         <div class="gpo-level-row">
-          <div class="gpo-level-row__header">
+          <div class="gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill gpo-level-pill--l2">L2</span>
-              <span class="gpo-level-title">Sub-GPO (L2)</span>
+              <span class="gpo-level-title fw-bold text-uppercase">Sub-GPO (L2)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL2End)"
@@ -164,22 +164,22 @@
           </div>
           <div class="row g-3">
             <div class="col-5">
-              <label class="gpo-field-label">VALUE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editForm.gpoL2" name="gpoL2" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="gpo-field-label">REBATE %</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">REBATE %</label>
               <div class="input-group">
                 <input type="number" class="form-control" [(ngModel)]="editForm.gpoL2Rebate" name="gpoL2Rebate" min="0" max="100" step="0.25" placeholder="0.00">
                 <span class="input-group-text">%</span>
               </div>
             </div>
             <div class="col-2">
-              <label class="gpo-field-label">START DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL2Start" name="gpoL2Start">
             </div>
             <div class="col-2">
-              <label class="gpo-field-label">END DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL2End" name="gpoL2End">
             </div>
           </div>
@@ -187,10 +187,10 @@
 
         <!-- GPO 3 -->
         <div class="gpo-level-row">
-          <div class="gpo-level-row__header">
+          <div class="gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill gpo-level-pill--l3">L3</span>
-              <span class="gpo-level-title">Group (L3)</span>
+              <span class="gpo-level-title fw-bold text-uppercase">Group (L3)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL3End)"
@@ -200,22 +200,22 @@
           </div>
           <div class="row g-3">
             <div class="col-5">
-              <label class="gpo-field-label">VALUE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editForm.gpoL3" name="gpoL3" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="gpo-field-label">REBATE %</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">REBATE %</label>
               <div class="input-group">
                 <input type="number" class="form-control" [(ngModel)]="editForm.gpoL3Rebate" name="gpoL3Rebate" min="0" max="100" step="0.25" placeholder="0.00">
                 <span class="input-group-text">%</span>
               </div>
             </div>
             <div class="col-2">
-              <label class="gpo-field-label">START DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL3Start" name="gpoL3Start">
             </div>
             <div class="col-2">
-              <label class="gpo-field-label">END DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL3End" name="gpoL3End">
             </div>
           </div>
@@ -223,10 +223,10 @@
 
         <!-- GPO 4 -->
         <div class="gpo-level-row">
-          <div class="gpo-level-row__header">
+          <div class="gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill gpo-level-pill--l4">L4</span>
-              <span class="gpo-level-title">Sub-Group (L4)</span>
+              <span class="gpo-level-title fw-bold text-uppercase">Sub-Group (L4)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL4End)"
@@ -236,15 +236,15 @@
           </div>
           <div class="row g-3">
             <div class="col-6">
-              <label class="gpo-field-label">VALUE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editForm.gpoL4" name="gpoL4" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="gpo-field-label">START DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL4Start" name="gpoL4Start">
             </div>
             <div class="col-3">
-              <label class="gpo-field-label">END DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL4End" name="gpoL4End">
             </div>
           </div>
@@ -252,10 +252,10 @@
 
         <!-- GPO 5 -->
         <div class="gpo-level-row gpo-level-row--last">
-          <div class="gpo-level-row__header">
+          <div class="gpo-level-row__header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
               <span class="gpo-level-pill gpo-level-pill--l5">L5</span>
-              <span class="gpo-level-title">Practice (L5)</span>
+              <span class="gpo-level-title fw-bold text-uppercase">Practice (L5)</span>
             </div>
             <span class="gpo-status-pill"
               [class.gpo-status-pill--active]="isLevelActive(editForm.gpoL5End)"
@@ -265,15 +265,15 @@
           </div>
           <div class="row g-3">
             <div class="col-6">
-              <label class="gpo-field-label">VALUE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
               <input type="text" class="form-control" [(ngModel)]="editForm.gpoL5" name="gpoL5" autocomplete="off">
             </div>
             <div class="col-3">
-              <label class="gpo-field-label">START DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL5Start" name="gpoL5Start">
             </div>
             <div class="col-3">
-              <label class="gpo-field-label">END DATE</label>
+              <label class="gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
               <input type="date" class="form-control" [(ngModel)]="editForm.gpoL5End" name="gpoL5End">
             </div>
           </div>
@@ -282,7 +282,7 @@
       </form>
     </div>
 
-    <div class="gpo-modal-footer">
+    <div class="gpo-modal-footer d-flex gap-2 justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="closeEdit()">Cancel</button>
       <button type="button" class="btn btn-primary" (click)="saveEdit()">Save Changes</button>
     </div>

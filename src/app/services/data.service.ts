@@ -1,16 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Order, Patient, TeamMember, Territory } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-
-  private kpis = {
-    daily_revenue: 823400,
-    weekly_units: 63,
-    ytd_revenue: 64404200,
-    total_enrollments: 289
-  };
 
   private territories = [
     { id: 'EA1', name: 'East', director: 'Keith DeRuiter', revenue: 49726200, product: 'Anktiva 400mcg/0.4mL' },
@@ -20,7 +14,7 @@ export class DataService {
   ];
 
   // Image 4 / Image 5: Direct Model Transaction - ICS Orders & Accredo Orders
-  private recentOrders: any[] = [
+  private recentOrders: Order[] = [
     {
       id: 'ORD-100201',
       orderNo: '7602192221',
@@ -108,7 +102,7 @@ export class DataService {
   ];
 
   // Image 3: Patient Enrollment Report
-  private patients: any[] = [
+  private patients: Patient[] = [
     {
       id: 'PT-89201',
       reportNo: '74831026',
@@ -221,18 +215,8 @@ export class DataService {
     }
   ];
 
-  // Image 3: Physician Management
-  private physicians: any[] = [
-    { npi: '1374920583', firstName: 'RAYMOND', lastName: 'GARZA', address: '1199 PRINCE AVE', city: 'ATHENS', state: 'GA', zip: '30606', product: 'Anktiva 400mcg/0.4mL', pharmacy: 'ACCREDO HEALTH GROUP INC.', pharmacyId: '83920174651' },
-    { npi: '1028374659', firstName: 'DAVID', lastName: 'FELDMAN', address: '4800 FRIENDSHIP AVE', city: 'PITTSBURGH', state: 'PA', zip: '15224', product: 'Anktiva 400mcg/0.4mL', pharmacy: 'ACCREDO HEALTH GROUP INC.', pharmacyId: '83920174651' },
-    { npi: '1049382756', firstName: 'HASSAN', lastName: 'NADEEM', address: '5200 W PLANO PKWY', city: 'PLANO', state: 'TX', zip: '75093', product: 'Anktiva 400mcg/0.4mL', pharmacy: 'ACCREDO HEALTH GROUP INC.', pharmacyId: '83920174651' },
-    { npi: '1203847596', firstName: 'VIKRAM', lastName: 'PATEL', address: '1301 SUNSET DR STE 3', city: 'JOHNSON CITY', state: 'TN', zip: '37604', product: 'Anktiva 400mcg/0.4mL', pharmacy: 'ACCREDO HEALTH GROUP INC.', pharmacyId: '83920174651' },
-    { npi: '1382047596', firstName: 'JAMES', lastName: 'OKONKWO', address: '2925 CHICAGO AVE', city: 'MINNEAPOLIS', state: 'MN', zip: '55407', product: 'Anktiva 400mcg/0.4mL', pharmacy: 'ALLINA HEALTH HOME INFUSION', pharmacyId: '74839201563' },
-    { npi: '1647382910', firstName: 'NANCY', lastName: 'MCCARTHY', address: '600 RIDGELY AVE', city: 'ANNAPOLIS', state: 'MD', zip: '21401', product: 'Anktiva 400mcg/0.4mL', pharmacy: 'ACCREDO HEALTH GROUP INC.', pharmacyId: '83920174651' }
-  ];
-
   // Image 6: Sales Team
-  private salesTeam: any[] = [
+  private salesTeam: TeamMember[] = [
     { name: 'Keith DeRuiter', position: 'Area Business Director', areaId: 'A01A00', area: 'East', product: 'Anktiva 400mcg/0.4mL', allTeamMark: 'Y', glbNcl: 'Y', leadershipTeam: 'Y', ariTeam: 'N' },
     { name: 'Lisa Volomino', position: 'Boston, MA', areaId: 'EA101', area: 'East', product: 'Anktiva 400mcg/0.4mL', allTeamMark: 'Y', glbNcl: 'N', leadershipTeam: 'N', ariTeam: 'N' },
     { name: 'Karen Martinez', position: 'New York, NY', areaId: 'EA102', area: 'East', product: 'Anktiva 400mcg/0.4mL', allTeamMark: 'Y', glbNcl: 'N', leadershipTeam: 'N', ariTeam: 'N' },
@@ -250,49 +234,21 @@ export class DataService {
     { name: 'Kristina Denor-Alcala', position: 'San Diego, CA', areaId: 'SW402', area: 'Southwest', product: 'Anktiva 400mcg/0.4mL', allTeamMark: 'Y', glbNcl: 'N', leadershipTeam: 'N', ariTeam: 'N' }
   ];
 
-  // Image 2: Daily Sales Report - ICS & Accredo
-  private dailySales: any[] = [
-    { id: 'SLS-101', date: '2026-04-20', product: 'Anktiva 400mcg/0.4mL', region: 'East', repName: 'Keith DeRuiter', icsUnits: 5, accredoUnits: 2, units: 7, icsSales: 179000, accredoSales: 71600, revenue: 250600 },
-    { id: 'SLS-102', date: '2026-04-21', product: 'Anktiva 400mcg/0.4mL', region: 'North Central', repName: 'Chuck Gaetano', icsUnits: 3, accredoUnits: 1, units: 4, icsSales: 107400, accredoSales: 35800, revenue: 143200 },
-    { id: 'SLS-103', date: '2026-04-22', product: 'Anktiva 400mcg/0.4mL', region: 'East', repName: 'Lisa Volomino', icsUnits: 8, accredoUnits: 0, units: 8, icsSales: 286400, accredoSales: 0, revenue: 286400 },
-    { id: 'SLS-104', date: '2026-04-23', product: 'Anktiva 400mcg/0.4mL', region: 'Southwest', repName: 'Alexandra Maddalozzo', icsUnits: 2, accredoUnits: 3, units: 5, icsSales: 71600, accredoSales: 107400, revenue: 179000 }
-  ];
-
-  private salesTargets: any[] = [
-    { name: 'Keith DeRuiter', territory: 'East', q1Target: 75, q1Achieved: 69, q2Target: 80, q2Achieved: 26, ytdTarget: 310, ytdAchieved: 95 },
-    { name: 'Lisa Volomino', territory: 'East', q1Target: 50, q1Achieved: 61, q2Target: 55, q2Achieved: 8, ytdTarget: 210, ytdAchieved: 69 },
-    { name: 'Chuck Gaetano', territory: 'North Central', q1Target: 80, q1Achieved: 60, q2Target: 85, q2Achieved: 12, ytdTarget: 330, ytdAchieved: 72 },
-    { name: 'Amanda Rippy', territory: 'North Central', q1Target: 65, q1Achieved: 40, q2Target: 70, q2Achieved: 5, ytdTarget: 270, ytdAchieved: 45 },
-    { name: 'Alexandra Maddalozzo', territory: 'Southwest', q1Target: 60, q1Achieved: 42, q2Target: 65, q2Achieved: 9, ytdTarget: 250, ytdAchieved: 51 }
-  ];
-
   constructor() { }
 
-  getKpis() { return this.kpis; }
+  getTerritories(): Territory[] { return this.territories; }
+  addTerritory(t: Territory): void { this.territories.push(t); }
+  updateTerritory(id: string, t: Territory): void { const i = this.territories.findIndex(x => x.id === id); if (i > -1) this.territories[i] = t; }
+  deleteTerritory(id: string): void { this.territories = this.territories.filter(t => t.id !== id); }
 
-  getTerritories() { return this.territories; }
-  addTerritory(t: any) { this.territories.push(t); }
-  updateTerritory(id: string, t: any) { const i = this.territories.findIndex(x => x.id === id); if (i > -1) this.territories[i] = t; }
-  deleteTerritory(id: string) { this.territories = this.territories.filter(t => t.id !== id); }
+  getRecentOrders(): Order[] { return this.recentOrders; }
+  deleteOrder(id: string): void { this.recentOrders = this.recentOrders.filter(o => o.id !== id); }
 
-  getRecentOrders() { return this.recentOrders; }
-  deleteOrder(id: string) { this.recentOrders = this.recentOrders.filter(o => o.id !== id); }
+  getPatients(): Patient[] { return this.patients; }
+  addPatient(patient: Patient): void { this.patients.push(patient); }
+  deletePatient(id: string): void { this.patients = this.patients.filter(p => p.id !== id); }
 
-  getDailySales() { return this.dailySales; }
-  addDailySale(sale: any) { this.dailySales.unshift(sale); }
-  deleteDailySale(id: string) { this.dailySales = this.dailySales.filter(s => s.id !== id); }
-
-  getSalesTargets() { return this.salesTargets; }
-
-  getPatients() { return this.patients; }
-  addPatient(patient: any) { this.patients.push(patient); }
-  deletePatient(id: string) { this.patients = this.patients.filter(p => p.id !== id); }
-
-  getPhysicians() { return this.physicians; }
-  addPhysician(physician: any) { this.physicians.unshift(physician); }
-  deletePhysician(npi: string) { this.physicians = this.physicians.filter(p => p.npi !== npi); }
-
-  getSalesTeam() { return this.salesTeam; }
-  addTeamMember(member: any) { this.salesTeam.unshift(member); }
-  deleteTeamMember(name: string) { this.salesTeam = this.salesTeam.filter(s => s.name !== name); }
+  getSalesTeam(): TeamMember[] { return this.salesTeam; }
+  addTeamMember(member: TeamMember): void { this.salesTeam.unshift(member); }
+  deleteTeamMember(name: string): void { this.salesTeam = this.salesTeam.filter(s => s.name !== name); }
 }

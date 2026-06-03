@@ -7,7 +7,7 @@
     </div>
     <div class="ib-page-header__actions">
       <button class="btn ib-btn-secondary" *ngIf="activeTab !== 'directory'" (click)="setTab('directory', selectedPatient?.id)">
-        <i class="bi bi-list-ul"></i> Directory
+        <i class="bi bi-list-ul" aria-hidden="true"></i> Directory
       </button>
     </div>
   </div>
@@ -58,40 +58,40 @@
           <table class="table table-hover table-sm align-middle mb-0 ib-data-table pe-directory-table">
             <thead class="ib-table-header">
               <tr>
-                <th class="py-2 px-3 pe-th">Hub</th>
-                <th class="py-2 pe-th">Status</th>
-                <th class="py-2 pe-th">Patient ID</th>
-                <th class="py-2 pe-th">HCP Name</th>
-                <th class="py-2 pe-th">Completion Date</th>
-                <th class="py-2 pe-th">Site Name</th>
-                <th class="py-2 pe-th">ABD</th>
-                <th class="py-2 pe-th">Business Manager</th>
-                <th class="py-2 text-end px-3 pe-th">Actions</th>
+                <th class="py-2 px-3 text-nowrap">Hub</th>
+                <th class="py-2 text-nowrap">Status</th>
+                <th class="py-2 text-nowrap">Patient ID</th>
+                <th class="py-2 text-nowrap">HCP Name</th>
+                <th class="py-2 text-nowrap">Completion Date</th>
+                <th class="py-2 text-nowrap">Site Name</th>
+                <th class="py-2 text-nowrap">ABD</th>
+                <th class="py-2 text-nowrap">Business Manager</th>
+                <th class="py-2 text-end px-3 text-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let row of filteredPatientRows">
+              <tr *ngFor="let row of filteredPatientRows; trackBy: trackByPatientRowId">
                 <td class="px-3 small">{{ row.hub }}</td>
                 <td>
                   <span class="ib-status-badge" [ngClass]="getStatusBadgeClass(row.status)">{{ row.status }}</span>
                 </td>
-                <td class="fw-bold text-primary" style="white-space:nowrap;">{{ row.patientId }}</td>
+                <td class="fw-bold text-primary text-nowrap">{{ row.patientId }}</td>
                 <td>{{ displayVal(row.hcpName) }}</td>
-                <td style="white-space:nowrap;">{{ row.enrollmentCompletionDate || '—' }}</td>
+                <td class="text-nowrap">{{ row.enrollmentCompletionDate || '—' }}</td>
                 <td>{{ row.siteName }}</td>
-                <td [class.text-muted]="row.abd === '(Blank)' || row.abd === 'OPEN'"
-                    [class.fst-italic]="row.abd === 'OPEN'" style="white-space:nowrap;">{{ row.abd }}</td>
-                <td [class.text-muted]="row.businessManager === '(Blank)' || row.businessManager === 'OPEN'"
-                    [class.fst-italic]="row.businessManager === 'OPEN'" style="white-space:nowrap;">{{ row.businessManager }}</td>
-                <td class="px-3 text-end" style="white-space:nowrap;">
+                <td class="text-nowrap" [class.text-muted]="row.abd === '(Blank)' || row.abd === 'OPEN'"
+                    [class.fst-italic]="row.abd === 'OPEN'">{{ row.abd }}</td>
+                <td class="text-nowrap" [class.text-muted]="row.businessManager === '(Blank)' || row.businessManager === 'OPEN'"
+                    [class.fst-italic]="row.businessManager === 'OPEN'">{{ row.businessManager }}</td>
+                <td class="px-3 text-end text-nowrap">
                   <span class="om-tooltip-wrap" data-tip="Edit Row">
-                    <button class="ib-icon-btn me-1" (click)="openEditRow(row)">
-                      <i class="bi bi-pencil"></i>
+                    <button class="ib-icon-btn me-1" aria-label="Edit patient row" (click)="openEditRow(row)">
+                      <i class="bi bi-pencil" aria-hidden="true"></i>
                     </button>
                   </span>
                   <!-- <span class="om-tooltip-wrap" data-tip="Details">
                     <button class="ib-icon-btn" (click)="openDetailsRow(row)">
-                      <i class="bi bi-card-list"></i>
+                      <i class="bi bi-card-list" aria-hidden="true"></i>
                     </button>
                   </span> -->
                 </td>
@@ -193,13 +193,13 @@
               <div class="col-md-4">
                 <label class="form-label fw-bold small text-muted">Territory</label>
                 <select class="form-select bg-light" [(ngModel)]="patientForm.territory" name="territory">
-                  <option *ngFor="let option of territoryOptions.slice(1)" [ngValue]="option">{{ option }}</option>
+                  <option *ngFor="let option of territoryOptions.slice(1); trackBy: trackByIndex" [ngValue]="option">{{ option }}</option>
                 </select>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold small text-muted">Sales Rep</label>
                 <select class="form-select bg-light" [(ngModel)]="patientForm.salesRep" name="salesRep">
-                  <option *ngFor="let option of salesRepOptions.slice(1)" [ngValue]="option">{{ option }}</option>
+                  <option *ngFor="let option of salesRepOptions.slice(1); trackBy: trackByIndex" [ngValue]="option">{{ option }}</option>
                 </select>
               </div>
               <div class="col-md-4">
@@ -331,7 +331,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let order of selectedPatientOrders">
+              <tr *ngFor="let order of selectedPatientOrders; trackBy: trackByOrderId">
                 <td class="px-3 fw-bold">{{ order.id }}</td>
                 <td>{{ order.date }}</td>
                 <td><span class="ib-status-badge" [ngClass]="getStatusBadgeClass(order.status)">{{ order.status }}</span></td>
@@ -370,7 +370,7 @@
       </div>
       <div class="card-body">
         <div class="patient-timeline">
-          <div *ngFor="let event of selectedPatientTimeline" class="patient-timeline__item">
+          <div *ngFor="let event of selectedPatientTimeline; trackBy: trackByEventId" class="patient-timeline__item">
             <div class="patient-timeline__marker"></div>
             <div class="patient-timeline__content">
               <div class="d-flex justify-content-between flex-wrap gap-2">
@@ -426,19 +426,19 @@
         <div class="col-lg-3">
           <label class="form-label fw-bold small text-muted">Physician</label>
           <select class="form-select bg-light" [(ngModel)]="enrollmentFilters.physician" name="enrollmentPhysicianFilter">
-            <option *ngFor="let option of physicianOptions" [ngValue]="option">{{ option }}</option>
+            <option *ngFor="let option of physicianOptions; trackBy: trackByIndex" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
           <label class="form-label fw-bold small text-muted">Territory</label>
           <select class="form-select bg-light" [(ngModel)]="enrollmentFilters.territory" name="enrollmentTerritoryFilter">
-            <option *ngFor="let option of territoryOptions" [ngValue]="option">{{ option }}</option>
+            <option *ngFor="let option of territoryOptions; trackBy: trackByIndex" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
           <label class="form-label fw-bold small text-muted">Sales Rep</label>
           <select class="form-select bg-light" [(ngModel)]="enrollmentFilters.salesRep" name="enrollmentRepFilter">
-            <option *ngFor="let option of salesRepOptions" [ngValue]="option">{{ option }}</option>
+            <option *ngFor="let option of salesRepOptions; trackBy: trackByIndex" [ngValue]="option">{{ option }}</option>
           </select>
         </div>
         <div class="col-lg-2">
@@ -476,12 +476,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let row of enrollmentRows">
+              <tr *ngFor="let row of enrollmentRows; trackBy: trackByEnrollmentId">
                 <td class="px-3 fw-bold">{{ row.enrollmentId }}</td>
                 <td>{{ row.patient.name }}</td>
                 <td>{{ row.physician }}</td>
-                <td style="white-space:nowrap;">{{ row.enrollmentDate }}</td>
-                <td style="white-space:nowrap;">
+                <td class="text-nowrap">{{ row.enrollmentDate }}</td>
+                <td class="text-nowrap">
                   <span *ngIf="row.enrollmentCompletionDate">{{ row.enrollmentCompletionDate }}</span>
                   <span *ngIf="!row.enrollmentCompletionDate" class="text-muted fst-italic">Pending</span>
                 </td>
@@ -489,21 +489,21 @@
                 <td>{{ row.pendingSince }}</td>
                 <td class="text-muted">{{ row.reason }}</td>
                 <td class="px-3 text-end">
-                  <div class="patient-action-group justify-content-end">
+                  <div class="patient-action-group d-inline-flex flex-nowrap text-nowrap justify-content-end">
                     <button class="ib-icon-btn" type="button" title="Mark Completed" aria-label="Mark Completed" (click)="updateEnrollmentStatus(row.patient.id, 'Completed')">
-                      <i class="bi bi-check-circle"></i>
+                      <i class="bi bi-check-circle" aria-hidden="true"></i>
                     </button>
                     <button class="ib-icon-btn ib-icon-btn--danger" type="button" title="Cancel Enrollment" aria-label="Cancel Enrollment" (click)="updateEnrollmentStatus(row.patient.id, 'Cancelled')">
-                      <i class="bi bi-x-circle"></i>
+                      <i class="bi bi-x-circle" aria-hidden="true"></i>
                     </button>
                     <button class="ib-icon-btn" type="button" title="Put On Hold" aria-label="Put On Hold" (click)="updateEnrollmentStatus(row.patient.id, 'On Hold')">
-                      <i class="bi bi-pause-circle"></i>
+                      <i class="bi bi-pause-circle" aria-hidden="true"></i>
                     </button>
                     <button class="ib-icon-btn" type="button" title="Mark Missing Information" aria-label="Mark Missing Information" (click)="updateEnrollmentStatus(row.patient.id, 'Missing Information')">
-                      <i class="bi bi-exclamation-circle"></i>
+                      <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
                     </button>
                     <button class="ib-icon-btn" type="button" title="Add Notes" aria-label="Add Notes" (click)="addEnrollmentNote(row.patient.id)">
-                      <i class="bi bi-journal-text"></i>
+                      <i class="bi bi-journal-text" aria-hidden="true"></i>
                     </button>
                   </div>
                 </td>
@@ -533,7 +533,7 @@
         </div>
 
         <div class="patient-timeline">
-          <div *ngFor="let event of selectedPatientTimeline" class="patient-timeline__item">
+          <div *ngFor="let event of selectedPatientTimeline; trackBy: trackByEventId" class="patient-timeline__item">
             <div class="patient-timeline__marker"></div>
             <div class="patient-timeline__content">
               <div class="d-flex justify-content-between flex-wrap gap-2">
@@ -551,7 +551,7 @@
 
   <!-- ══ Edit Row Modal ══════════════════════════════════════ -->
   <div *ngIf="editingPatientRow" class="ib-modal-overlay" (click)="closeEditRow()">
-    <div class="ib-modal-shell" style="max-width: 720px;" (click)="$event.stopPropagation()">
+    <div role="dialog" aria-modal="true" class="ib-modal-shell pe-modal--lg" (click)="$event.stopPropagation()">
       <div class="ib-modal-header">
         <div class="d-flex flex-column gap-1">
           <h5 class="ib-modal-title mb-0">Edit Row</h5>
@@ -629,7 +629,7 @@
           </div>
         </form>
       </div>
-      <div class="pe-modal-footer">
+      <div class="pe-modal-footer d-flex gap-2 justify-content-end">
         <button type="button" class="btn ib-btn-secondary" (click)="closeEditRow()">Cancel</button>
         <button type="button" class="btn btn-primary" (click)="saveEditRow()">Save Changes</button>
       </div>
@@ -638,7 +638,7 @@
 
   <!-- ══ Details Row Modal ════════════════════════════════════ -->
   <div *ngIf="detailsPatientRow" class="ib-modal-overlay" (click)="closeDetailsRow()">
-    <div class="ib-modal-shell" style="max-width: 480px; max-height: 85vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
+    <div role="dialog" aria-modal="true" class="ib-modal-shell pe-modal--sm d-flex flex-column" (click)="$event.stopPropagation()">
       <div class="ib-modal-header">
         <div class="d-flex flex-column gap-1">
           <h5 class="ib-modal-title mb-0">Patient Record Details</h5>
@@ -646,76 +646,76 @@
         </div>
         <button type="button" class="btn-close" (click)="closeDetailsRow()"></button>
       </div>
-      <div class="ib-modal-body" style="overflow-y: auto; flex: 1;">
-        <div class="om-details-grid">
-          <div class="om-details-row">
-            <span class="om-details-label">Hub</span>
+      <div class="ib-modal-body">
+        <div class="om-details-grid d-flex flex-column overflow-hidden">
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Hub</span>
             <span class="om-details-value fw-bold">{{ displayVal(detailsPatientRow.hub) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">Status</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Status</span>
             <span class="om-details-value">
               <span class="ib-status-badge" [ngClass]="getStatusBadgeClass(detailsPatientRow.status)">{{ detailsPatientRow.status }}</span>
             </span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">Patient ID</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Patient ID</span>
             <span class="om-details-value fw-bold text-primary">{{ displayVal(detailsPatientRow.patientId) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">Site Name</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Site Name</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.siteName) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">Prescriber</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Prescriber</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.prescriber) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">ABD</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">ABD</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.abd) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">Business Mgr</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Business Mgr</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.businessManager) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">Referral Date</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Referral Date</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.referralReceivedDate) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">RX Ready Date</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">RX Ready Date</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.dateRxReadyToSchedule) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">Payer</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Payer</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.payerInformation) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">City</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">City</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.city) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">State</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">State</span>
             <span class="om-details-value fw-bold">{{ displayVal(detailsPatientRow.state) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">ZIP</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">ZIP</span>
             <span class="om-details-value">{{ displayVal(detailsPatientRow.zip) }}</span>
           </div>
-          <div class="om-details-row">
-            <span class="om-details-label">Qty Ordered</span>
+          <div class="om-details-row d-flex gap-3">
+            <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Qty Ordered</span>
             <span class="om-details-value fw-bold">{{ displayVal(detailsPatientRow.qtyOrdered) }}</span>
           </div>
         </div>
       </div>
-      <div class="pe-modal-footer">
+      <div class="pe-modal-footer d-flex gap-2 justify-content-end">
         <button type="button" class="btn ib-btn-secondary" (click)="closeDetailsRow()">Close</button>
       </div>
     </div>
   </div>
 
   <div *ngIf="showNoteModal" class="ib-modal-overlay">
-    <div class="ib-modal-shell" style="max-width: 560px;">
+    <div role="dialog" aria-modal="true" class="ib-modal-shell pe-modal--md">
       <div class="ib-modal-header">
         <h5 class="ib-modal-title">Add Patient Note</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="closeNoteModal()"></button>
@@ -728,7 +728,7 @@
               <div class="col-12">
                 <label class="form-label fw-bold small text-muted">Patient</label>
                 <select class="form-select bg-light" [(ngModel)]="notePatientId" name="notePatientId" required>
-                  <option *ngFor="let patient of patients" [ngValue]="patient.id">
+                  <option *ngFor="let patient of patients; trackBy: trackByPatientId" [ngValue]="patient.id">
                     {{ patient.name }} ({{ patient.id }})
                   </option>
                 </select>

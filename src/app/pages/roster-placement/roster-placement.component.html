@@ -33,7 +33,7 @@
       <div class="col-lg-2 d-flex gap-2 align-items-end">
         <button class="btn btn-primary btn-sm ib-compact-filter__button flex-grow-1" (click)="applyFilters()">Apply</button>
         <button class="btn btn-sm ib-btn-secondary" (click)="resetFilters()" title="Clear filters">
-          <i class="bi bi-x-lg"></i>
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -46,10 +46,10 @@
       <div class="d-flex align-items-center gap-3">
         <span class="ib-table-toolbar__meta">{{ filteredRows.length }} assignments</span>
         <button class="btn btn-sm ib-btn-secondary" (click)="exportCsv()" title="Download as CSV">
-          <i class="bi bi-download me-1"></i>Export
+          <i class="bi bi-download me-1" aria-hidden="true"></i>Export
         </button>
         <button class="btn btn-primary btn-sm" (click)="openAddModal()">
-          <i class="bi bi-plus-lg me-1"></i>Add Assignment
+          <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Assignment
         </button>
       </div>
     </div>
@@ -58,29 +58,29 @@
         <table class="table table-hover table-sm align-middle mb-0 ib-data-table">
           <thead class="ib-table-header">
             <tr>
-              <th class="py-2 px-3" style="white-space:nowrap;">Territory ID</th>
-              <th class="py-2" style="white-space:nowrap;">ABD</th>
-              <th class="py-2" style="white-space:nowrap;">TBM</th>
-              <th class="py-2" style="white-space:nowrap;">Start Date</th>
-              <th class="py-2" style="white-space:nowrap;">End Date</th>
-              <th class="py-2" style="white-space:nowrap;">Status</th>
+              <th class="py-2 px-3 text-nowrap">Territory ID</th>
+              <th class="py-2 text-nowrap">ABD</th>
+              <th class="py-2 text-nowrap">TBM</th>
+              <th class="py-2 text-nowrap">Start Date</th>
+              <th class="py-2 text-nowrap">End Date</th>
+              <th class="py-2 text-nowrap">Status</th>
               <th class="py-2 text-center px-3">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let row of filteredRows" [class.rp-row--open]="rowStatus(row) === 'Open'">
-              <td class="px-3 fw-bold" style="white-space:nowrap;">
+              <td class="px-3 fw-bold text-nowrap">
                 <span class="text-primary">{{ row.territoryId }}</span>
               </td>
-              <td style="white-space:nowrap;">{{ row.abd }}</td>
-              <td style="white-space:nowrap;">
+              <td class="text-nowrap">{{ row.abd }}</td>
+              <td class="text-nowrap">
                 <span *ngIf="row.tbm; else openTbm">{{ row.tbm }}</span>
                 <ng-template #openTbm>
                   <span class="text-muted fst-italic">Vacant</span>
                 </ng-template>
               </td>
-              <td style="white-space:nowrap;">{{ row.startDate | date:'MM/dd/yyyy' }}</td>
-              <td style="white-space:nowrap;">
+              <td class="text-nowrap">{{ row.startDate | date:'MM/dd/yyyy' }}</td>
+              <td class="text-nowrap">
                 <span *ngIf="row.endDate; else openEnd">{{ row.endDate | date:'MM/dd/yyyy' }}</span>
                 <ng-template #openEnd>
                   <span class="text-muted fst-italic">Open</span>
@@ -97,7 +97,7 @@
               </td>
               <td class="text-center px-3">
                 <button class="ib-icon-btn" title="Edit" (click)="openEdit(row)">
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-pencil" aria-hidden="true"></i>
                 </button>
               </td>
             </tr>
@@ -114,7 +114,7 @@
 
 <!-- ══ Add Assignment Modal ═══════════════════════════════════ -->
 <div *ngIf="showAddModal" class="ib-modal-overlay" (click)="closeAddModal()">
-  <div class="ib-modal-shell" style="max-width: 560px;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell rp-modal" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Add Assignment</h5>
@@ -147,7 +147,7 @@
           </div>
           <div *ngIf="addForm.tbm === '' || addForm.tbm === undefined" class="col-12">
             <div class="alert alert-warning py-2 small mb-0">
-              <i class="bi bi-exclamation-triangle me-1"></i>
+              <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
               No TBM entered — this territory will be flagged as <strong>Open</strong> and excluded from IC credit until a rep is assigned.
             </div>
           </div>
@@ -164,7 +164,7 @@
 
 <!-- ══ Edit Assignment Modal ══════════════════════════════════ -->
 <div *ngIf="editingRow" class="ib-modal-overlay" (click)="closeEdit()">
-  <div class="ib-modal-shell" style="max-width: 560px;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell rp-modal" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Edit Assignment</h5>

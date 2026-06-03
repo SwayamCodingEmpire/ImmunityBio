@@ -138,6 +138,9 @@ export class ZipToTerritoryComponent {
     URL.revokeObjectURL(url);
   }
 
+  trackByMdoZip(_index: number, row: ZipRow): string { return row.mdoZip; }
+  trackByHistoryTerrId(_index: number, h: ZipHistory): string { return h.territoryId + h.startDate; }
+
   openEdit(row: ZipRow): void {
     this.editingRow = row;
     this.editForm = { ...row };

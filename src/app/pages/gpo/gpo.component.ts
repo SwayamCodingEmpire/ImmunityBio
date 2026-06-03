@@ -77,6 +77,8 @@ export class GpoComponent {
     },
   ];
 
+  trackByGpoId(_index: number, row: GpoHierarchy): string { return row.id; }
+
   isLevelActive(endDate: string): boolean {
     if (!endDate) return true;
     return new Date(endDate) > new Date();

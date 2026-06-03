@@ -141,6 +141,9 @@ export class RosterPlacementComponent {
     this.closeEdit();
   }
 
+  trackByRosterId(_index: number, row: RosterRow): number { return row.id; }
+  trackByIndex(index: number): number { return index; }
+
   // ── Export ───────────────────────────────────────────────
   exportCsv(): void {
     const headers = ['Territory ID', 'ABD', 'TBM', 'Start Date', 'End Date', 'Status'];

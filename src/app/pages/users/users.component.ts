@@ -43,6 +43,9 @@ export class UsersComponent {
     { id: 'USR-010', name: 'Camille Tran',          email: 'c.tran@immunitybio.com',          department: 'IT',         territory: 'National',            status: 'Active',   lastLogin: '05/21/2026', role: 'Admin'                     }
   ];
 
+  trackByUserId(_index: number, user: UserRecord): string { return user.id; }
+  trackByIndex(index: number): number { return index; }
+
   onRoleChange(user: UserRecord, newRole: string): void {
     user.role = newRole;
   }

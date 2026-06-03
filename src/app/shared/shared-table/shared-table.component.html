@@ -1,11 +1,11 @@
-<div class="ib-section-card ib-shared-table">
+<div class="ib-section-card ib-shared-table overflow-hidden">
   <div
     *ngIf="showHeader && (title || showSearch || showAddButton)"
     class="ib-table-toolbar ib-shared-table__toolbar"
   >
-    <div *ngIf="title" class="ib-shared-table__title">{{ title }}</div>
+    <div *ngIf="title" class="ib-shared-table__title fw-bold">{{ title }}</div>
 
-    <div class="ib-shared-table__actions">
+    <div class="ib-shared-table__actions d-flex align-items-center ms-auto">
       <ng-content select="[headerExtras]"></ng-content>
 
       <input
@@ -34,7 +34,7 @@
       <table [class]="tableClass">
         <thead [class]="theadClass" *ngIf="useProjectedHead || headers.length > 0">
           <tr *ngIf="!useProjectedHead">
-            <th *ngFor="let header of headers" scope="col">{{ header }}</th>
+            <th *ngFor="let header of headers; trackBy: trackByIndex" scope="col">{{ header }}</th>
           </tr>
           <ng-content select="[tableHeadRows]"></ng-content>
         </thead>

@@ -8,23 +8,23 @@
   <div class="ib-filter-card ib-filter-card--compact mb-4">
     <div class="row g-2 align-items-end">
       <div class="col-lg-6">
-        <label class="form-label ib-compact-filter__label fw-bold small text-muted">Quick Search</label>
+        <label class="form-label ib-compact-filter__label fw-bold small text-muted text-uppercase">Quick Search</label>
         <input type="text" class="form-control form-control-sm bg-light ib-compact-filter__control"
           [(ngModel)]="pendingFilters.search" name="orderSearch"
           placeholder="Search account, name, ABD, territory…" />
       </div>
       <div class="col-lg-2">
-        <label class="form-label ib-compact-filter__label fw-bold small text-muted">Status</label>
+        <label class="form-label ib-compact-filter__label fw-bold small text-muted text-uppercase">Status</label>
         <select class="form-select form-select-sm bg-light ib-compact-filter__control"
           [(ngModel)]="pendingFilters.status" name="statusFilter">
-          <option *ngFor="let opt of statusOptions" [ngValue]="opt">{{ opt }}</option>
+          <option *ngFor="let opt of statusOptions; trackBy: trackByIndex" [ngValue]="opt">{{ opt }}</option>
         </select>
       </div>
       <div class="col-lg-2">
-        <label class="form-label ib-compact-filter__label fw-bold small text-muted">Distribution</label>
+        <label class="form-label ib-compact-filter__label fw-bold small text-muted text-uppercase">Distribution</label>
         <select class="form-select form-select-sm bg-light ib-compact-filter__control"
           [(ngModel)]="pendingFilters.distribution" name="distFilter">
-          <option *ngFor="let opt of distributionOptions" [ngValue]="opt">{{ opt }}</option>
+          <option *ngFor="let opt of distributionOptions; trackBy: trackByIndex" [ngValue]="opt">{{ opt }}</option>
         </select>
       </div>
       <div class="col-lg-2 d-flex align-items-end">
@@ -42,7 +42,7 @@
       <div class="d-flex align-items-center gap-3">
         <span class="ib-table-toolbar__meta">{{ filteredOrders.length }} matching orders</span>
         <button class="btn btn-primary btn-sm" (click)="openAddModal()">
-          <i class="bi bi-plus-lg me-1"></i>Add Order
+          <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Order
         </button>
       </div>
     </div>
@@ -50,64 +50,64 @@
       <table class="table table-hover table-sm align-middle ib-data-table w-100">
         <thead class="ib-table-header">
           <tr>
-            <th class="py-2 px-3 om-th-nowrap om-th-sort" (click)="sortBy('shipToName')">
+            <th class="py-2 px-3 text-nowrap om-th-sort" (click)="sortBy('shipToName')">
               Ship To Name
               <i class="bi om-sort-icon"
                 [class.bi-arrow-down]="sortColumn === 'shipToName' && sortDirection === 'desc'"
                 [class.bi-arrow-up]="sortColumn === 'shipToName' && sortDirection === 'asc'"
-                [class.bi-arrow-down-up]="sortColumn !== 'shipToName'"></i>
+                [class.bi-arrow-down-up]="sortColumn !== 'shipToName'" aria-hidden="true"></i>
             </th>
-            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('invoiceDate')">
+            <th class="py-2 text-nowrap om-th-sort" (click)="sortBy('invoiceDate')">
               Invoice Date
               <i class="bi om-sort-icon"
                 [class.bi-arrow-down]="sortColumn === 'invoiceDate' && sortDirection === 'desc'"
                 [class.bi-arrow-up]="sortColumn === 'invoiceDate' && sortDirection === 'asc'"
-                [class.bi-arrow-down-up]="sortColumn !== 'invoiceDate'"></i>
+                [class.bi-arrow-down-up]="sortColumn !== 'invoiceDate'" aria-hidden="true"></i>
             </th>
-            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('businessManager')">
+            <th class="py-2 text-nowrap om-th-sort" (click)="sortBy('businessManager')">
               Business Manager
               <i class="bi om-sort-icon"
                 [class.bi-arrow-down]="sortColumn === 'businessManager' && sortDirection === 'desc'"
                 [class.bi-arrow-up]="sortColumn === 'businessManager' && sortDirection === 'asc'"
-                [class.bi-arrow-down-up]="sortColumn !== 'businessManager'"></i>
+                [class.bi-arrow-down-up]="sortColumn !== 'businessManager'" aria-hidden="true"></i>
             </th>
-            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('territory')">
+            <th class="py-2 text-nowrap om-th-sort" (click)="sortBy('territory')">
               Territory
               <i class="bi om-sort-icon"
                 [class.bi-arrow-down]="sortColumn === 'territory' && sortDirection === 'desc'"
                 [class.bi-arrow-up]="sortColumn === 'territory' && sortDirection === 'asc'"
-                [class.bi-arrow-down-up]="sortColumn !== 'territory'"></i>
+                [class.bi-arrow-down-up]="sortColumn !== 'territory'" aria-hidden="true"></i>
             </th>
-            <th class="py-2 text-center om-th-nowrap om-th-sort" (click)="sortBy('deliveryQty')">
+            <th class="py-2 text-center text-nowrap om-th-sort" (click)="sortBy('deliveryQty')">
               Delivery Qty
               <i class="bi om-sort-icon"
                 [class.bi-arrow-down]="sortColumn === 'deliveryQty' && sortDirection === 'desc'"
                 [class.bi-arrow-up]="sortColumn === 'deliveryQty' && sortDirection === 'asc'"
-                [class.bi-arrow-down-up]="sortColumn !== 'deliveryQty'"></i>
+                [class.bi-arrow-down-up]="sortColumn !== 'deliveryQty'" aria-hidden="true"></i>
             </th>
-            <th class="py-2 om-th-nowrap om-th-sort" (click)="sortBy('distribution')">
+            <th class="py-2 text-nowrap om-th-sort" (click)="sortBy('distribution')">
               Channel
               <i class="bi om-sort-icon"
                 [class.bi-arrow-down]="sortColumn === 'distribution' && sortDirection === 'desc'"
                 [class.bi-arrow-up]="sortColumn === 'distribution' && sortDirection === 'asc'"
-                [class.bi-arrow-down-up]="sortColumn !== 'distribution'"></i>
+                [class.bi-arrow-down-up]="sortColumn !== 'distribution'" aria-hidden="true"></i>
             </th>
-            <th class="py-2 om-th-nowrap om-th-sort" style="min-width:110px;" (click)="sortBy('status')">
+            <th class="py-2 text-nowrap om-th-sort om-th-status" (click)="sortBy('status')">
               Status
               <i class="bi om-sort-icon"
                 [class.bi-arrow-down]="sortColumn === 'status' && sortDirection === 'desc'"
                 [class.bi-arrow-up]="sortColumn === 'status' && sortDirection === 'asc'"
-                [class.bi-arrow-down-up]="sortColumn !== 'status'"></i>
+                [class.bi-arrow-down-up]="sortColumn !== 'status'" aria-hidden="true"></i>
             </th>
-            <th class="py-2 om-th-nowrap">Commercial</th>
-            <th class="py-2 om-th-nowrap">IC Eligible</th>
-            <th class="py-2 text-end px-3 om-th-nowrap">Actions</th>
+            <th class="py-2 text-nowrap">Commercial</th>
+            <th class="py-2 text-nowrap">IC Eligible</th>
+            <th class="py-2 text-end px-3 text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let order of filteredOrders">
+          <tr *ngFor="let order of filteredOrders; trackBy: trackByOrderId">
             <td class="px-3 om-ship-name-cell">{{ order.shipToName }}</td>
-            <td class="om-th-nowrap">
+            <td class="text-nowrap">
               <span *ngIf="order.invoiceDate" class="om-invoice-date">{{ order.invoiceDate }}</span>
               <span *ngIf="!order.invoiceDate" class="text-muted fst-italic small">—</span>
             </td>
@@ -130,38 +130,39 @@
               <span class="om-flag-badge"
                 [class.om-flag-badge--on]="order.isCommercial"
                 [class.om-flag-badge--off]="!order.isCommercial">
-                <i class="bi" [class.bi-check-circle-fill]="order.isCommercial" [class.bi-x-circle-fill]="!order.isCommercial"></i>
+                <i class="bi" [class.bi-check-circle-fill]="order.isCommercial" [class.bi-x-circle-fill]="!order.isCommercial" aria-hidden="true"></i>
               </span>
             </td>
             <td>
               <span class="om-flag-badge"
                 [class.om-flag-badge--on]="order.icEligible"
                 [class.om-flag-badge--off]="!order.icEligible">
-                <i class="bi" [class.bi-check-circle-fill]="order.icEligible" [class.bi-x-circle-fill]="!order.icEligible"></i>
+                <i class="bi" [class.bi-check-circle-fill]="order.icEligible" [class.bi-x-circle-fill]="!order.icEligible" aria-hidden="true"></i>
               </span>
             </td>
-            <td class="px-3 text-end" style="white-space:nowrap;">
+            <td class="px-3 text-end text-nowrap">
               <!-- Shipment Issue Flag (#7) -->
               <!-- <span class="om-tooltip-wrap" [attr.data-tip]="order.shipmentIssueFlag ? 'Issue: ' + order.shipmentIssueStatus : 'Flag Shipment Issue'">
                 <button class="ib-icon-btn me-1 om-issue-btn"
                   [class.om-issue-btn--active]="order.shipmentIssueFlag"
                   (click)="openIssueFlagModal(order)">
-                  <i class="bi" [class.bi-flag-fill]="order.shipmentIssueFlag" [class.bi-flag]="!order.shipmentIssueFlag"></i>
+                  <i class="bi" [class.bi-flag-fill]="order.shipmentIssueFlag" [class.bi-flag]="!order.shipmentIssueFlag" aria-hidden="true"></i>
                 </button>
               </span> -->
               <span class="om-tooltip-wrap" data-tip="Track Shipment">
-                <button class="ib-icon-btn me-1" (click)="openTrackModal(order)">
-                  <i class="bi bi-truck"></i>
+                <button class="ib-icon-btn me-1" aria-label="Track shipment" (click)="openTrackModal(order)">
+                  <i class="bi bi-truck" aria-hidden="true"></i>
                 </button>
               </span>
               <span class="om-tooltip-wrap" data-tip="Edit Order">
-                <button class="ib-icon-btn me-1" (click)="openEditModal(order)">
-                  <i class="bi bi-pencil"></i>
+                <button class="ib-icon-btn me-1" aria-label="Edit order" (click)="openEditModal(order)">
+                  <i class="bi bi-pencil" aria-hidden="true"></i>
                 </button>
               </span>
               <span class="om-tooltip-wrap om-tooltip-wrap--left"
                 [attr.data-tip]="canSplit(order) ? 'Split Order' : 'Split disabled — must be Commercial & IC Eligible'">
                 <button class="ib-icon-btn me-1"
+                  aria-label="Split order"
                   [disabled]="!canSplit(order)"
                   (click)="openSplitModal(order)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 16 16">
@@ -188,7 +189,7 @@
 
 <!-- ══ MODAL 0 — Add Order ════════════════════════════════════ -->
 <div *ngIf="showAddModal" class="ib-modal-overlay" (click)="closeAddModal()">
-  <div class="ib-modal-shell om-modal" style="max-width: 800px; max-height: 93vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell om-modal om-modal--lg d-flex flex-column" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Add Manual Order</h5>
@@ -196,7 +197,7 @@
       </div>
       <button type="button" class="btn-close" (click)="closeAddModal()"></button>
     </div>
-    <div class="ib-modal-body" style="overflow-y: auto; flex: 1;">
+    <div class="ib-modal-body">
       <form #addFormRef="ngForm">
         <div class="row g-3">
 
@@ -255,14 +256,14 @@
             <label class="form-label fw-bold small text-muted">Business Manager</label>
             <select class="form-select" [(ngModel)]="addForm.businessManager" name="addMgr">
               <option value="">— Select —</option>
-              <option *ngFor="let opt of allManagerOptions">{{ opt }}</option>
+              <option *ngFor="let opt of allManagerOptions; trackBy: trackByIndex">{{ opt }}</option>
             </select>
           </div>
           <div class="col-md-6">
             <label class="form-label fw-bold small text-muted">Territory</label>
             <select class="form-select" [(ngModel)]="addForm.territory" name="addTerr">
               <option value="">— Select —</option>
-              <option *ngFor="let opt of territoryOptions">{{ opt }}</option>
+              <option *ngFor="let opt of territoryOptions; trackBy: trackByIndex">{{ opt }}</option>
             </select>
           </div>
           <div class="col-md-3">
@@ -310,7 +311,7 @@
         </div>
       </form>
     </div>
-    <div class="ib-modal-footer">
+    <div class="ib-modal-footer d-flex gap-2 justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="closeAddModal()">Cancel</button>
       <button type="button" class="btn btn-primary" [disabled]="!addFormValid" (click)="saveAdd()">Add Order</button>
     </div>
@@ -320,7 +321,7 @@
 
 <!-- ══ MODAL 1 — Track Shipment ══════════════════════════════ -->
 <div *ngIf="trackingOrder" class="ib-modal-overlay" (click)="closeTrackModal()">
-  <div class="ib-modal-shell om-modal" style="max-width: 560px;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell om-modal om-modal--md" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Track Shipment</h5>
@@ -336,8 +337,8 @@
       </div>
     </div>
     <div class="ib-modal-body">
-      <div class="om-v-timeline">
-        <div *ngFor="let step of trackingSteps; let last = last; let i = index"
+      <div class="om-v-timeline d-flex flex-column">
+        <div *ngFor="let step of trackingSteps; let last = last; let i = index; trackBy: trackByIndex"
           class="om-v-timeline__item"
           [class.om-v-timeline__item--completed]="step.state === 'completed' && !getStepFlag(trackingOrder.id, i)"
           [class.om-v-timeline__item--current]="step.state === 'current' && !getStepFlag(trackingOrder.id, i)"
@@ -350,13 +351,13 @@
               [class.bi-check-lg]="step.state === 'completed' && !getStepFlag(trackingOrder.id, i)"
               [class.bi-arrow-right]="step.state === 'current' && !getStepFlag(trackingOrder.id, i)"
               [class.bi-exclamation-lg]="step.state === 'issue' || !!getStepFlag(trackingOrder.id, i)"
-              [class.bi-circle]="step.state === 'upcoming' && !getStepFlag(trackingOrder.id, i)"></i>
+              [class.bi-circle]="step.state === 'upcoming' && !getStepFlag(trackingOrder.id, i)" aria-hidden="true"></i>
           </div>
 
           <div class="om-v-timeline__body">
             <div class="d-flex justify-content-between align-items-start gap-3 mb-1">
-              <span class="om-v-timeline__label">{{ step.label }}</span>
-              <span class="om-v-timeline__date">{{ step.date }}</span>
+              <span class="om-v-timeline__label fw-bold">{{ step.label }}</span>
+              <span class="om-v-timeline__date fw-semibold text-nowrap">{{ step.date }}</span>
             </div>
             <p class="om-v-timeline__detail mb-0">{{ step.detail }}</p>
 
@@ -364,14 +365,14 @@
             <div *ngIf="getStepFlag(trackingOrder.id, i) && flaggingKey !== getFlagKey(trackingOrder.id, i)"
                  class="om-step-flag-badge mt-2">
               <span class="om-step-flag-badge__status">
-                <i class="bi bi-flag-fill me-1"></i>{{ getStepFlag(trackingOrder.id, i)!.status }}
+                <i class="bi bi-flag-fill me-1" aria-hidden="true"></i>{{ getStepFlag(trackingOrder.id, i)!.status }}
               </span>
               <span *ngIf="getStepFlag(trackingOrder.id, i)!.notes" class="om-step-flag-badge__notes">
                 "{{ getStepFlag(trackingOrder.id, i)!.notes }}"
               </span>
-              <div class="om-step-flag-badge__actions">
+              <div class="om-step-flag-badge__actions d-flex">
                 <button class="om-flag-action-btn om-flag-action-btn--clear" (click)="clearFlag(trackingOrder.id, i)">
-                  <i class="bi bi-x me-1"></i>Clear
+                  <i class="bi bi-x me-1" aria-hidden="true"></i>Clear
                 </button>
               </div>
             </div>
@@ -384,21 +385,21 @@
                 [title]="getStepFlag(trackingOrder.id, i) ? 'Edit flag' : 'Flag issue'">
                 <i class="bi"
                   [class.bi-flag-fill]="!!getStepFlag(trackingOrder.id, i)"
-                  [class.bi-flag]="!getStepFlag(trackingOrder.id, i)"></i>
+                  [class.bi-flag]="!getStepFlag(trackingOrder.id, i)" aria-hidden="true"></i>
               </button>
             </div>
 
             <!-- Inline flag form -->
             <div *ngIf="flaggingKey === getFlagKey(trackingOrder.id, i)" class="om-flag-form mt-2">
               <div class="om-flag-form__header">
-                <i class="bi bi-flag-fill me-1"></i>Flag Issue
+                <i class="bi bi-flag-fill me-1" aria-hidden="true"></i>Flag Issue
               </div>
               <div class="om-flag-form__body">
                 <div class="mb-2">
                   <label class="om-flag-form__label">Issue Status</label>
                   <select class="form-select form-select-sm" [(ngModel)]="flagForm.status" [name]="'flagStatus' + i">
                     <option value="">Select status…</option>
-                    <option *ngFor="let opt of issueStatusOptions" [value]="opt">{{ opt }}</option>
+                    <option *ngFor="let opt of issueStatusOptions; trackBy: trackByIndex" [value]="opt">{{ opt }}</option>
                   </select>
                 </div>
                 <div class="mb-3">
@@ -421,7 +422,7 @@
         </div>
       </div>
     </div>
-    <div class="ib-modal-footer">
+    <div class="ib-modal-footer d-flex gap-2 justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="closeTrackModal()">Close</button>
     </div>
   </div>
@@ -430,7 +431,7 @@
 
 <!-- ══ MODAL 2 — Edit Order ══════════════════════════════════ -->
 <div *ngIf="editingOrder" class="ib-modal-overlay" (click)="closeEditModal()">
-  <div class="ib-modal-shell om-modal" style="max-width: 800px; max-height: 93vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell om-modal om-modal--lg d-flex flex-column" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Edit Order</h5>
@@ -438,74 +439,74 @@
       </div>
       <button type="button" class="btn-close" (click)="closeEditModal()"></button>
     </div>
-    <div class="ib-modal-body" style="overflow-y: auto; flex: 1;">
+    <div class="ib-modal-body">
       <form #editFormRef="ngForm">
         <div class="row g-3">
 
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Account No.</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Account No.</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.accountNo" name="editAccountNo" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Distribution</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Distribution</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.distribution" name="editDist" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Status</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Status</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.status" name="editStatus" readonly>
           </div>
 
           <div class="col-md-8">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Ship To Name</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Ship To Name</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToName" name="editShipToName" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Ship To Address</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Ship To Address</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToAddress" name="editShipToAddr" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>City</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>City</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToCity" name="editCity" readonly>
           </div>
           <div class="col-md-2">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>State</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>State</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToState" name="editState" readonly>
           </div>
           <div class="col-md-2">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>ZIP</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>ZIP</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.shipToZip" name="editZip" readonly>
           </div>
 
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Area</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Area</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.area" name="editArea" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>ABD</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>ABD</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.abd" name="editAbd" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Business Manager</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Business Manager</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.businessManager" name="editMgr" readonly>
           </div>
           <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Territory</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Territory</label>
             <input type="text" class="form-control om-readonly" [(ngModel)]="editForm.territory" name="editTerr" readonly>
           </div>
           <div class="col-md-3">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Delivery Qty</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Delivery Qty</label>
             <input type="number" min="0" class="form-control om-readonly" [(ngModel)]="editForm.deliveryQty" name="editDeliveryQty" readonly>
           </div>
           <div class="col-md-3">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Units Assigned</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Units Assigned</label>
             <input type="number" min="0" class="form-control om-readonly" [(ngModel)]="editForm.unitsAssigned" name="editUnits" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Order Date</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Order Date</label>
             <input type="date" class="form-control om-readonly" [(ngModel)]="editForm.orderDate" name="editOrderDate" readonly>
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1"></i>Invoice Date</label>
+            <label class="form-label fw-bold small text-muted om-label-locked"><i class="bi bi-lock me-1" aria-hidden="true"></i>Invoice Date</label>
             <input type="date" class="form-control om-readonly" [(ngModel)]="editForm.invoiceDate" name="editInvoiceDate" readonly>
           </div>
           <div class="col-md-4">
@@ -537,7 +538,7 @@
         </div>
       </form>
     </div>
-    <div class="ib-modal-footer">
+    <div class="ib-modal-footer d-flex gap-2 justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="closeEditModal()">Cancel</button>
       <button type="button" class="btn btn-primary" (click)="saveEdit()">Save Changes</button>
     </div>
@@ -547,7 +548,7 @@
 
 <!-- ══ MODAL 3 — Split Order (#4 ABD→TBM) ════════════════════ -->
 <div *ngIf="splittingOrder" class="ib-modal-overlay" (click)="closeSplitModal()">
-  <div class="ib-modal-shell om-modal" style="max-width: 820px;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell om-modal om-modal--xl" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Split Order</h5>
@@ -558,42 +559,42 @@
     <div class="ib-modal-body">
       <div class="om-split-bar mb-4">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="fw-bold small text-muted text-uppercase" style="font-size:0.68rem; letter-spacing:0.04em;">Units Assigned</span>
+          <span class="fw-bold small text-muted text-uppercase om-split-label">Units Assigned</span>
           <span class="fw-bold" [class.text-danger]="splitIsOver" [class.text-success]="!splitIsOver && splitTotal > 0">
             {{ splitTotal }} / {{ splittingOrder.unitsAssigned }}
           </span>
         </div>
-        <div class="progress" style="height: 7px; border-radius: 99px;">
+        <div class="progress om-split-progress">
           <div class="progress-bar"
             [class.bg-danger]="splitIsOver"
             [class.bg-success]="!splitIsOver && splitTotal === splittingOrder.unitsAssigned && splitTotal > 0"
             [style.width.%]="splitProgressPercent"
-            style="transition: width 0.2s ease; border-radius: 99px;"></div>
+            ></div>
         </div>
         <p *ngIf="splitIsOver" class="text-danger small mt-1 mb-0">
-          <i class="bi bi-exclamation-triangle me-1"></i>
+          <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
           Total ({{ splitTotal }}) exceeds available units ({{ splittingOrder.unitsAssigned }}).
         </p>
       </div>
-      <div class="om-split-rows">
+      <div class="om-split-rows d-flex flex-column gap-2">
         <div class="om-split-row om-split-row--header">
           <span>ABD</span><span>Business Manager</span>
           <span class="text-center">Units</span><span></span>
         </div>
-        <div class="om-split-row" *ngFor="let row of splitAssignments; let i = index">
+        <div class="om-split-row" *ngFor="let row of splitAssignments; let i = index; trackBy: trackByIndex">
           <div>
             <select class="form-select form-select-sm bg-light"
               [(ngModel)]="row.abd"
               [name]="'splitAbd_'+i"
               (ngModelChange)="onSplitAbdChange(row)">
               <option value="">— ABD —</option>
-              <option *ngFor="let opt of abdOptions" [value]="opt">{{ opt }}</option>
+              <option *ngFor="let opt of abdOptions; trackBy: trackByIndex" [value]="opt">{{ opt }}</option>
             </select>
           </div>
           <div>
             <select class="form-select form-select-sm bg-light" [(ngModel)]="row.businessManager" [name]="'splitMgr_'+i">
               <option value="">— Manager —</option>
-              <option *ngFor="let opt of getManagersForAbd(row.abd)" [value]="opt">{{ opt }}</option>
+              <option *ngFor="let opt of getManagersForAbd(row.abd); trackBy: trackByIndex" [value]="opt">{{ opt }}</option>
             </select>
           </div>
           <div>
@@ -604,16 +605,16 @@
           <div class="d-flex justify-content-center">
             <button type="button" class="ib-icon-btn ib-icon-btn--danger"
               (click)="removeSplitRow(i)" [disabled]="splitAssignments.length === 1" title="Remove">
-              <i class="bi bi-x-lg"></i>
+              <i class="bi bi-x-lg" aria-hidden="true"></i>
             </button>
           </div>
         </div>
       </div>
       <button type="button" class="btn ib-btn-secondary btn-sm mt-3" (click)="addSplitRow()">
-        <i class="bi bi-plus-lg me-1"></i>Add Assignment
+        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Assignment
       </button>
     </div>
-    <div class="ib-modal-footer">
+    <div class="ib-modal-footer d-flex gap-2 justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="closeSplitModal()">Cancel</button>
       <button type="button" class="btn btn-primary" [disabled]="!splitIsValid" (click)="saveSplit()">Save Split</button>
     </div>
@@ -623,7 +624,7 @@
 
 <!-- ══ MODAL 4 — Shipment Issue Flag (#7) ════════════════════ -->
 <div *ngIf="issueFlagOrder" class="ib-modal-overlay" (click)="closeIssueFlagModal()">
-  <div class="ib-modal-shell om-modal" style="max-width: 480px;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell om-modal om-modal--sm" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Shipment Issue</h5>
@@ -651,7 +652,7 @@
         </div>
       </form>
     </div>
-    <div class="ib-modal-footer">
+    <div class="ib-modal-footer d-flex gap-2 justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="closeIssueFlagModal()">Cancel</button>
       <button type="button" class="btn btn-primary" (click)="saveIssueFlag()">Save</button>
     </div>
@@ -661,7 +662,7 @@
 
 <!-- ══ MODAL 5 — Order Details ══════════════════════════════ -->
 <div *ngIf="detailsOrder" class="ib-modal-overlay" (click)="closeDetailsModal()">
-  <div class="ib-modal-shell om-modal" style="max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell om-modal om-modal--full d-flex flex-column" (click)="$event.stopPropagation()">
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
         <h5 class="ib-modal-title mb-0">Order Details</h5>
@@ -669,54 +670,54 @@
       </div>
       <button type="button" class="btn-close" (click)="closeDetailsModal()"></button>
     </div>
-    <div class="ib-modal-body" style="overflow-y: auto; flex: 1;">
-      <div class="om-details-grid">
-        <div class="om-details-row" *ngIf="detailsOrder.accountNo">
-          <span class="om-details-label">Account No.</span>
+    <div class="ib-modal-body">
+      <div class="om-details-grid d-flex flex-column overflow-hidden">
+        <div class="om-details-row d-flex gap-3" *ngIf="detailsOrder.accountNo">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Account No.</span>
           <span class="om-details-value fw-bold text-primary">{{ detailsOrder.accountNo }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Invoice Date</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Invoice Date</span>
           <span class="om-details-value">{{ detailsOrder.invoiceDate || '—' }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Ship To Name</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Ship To Name</span>
           <span class="om-details-value fw-bold">{{ detailsOrder.shipToName || '—' }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Address</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Address</span>
           <span class="om-details-value">{{ detailsOrder.shipToAddress || '—' }}, {{ detailsOrder.shipToCity }}, {{ detailsOrder.shipToState }} {{ detailsOrder.shipToZip }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Channel</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Channel</span>
           <span class="om-details-value">{{ detailsOrder.distribution }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">ABD</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">ABD</span>
           <span class="om-details-value">{{ detailsOrder.abd }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Business Mgr</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Business Mgr</span>
           <span class="om-details-value">{{ detailsOrder.businessManager }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Territory</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Territory</span>
           <span class="om-details-value">{{ detailsOrder.territory }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Delivery Qty</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Delivery Qty</span>
           <span class="om-details-value fw-bold">{{ detailsOrder.deliveryQty }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Order Date</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Order Date</span>
           <span class="om-details-value">{{ detailsOrder.orderDate | date:'MM/dd/yyyy' }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Delivery Date</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Delivery Date</span>
           <span class="om-details-value">{{ detailsOrder.deliveryDate | date:'MM/dd/yyyy' }}</span>
         </div>
-        <div class="om-details-row">
-          <span class="om-details-label">Status</span>
+        <div class="om-details-row d-flex gap-3">
+          <span class="om-details-label flex-shrink-0 fw-bold text-uppercase">Status</span>
           <span class="om-details-value">
             <span class="ib-status-badge" [ngClass]="{
               'ib-status-badge--success': detailsOrder.status === 'Shipped',
@@ -727,7 +728,7 @@
         </div>
       </div>
     </div>
-    <div class="ib-modal-footer">
+    <div class="ib-modal-footer d-flex gap-2 justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="closeDetailsModal()">Close</button>
     </div>
   </div>

@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { DataService } from '../../services/data.service';
+import { Order, Patient } from '../../models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -274,7 +275,7 @@ export class PatientEnrollmentComponent implements OnInit {
   }
 
   get territoryOptions(): string[] {
-    return ['All', ...new Set(this.dataService.getTerritories().map((territory: any) => territory.name))];
+    return ['All', ...new Set(this.dataService.getTerritories().map(territory => territory.name))];
   }
 
   get physicianOptions(): string[] {
@@ -286,7 +287,7 @@ export class PatientEnrollmentComponent implements OnInit {
   }
 
   get salesRepOptions(): string[] {
-    const reps = (this.dataService.getSalesTeam() as any[])
+    const reps = this.dataService.getSalesTeam()
       .filter((member) => member.position !== 'Area Business Director')
       .map((member) => member.name);
 
@@ -417,10 +418,13 @@ export class PatientEnrollmentComponent implements OnInit {
       const ptId = 'PT-' + Math.floor(10000 + Math.random() * 90000);
       const reportNo = String(53190000 + Math.floor(Math.random() * 9999));
       const hubAssigned = '32' + Math.floor(100000 + Math.random() * 900000);
+      const mapped = this.mapFormToPatient(ptId, reportNo, hubAssigned);
       this.dataService.addPatient({
-        ...this.mapFormToPatient(ptId, reportNo, hubAssigned),
-        date: new Date().toISOString().split('T')[0]
-      });
+        ...mapped,
+        date: new Date().toISOString().split('T')[0],
+        enrollmentStatus: mapped.enrollmentStatus ?? 'In Progress',
+        enrollmentCompletionDate: mapped.enrollmentCompletionDate ?? '',
+      } as Patient);
       this.selectedPatientId = ptId;
     }
 
@@ -694,15 +698,15 @@ export class PatientEnrollmentComponent implements OnInit {
     }
 
     const territory = this.getTerritory(patient);
-    const team = this.dataService.getSalesTeam() as any[];
+    const team = this.dataService.getSalesTeam();
     return team.find((member) => member.area === territory && member.position !== 'Area Business Director')?.name ?? 'Unassigned';
   }
 
-  private getPatientOrders(patient: PatientRecord): any[] {
+  private getPatientOrders(patient: PatientRecord): Order[] {
     const lastName = patient.name.split(' ').slice(-1)[0]?.toLowerCase() ?? '';
     const territory = this.getTerritory(patient).toLowerCase().split(' ')[0];
 
-    return this.dataService.getRecentOrders().filter((order: any) =>
+    return this.dataService.getRecentOrders().filter(order =>
       order.facility.toLowerCase().includes(lastName)
       || order.facility.toLowerCase().includes(territory)
       || order.impTypeName.toLowerCase().includes('physician')
@@ -763,6 +767,13 @@ export class PatientEnrollmentComponent implements OnInit {
 
     return 'Enrollment is currently in review';
   }
+
+  trackByPatientId(_index: number, patient: PatientRecord): string { return patient.id; }
+  trackByPatientRowId(index: number, row: PatientRow): string { return row.patientId + index; }
+  trackByEnrollmentId(_index: number, row: { enrollmentId: string }): string { return row.enrollmentId; }
+  trackByEventId(_index: number, event: TimelineEvent): string { return event.id; }
+  trackByIndex(index: number): number { return index; }
+  trackByOrderId(_index: number, order: Order): string { return order.id ?? ''; }
 
   private getPatientTimeline(patient: PatientRecord): TimelineEvent[] {
     const events: TimelineEvent[] = [

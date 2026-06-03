@@ -31,7 +31,7 @@
       <div class="d-flex align-items-center gap-3">
         <span class="ib-table-toolbar__meta">{{ filteredRows.length }} records</span>
         <button class="btn btn-sm ib-btn-secondary" (click)="exportCsv()" title="Download current view as CSV for Maptitude">
-          <i class="bi bi-download me-1"></i>Export
+          <i class="bi bi-download me-1" aria-hidden="true"></i>Export
         </button>
       </div>
     </div>
@@ -42,15 +42,15 @@
           <thead class="ib-table-header">
             <tr>
               <th class="py-2 ztt-th-expand"></th>
-              <th class="py-2 px-3" style="white-space:nowrap;">MDO ZIP</th>
-              <th class="py-2" style="white-space:nowrap;">Territory ID</th>
-              <th class="py-2" style="white-space:nowrap;">City</th>
-              <th class="py-2" style="white-space:nowrap;">State</th>
-              <th class="py-2" style="white-space:nowrap;">Curr Terr</th>
-              <th class="py-2" style="white-space:nowrap;">Veeva Area ID</th>
-              <th class="py-2" style="white-space:nowrap;">TBM</th>
-              <th class="py-2" style="white-space:nowrap;">Start Date</th>
-              <th class="py-2" style="white-space:nowrap;">End Date</th>
+              <th class="py-2 px-3 text-nowrap">MDO ZIP</th>
+              <th class="py-2 text-nowrap">Territory ID</th>
+              <th class="py-2 text-nowrap">City</th>
+              <th class="py-2 text-nowrap">State</th>
+              <th class="py-2 text-nowrap">Curr Terr</th>
+              <th class="py-2 text-nowrap">Veeva Area ID</th>
+              <th class="py-2 text-nowrap">TBM</th>
+              <th class="py-2 text-nowrap">Start Date</th>
+              <th class="py-2 text-nowrap">End Date</th>
               <th class="py-2 text-center px-3">Actions</th>
             </tr>
           </thead>
@@ -65,25 +65,25 @@
                     [class.ztt-expand-btn--open]="isExpanded(row.mdoZip)"
                     (click)="toggleHistory(row.mdoZip)"
                     [title]="isExpanded(row.mdoZip) ? 'Hide history' : 'Show history'">
-                    <i class="bi bi-chevron-right"></i>
+                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
                   </button>
                 </td>
-                <td class="px-3 fw-bold text-primary" style="white-space:nowrap;">{{ row.mdoZip }}</td>
-                <td style="white-space:nowrap;"><span class="ib-chip ztt-chip--territory">{{ row.territoryId }}</span></td>
-                <td style="white-space:nowrap;">{{ row.city }}</td>
+                <td class="px-3 fw-bold text-primary text-nowrap">{{ row.mdoZip }}</td>
+                <td class="text-nowrap"><span class="ib-chip ztt-chip--territory">{{ row.territoryId }}</span></td>
+                <td class="text-nowrap">{{ row.city }}</td>
                 <td>{{ row.state }}</td>
                 <td><span class="ib-chip">{{ row.currTerr }}</span></td>
                 <td><span class="ib-chip ztt-chip--veeva">{{ row.veevaAreaId }}</span></td>
-                <td style="white-space:nowrap;">{{ row.tbm }}</td>
-                <td style="white-space:nowrap;">{{ row.startDate || '—' }}</td>
-                <td style="white-space:nowrap;">
+                <td class="text-nowrap">{{ row.tbm }}</td>
+                <td class="text-nowrap">{{ row.startDate || '—' }}</td>
+                <td class="text-nowrap">
                   <span [class.text-muted]="!row.endDate" [class.fst-italic]="!row.endDate">
                     {{ row.endDate || 'Open' }}
                   </span>
                 </td>
                 <td class="text-center px-3">
                   <button class="ib-icon-btn" title="Edit row" (click)="openEdit(row)">
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
                   </button>
                 </td>
               </tr>
@@ -92,9 +92,9 @@
               <tr *ngIf="isExpanded(row.mdoZip) && row.history.length > 0" class="ztt-history-row">
                 <td colspan="11" class="p-0">
                   <div class="ztt-history-panel">
-                    <div class="ztt-history-section-header">
-                      <i class="bi bi-clock-history"></i>
-                      <span class="ztt-history-label">Retired Records</span>
+                    <div class="ztt-history-section-header d-flex align-items-center gap-2">
+                      <i class="bi bi-clock-history" aria-hidden="true"></i>
+                      <span class="ztt-history-label fw-bold text-uppercase">Retired Records</span>
                       <span class="ztt-history-sub">{{ row.mdoZip }} — {{ row.city }}, {{ row.state }}</span>
                     </div>
                     <div class="ztt-history-body">
@@ -102,28 +102,28 @@
                         <table class="table table-hover table-sm align-middle mb-0 ib-data-table ztt-history-table">
                           <thead class="ib-table-header">
                             <tr>
-                              <th class="py-2 px-3" style="white-space:nowrap;">MDO ZIP</th>
-                              <th class="py-2" style="white-space:nowrap;">Territory ID</th>
-                              <th class="py-2" style="white-space:nowrap;">City</th>
-                              <th class="py-2" style="white-space:nowrap;">State</th>
-                              <th class="py-2" style="white-space:nowrap;">Curr Terr</th>
-                              <th class="py-2" style="white-space:nowrap;">Veeva Area ID</th>
-                              <th class="py-2" style="white-space:nowrap;">TBM</th>
-                              <th class="py-2" style="white-space:nowrap;">Start Date</th>
-                              <th class="py-2" style="white-space:nowrap;">End Date</th>
+                              <th class="py-2 px-3 text-nowrap">MDO ZIP</th>
+                              <th class="py-2 text-nowrap">Territory ID</th>
+                              <th class="py-2 text-nowrap">City</th>
+                              <th class="py-2 text-nowrap">State</th>
+                              <th class="py-2 text-nowrap">Curr Terr</th>
+                              <th class="py-2 text-nowrap">Veeva Area ID</th>
+                              <th class="py-2 text-nowrap">TBM</th>
+                              <th class="py-2 text-nowrap">Start Date</th>
+                              <th class="py-2 text-nowrap">End Date</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr *ngFor="let h of row.history">
-                              <td class="px-3 fw-bold text-primary" style="white-space:nowrap;">{{ row.mdoZip }}</td>
-                              <td style="white-space:nowrap;"><span class="ib-chip ztt-chip--territory">{{ h.territoryId }}</span></td>
-                              <td style="white-space:nowrap;">{{ row.city }}</td>
+                              <td class="px-3 fw-bold text-primary text-nowrap">{{ row.mdoZip }}</td>
+                              <td class="text-nowrap"><span class="ib-chip ztt-chip--territory">{{ h.territoryId }}</span></td>
+                              <td class="text-nowrap">{{ row.city }}</td>
                               <td>{{ row.state }}</td>
                               <td><span class="ib-chip">{{ h.currTerr }}</span></td>
                               <td><span class="ib-chip ztt-chip--veeva">{{ h.veevaAreaId }}</span></td>
-                              <td style="white-space:nowrap;">{{ h.tbm }}</td>
-                              <td style="white-space:nowrap;">{{ h.startDate }}</td>
-                              <td style="white-space:nowrap;">
+                              <td class="text-nowrap">{{ h.tbm }}</td>
+                              <td class="text-nowrap">{{ h.startDate }}</td>
+                              <td class="text-nowrap">
                                 <span [class.text-muted]="!h.endDate" [class.fst-italic]="!h.endDate">
                                   {{ h.endDate || 'Open' }}
                                 </span>
@@ -149,7 +149,7 @@
 
     <!-- Footer note (#15) -->
     <div class="ztt-footer-note">
-      <i class="bi bi-info-circle me-1"></i>For mass upload, contact DATAStream support.
+      <i class="bi bi-info-circle me-1" aria-hidden="true"></i>For mass upload, contact DATAStream support.
     </div>
   </div>
 </div>
@@ -157,7 +157,7 @@
 
 <!-- Edit Modal -->
 <div *ngIf="editingRow" class="ib-modal-overlay" (click)="closeEdit()">
-  <div class="ib-modal-shell" style="max-width: 640px;" (click)="$event.stopPropagation()">
+  <div role="dialog" aria-modal="true" class="ib-modal-shell ztt-modal" (click)="$event.stopPropagation()">
 
     <div class="ib-modal-header">
       <div class="d-flex flex-column gap-1">
@@ -222,7 +222,7 @@
       </form>
     </div>
 
-    <div class="ztt-modal-footer">
+    <div class="ztt-modal-footer d-flex gap-2 justify-content-end">
       <button type="button" class="btn ib-btn-secondary" (click)="closeEdit()">Cancel</button>
       <button type="button" class="btn btn-primary" (click)="saveEdit()">Save Changes</button>
     </div>

@@ -34,6 +34,8 @@
   &--inactive{ border-left: 4px solid #78909c; .rp-summary-pill__count { color: #78909c; } }
 }
 
+.rp-modal { max-width: 560px; }
+
 .rp-row--open {
   background: #fff8f8;
 }

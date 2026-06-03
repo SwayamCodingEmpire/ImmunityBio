@@ -1,3 +1,41 @@
+// ── Moved from global styles.scss (only used here) ───────────
+.ib-page-header__eyebrow {
+  color: var(--ib-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+}
+
+.ib-page-header__subtitle {
+  color: var(--ib-muted);
+  font-size: 0.86rem;
+  margin: 0.2rem 0 0;
+}
+
+.ib-section-card__meta {
+  color: var(--ib-muted);
+  font-size: 0.8rem;
+  margin: 0.2rem 0 0;
+}
+
+.ib-form-section {
+  background: var(--ib-white);
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.ib-form-section__title {
+  color: var(--ib-navy);
+  font-family: var(--ib-font-family);
+  font-size: 0.86rem;
+  font-weight: 700;
+  margin: 0 0 0.85rem;
+}
+
+// ────────────────────────────────────────────────────────────
 .patient-kpi-grid {
   display: grid;
   gap: 1rem;
@@ -143,10 +181,7 @@
 }
 
 .patient-action-group {
-  display: inline-flex;
-  flex-wrap: nowrap;
   gap: 0.4rem;
-  white-space: nowrap;
 }
 
 .patient-timeline {
@@ -192,19 +227,21 @@
   padding: 1rem 1.1rem;
 }
 
-.pe-th {
-  white-space: nowrap;
-}
 
 .pe-directory-table {
   font-size: 0.8rem;
 }
 
+.pe-modal--lg  { max-width: 720px; }
+.pe-modal--md  { max-width: 560px; }
+.pe-modal--sm  {
+  max-height: 85vh;
+  max-width: 480px;
+  .ib-modal-body { flex: 1; overflow-y: auto; }
+}
+
 .pe-modal-footer {
   border-top: 1px solid var(--ib-border);
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
   padding: 1rem 1.5rem;
 }
 
@@ -212,30 +249,22 @@
 .om-details-grid {
   border: 1px solid var(--ib-border);
   border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
 }
 
 .om-details-row {
   align-items: baseline;
   border-bottom: 1px solid var(--ib-border);
-  display: flex;
-  gap: 1rem;
   padding: 0.65rem 1rem;
 
   &:last-child { border-bottom: none; }
-  &:nth-child(odd) { background: #f8fafc; }
+  &:nth-child(odd) { background: var(--ib-bg); }
 }
 
 .om-details-label {
   color: var(--ib-muted);
-  flex-shrink: 0;
   font-size: 0.75rem;
-  font-weight: 700;
   letter-spacing: 0.03em;
   min-width: 100px;
-  text-transform: uppercase;
 }
 
 .om-details-value {
@@ -248,7 +277,7 @@
   position: relative;
 
   &::after {
-    background: #1e293b;
+    background: var(--ib-text);
     border-radius: 5px;
     bottom: calc(100% + 6px);
     color: #fff;
@@ -268,7 +297,7 @@
 
   &::before {
     border: 5px solid transparent;
-    border-top-color: #1e293b;
+    border-top-color: var(--ib-text);
     bottom: calc(100% + 1px);
     content: '';
     left: 50%;

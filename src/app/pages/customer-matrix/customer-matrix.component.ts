@@ -394,6 +394,12 @@ export class CustomerMatrixComponent {
     },
   ];
 
+  trackByMasterAccountName(_index: number, account: MasterAccount): string { return account.masterAccountName; }
+  trackByIbSiteId(_index: number, site: IbCareSite): string { return site.id; }
+  trackByIcsAccountBp(_index: number, row: IcsAccount): string { return row.bpNumber; }
+  trackByAccredoAccountNpi(_index: number, row: AccredoAccount): string { return row.npiNumber; }
+  trackByAccountName(_index: number, name: string): string { return name; }
+
   // ── Computed ──────────────────────────────────────────────────
   get masterAccountNames(): string[] {
     return this.accounts.map(a => a.masterAccountName);

@@ -26,8 +26,6 @@
 
 // ── Status + rebate inline row ────────────────────────────────
 .gpo-meta-row {
-  align-items: center;
-  display: flex;
   gap: 0.4rem;
   margin-top: 3px;
 }
@@ -35,29 +33,20 @@
 // ── Active / Inactive status indicator in table ───────────────
 .gpo-level-status {
   font-size: 0.65rem;
-  font-weight: 600;
-  white-space: nowrap;
 
-  &--active   { color: #059669; }
-  &--inactive { color: #94a3b8; }
+  &--active   { color: var(--ib-green-save); }
+  &--inactive { color: var(--ib-muted-soft); }
 }
 
 // ── Edit modal shell ──────────────────────────────────────────
 .gpo-edit-modal {
-  display: flex;
-  flex-direction: column;
-  max-height: 90vh;
   max-width: 1100px;
-  width: 100%;
 
   .ib-modal-body { overflow-y: auto; flex: 1; }
 }
 
 .gpo-modal-footer {
   border-top: 1px solid var(--ib-border);
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
   padding: 1rem 1.5rem;
 }
 
@@ -70,18 +59,13 @@
 }
 
 .gpo-level-row__header {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 0.85rem;
 }
 
 .gpo-level-title {
   color: var(--ib-navy);
   font-size: 0.78rem;
-  font-weight: 700;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 .gpo-level-pill {
@@ -106,15 +90,12 @@
   padding: 3px 10px;
 
   &--active   { background: #d1fae5; color: #065f46; }
-  &--inactive { background: #f1f5f9; color: #64748b; }
+  &--inactive { background: var(--ib-surface-muted); color: var(--ib-muted); }
 }
 
 .gpo-field-label {
   color: var(--ib-muted);
-  display: block;
   font-size: 0.67rem;
-  font-weight: 700;
   letter-spacing: 0.07em;
   margin-bottom: 0.35rem;
-  text-transform: uppercase;
 }
