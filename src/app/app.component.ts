@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { TopNavComponent } from './layout/top-nav/top-nav.component';
+import { filter } from 'rxjs/operators';
 // import { FooterComponent } from './layout/footer/footer.component';
 @Component({
   selector: 'app-root',
@@ -12,6 +13,15 @@ import { TopNavComponent } from './layout/top-nav/top-nav.component';
 export class AppComponent {
   title = 'Anktiva Portal';
   protected isSidebarCollapsed = false;
+  protected isLoginPage = false;
+
+  constructor(private router: Router) {
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe((e: NavigationEnd) => {
+      this.isLoginPage = e.urlAfterRedirects === '/login';
+    });
+  }
 
   protected toggleSidebar(): void {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;

@@ -6,9 +6,11 @@ import { ZipToTerritoryComponent } from './pages/zip-to-territory/zip-to-territo
 import { RosterPlacementComponent } from './pages/roster-placement/roster-placement.component';
 import { UsersComponent } from './pages/users/users.component';
 import { CustomerMatrixComponent } from './pages/customer-matrix/customer-matrix.component';
+import { LoginComponent } from './pages/login/login.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'customer-matrix', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   { path: 'order-management', component: OrderManagementComponent },
   { path: 'patient-enrollment', component: PatientEnrollmentComponent },
   { path: 'gpo', component: GpoComponent },

@@ -1,0 +1,154 @@
+.login-bg {
+  background: #f5f9fc;
+}
+
+.login-card {
+  width: 1000px;
+  min-height: 520px;
+}
+
+.login-form {
+  width: 420px;
+  min-width: 420px;
+}
+
+.login-image {
+  width: 480px;
+}
+
+.muted-placeholder::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+
+.input-group-animated {
+  .form-control:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #dee2e6;
+  }
+}
+
+.eye-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.eye-icon {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.btn-animate {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.microsoft-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes imageReveal {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bgPulse {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.card-animate {
+  animation: cardSlideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.form-header-animate {
+  animation: fadeSlideUp 0.45s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.field-animate {
+  animation: fadeSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.field-animate-1 {
+  animation-delay: 0.28s;
+}
+.field-animate-2 {
+  animation-delay: 0.36s;
+}
+.field-animate-3 {
+  animation-delay: 0.44s;
+}
+.field-animate-4 {
+  animation-delay: 0.5s;
+}
+.field-animate-5 {
+  animation-delay: 0.56s;
+}
+
+.image-animate {
+  overflow: hidden;
+
+  img {
+    animation: imageReveal 0.8s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: transform 8s ease;
+
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+}

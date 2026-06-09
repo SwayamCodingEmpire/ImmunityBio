@@ -1,0 +1,101 @@
+<div class="vh-100 d-flex align-items-center justify-content-center login-bg">
+  <div
+    class="login-card d-flex justify-content-center rounded-4 overflow-hidden shadow-sm bg-white card-animate"
+  >
+    <!-- Left: Form -->
+    <div class="login-form d-flex flex-column justify-content-center px-4 py-5">
+      <div class="mb-4 text-center form-header-animate">
+        <h4 class="fw-bold mb-1">Order Management System</h4>
+        <p class="text-muted small">Welcome back! Please enter your details</p>
+      </div>
+
+      <form>
+        <!-- Email -->
+        <div class="mb-3 field-animate field-animate-1">
+          <label class="form-label fw-medium small">Email</label>
+          <div class="input-group input-group-animated">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-envelope text-muted"></i>
+            </span>
+            <input
+              type="email"
+              class="form-control border-start-0 ps-0 muted-placeholder"
+              placeholder="Enter your email"
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3 field-animate field-animate-2">
+          <label class="form-label fw-medium small">Password</label>
+          <div class="input-group input-group-animated">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-lock text-muted"></i>
+            </span>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control border-start-0 border-end-0 ps-0 muted-placeholder"
+              placeholder="Enter your password"
+            />
+            <span
+              class="input-group-text bg-white border-start-0 eye-toggle"
+              (click)="togglePassword()"
+            >
+              <i
+                class="bi text-muted eye-icon"
+                [class.bi-eye]="!showPassword"
+                [class.bi-eye-slash]="showPassword"
+              ></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Sign In Button -->
+        <button
+          type="submit"
+          class="btn btn-primary w-100 py-2 mb-3 btn-animate field-animate field-animate-3"
+        >
+          Sign In
+        </button>
+
+        <!-- Divider -->
+        <div
+          class="d-flex align-items-center gap-2 mb-3 field-animate field-animate-4"
+        >
+          <hr class="flex-grow-1 m-0" />
+          <span class="text-muted small">Or</span>
+          <hr class="flex-grow-1 m-0" />
+        </div>
+
+        <!-- Microsoft SSO -->
+        <button
+          type="button"
+          class="btn btn-outline-secondary w-100 py-2 btn-animate microsoft-btn field-animate field-animate-5"
+        >
+          <svg
+            class="me-2"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 21 21"
+          >
+            <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+            <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+            <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+            <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+          </svg>
+          Sign in with Microsoft
+        </button>
+      </form>
+    </div>
+
+    <!-- Right: Image -->
+    <div class="login-image d-none d-md-block image-animate">
+      <img
+        src="login.jpg"
+        alt="Login visual"
+        class="h-100 w-100 object-fit-cover"
+      />
+    </div>
+  </div>
+</div>
