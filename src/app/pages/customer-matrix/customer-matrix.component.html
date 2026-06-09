@@ -311,7 +311,7 @@
 
                     <!-- Edit mode -->
                     <ng-container *ngIf="isEditingIcsRow(account, i)">
-                      <td class="px-3"><input class="form-control form-control-sm" [(ngModel)]="editingIcsRow!.form.bpNumber" [name]="'eics_bp_'+i"></td>
+                      <td class="px-3"><span class="ib-chip cm-bp-chip">{{ row.bpNumber }}</span></td>
                       <td><input class="form-control form-control-sm" [(ngModel)]="editingIcsRow!.form.shipToName" [name]="'eics_name_'+i"></td>
                       <td><input class="form-control form-control-sm" [(ngModel)]="editingIcsRow!.form.address" [name]="'eics_addr_'+i"></td>
                       <td><input class="form-control form-control-sm" [(ngModel)]="editingIcsRow!.form.city" [name]="'eics_city_'+i"></td>

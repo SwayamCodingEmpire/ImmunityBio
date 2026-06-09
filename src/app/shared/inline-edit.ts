@@ -6,17 +6,17 @@
  * use a typed state object directly in the component instead.
  */
 export class InlineEdit<T extends object> {
-  editing: { index: number; form: T } | null = null;
+  editing: { key: unknown; form: T } | null = null;
 
   get form(): T { return this.editing!.form; }
   get isOpen(): boolean { return this.editing !== null; }
 
-  start(index: number, source: T): void {
-    this.editing = { index, form: { ...source } };
+  start(key: unknown, source: T): void {
+    this.editing = { key, form: { ...source } };
   }
 
-  isActive(index: number): boolean {
-    return this.editing?.index === index;
+  isActive(key: unknown): boolean {
+    return this.editing?.key === key;
   }
 
   cancel(): void {

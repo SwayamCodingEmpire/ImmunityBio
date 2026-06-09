@@ -135,7 +135,7 @@ export class RosterPlacementComponent {
 
   saveEditRow(): void {
     if (!this.rowEdit.isOpen) return;
-    const original = this.rows.find(r => r.id === this.rowEdit.editing!.index)!;
+    const original = this.rows.find(r => r.id === this.rowEdit.editing!.key)!;
     Object.assign(original, this.rowEdit.form);
     this.rowEdit.cancel();
   }
