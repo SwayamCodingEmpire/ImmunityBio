@@ -68,39 +68,70 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let row of filteredRows" [class.rp-row--open]="rowStatus(row) === 'Open'">
-              <td class="px-3 fw-bold text-nowrap">
-                <span class="text-primary">{{ row.territoryId }}</span>
-              </td>
-              <td class="text-nowrap">{{ row.abd }}</td>
-              <td class="text-nowrap">
-                <span *ngIf="row.tbm; else openTbm">{{ row.tbm }}</span>
-                <ng-template #openTbm>
-                  <span class="text-muted fst-italic">Vacant</span>
-                </ng-template>
-              </td>
-              <td class="text-nowrap">{{ row.startDate | date:'MM/dd/yyyy' }}</td>
-              <td class="text-nowrap">
-                <span *ngIf="row.endDate; else openEnd">{{ row.endDate | date:'MM/dd/yyyy' }}</span>
-                <ng-template #openEnd>
-                  <span class="text-muted fst-italic">Open</span>
-                </ng-template>
-              </td>
-              <td>
-                <span class="ib-status-badge"
-                  [class.ib-status-badge--success]="rowStatus(row) === 'Active'"
-                  [class.ib-status-badge--danger]="rowStatus(row) === 'Open'"
-                  [class.ib-status-badge--info]="rowStatus(row) === 'Upcoming'"
-                  [class.ib-status-badge--secondary]="rowStatus(row) === 'Inactive'">
-                  {{ rowStatus(row) }}
-                </span>
-              </td>
-              <td class="text-center px-3">
-                <button class="ib-icon-btn" title="Edit" (click)="openEdit(row)">
-                  <i class="bi bi-pencil" aria-hidden="true"></i>
-                </button>
-              </td>
-            </tr>
+            <ng-container *ngFor="let row of filteredRows; trackBy: trackByRosterId">
+
+              <!-- View mode -->
+              <tr *ngIf="!rowEdit.isActive(row.id)" [class.rp-row--open]="rowStatus(row) === 'Open'">
+                <td class="px-3 fw-bold text-nowrap">
+                  <span class="text-primary">{{ row.territoryId }}</span>
+                </td>
+                <td class="text-nowrap">{{ row.abd }}</td>
+                <td class="text-nowrap">
+                  <span *ngIf="row.tbm; else openTbm">{{ row.tbm }}</span>
+                  <ng-template #openTbm>
+                    <span class="text-muted fst-italic">Vacant</span>
+                  </ng-template>
+                </td>
+                <td class="text-nowrap">{{ row.startDate | date:'MM/dd/yyyy' }}</td>
+                <td class="text-nowrap">
+                  <span *ngIf="row.endDate; else openEnd">{{ row.endDate | date:'MM/dd/yyyy' }}</span>
+                  <ng-template #openEnd>
+                    <span class="text-muted fst-italic">Open</span>
+                  </ng-template>
+                </td>
+                <td>
+                  <span class="ib-status-badge"
+                    [class.ib-status-badge--success]="rowStatus(row) === 'Active'"
+                    [class.ib-status-badge--danger]="rowStatus(row) === 'Open'"
+                    [class.ib-status-badge--info]="rowStatus(row) === 'Upcoming'"
+                    [class.ib-status-badge--secondary]="rowStatus(row) === 'Inactive'">
+                    {{ rowStatus(row) }}
+                  </span>
+                </td>
+                <td class="text-center px-3">
+                  <button class="ib-icon-btn" title="Edit" (click)="startEditRow(row)">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Edit mode -->
+              <tr *ngIf="rowEdit.isActive(row.id)" class="cm-row-editing">
+                <td class="px-3"><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.territoryId" name="rp_terr" autocomplete="off"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.abd" name="rp_abd" autocomplete="off"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.tbm" name="rp_tbm" placeholder="(blank = Open)" autocomplete="off"></td>
+                <td><input type="date" class="form-control form-control-sm" [(ngModel)]="rowEdit.form.startDate" name="rp_start"></td>
+                <td><input type="date" class="form-control form-control-sm" [(ngModel)]="rowEdit.form.endDate" name="rp_end"></td>
+                <td>
+                  <span class="ib-status-badge"
+                    [class.ib-status-badge--success]="rowStatus(row) === 'Active'"
+                    [class.ib-status-badge--danger]="rowStatus(row) === 'Open'"
+                    [class.ib-status-badge--info]="rowStatus(row) === 'Upcoming'"
+                    [class.ib-status-badge--secondary]="rowStatus(row) === 'Inactive'">
+                    {{ rowStatus(row) }}
+                  </span>
+                </td>
+                <td class="cm-action-cell text-nowrap text-center px-3">
+                  <button class="cm-row-btn cm-row-btn--save d-inline-flex align-items-center justify-content-center" (click)="saveEditRow()" title="Save">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                  </button>
+                  <button class="cm-row-btn cm-row-btn--cancel d-inline-flex align-items-center justify-content-center" (click)="rowEdit.cancel()" title="Cancel">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+
+            </ng-container>
             <tr *ngIf="filteredRows.length === 0">
               <td colspan="7" class="text-center text-muted py-4">No assignments match the current filters.</td>
             </tr>
@@ -162,45 +193,3 @@
 </div>
 
 
-<!-- ══ Edit Assignment Modal ══════════════════════════════════ -->
-<div *ngIf="editingRow" class="ib-modal-overlay" (click)="closeEdit()">
-  <div role="dialog" aria-modal="true" class="ib-modal-shell rp-modal" (click)="$event.stopPropagation()">
-    <div class="ib-modal-header">
-      <div class="d-flex flex-column gap-1">
-        <h5 class="ib-modal-title mb-0">Edit Assignment</h5>
-        <span class="text-muted small">Territory {{ editingRow.territoryId }}</span>
-      </div>
-      <button type="button" class="btn-close" (click)="closeEdit()"></button>
-    </div>
-    <div class="ib-modal-body">
-      <form>
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">Territory ID</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.territoryId" name="editTerrId">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">ABD</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.abd" name="editAbd">
-          </div>
-          <div class="col-md-12">
-            <label class="form-label fw-bold small text-muted">TBM <span class="fw-normal text-muted">(clear to mark Open)</span></label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.tbm" name="editTbm">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">Start Date</label>
-            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.startDate" name="editStart">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">End Date <span class="fw-normal text-muted">(leave blank = open)</span></label>
-            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.endDate" name="editEnd">
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="ib-modal-footer">
-      <button type="button" class="btn ib-btn-secondary" (click)="closeEdit()">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="saveEdit()">Save Changes</button>
-    </div>
-  </div>
-</div>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { InlineEdit } from '../../shared/inline-edit';
 
 type RosterStatus = 'Active' | 'Open' | 'Upcoming' | 'Inactive';
 
@@ -125,20 +126,18 @@ export class RosterPlacementComponent {
     this.closeAddModal();
   }
 
-  // ── Edit modal ───────────────────────────────────────────
-  editingRow: RosterRow | null = null;
-  editForm: Partial<RosterRow> = {};
+  // ── Inline row editing ───────────────────────────────────
+  rowEdit = new InlineEdit<RosterRow>();
 
-  openEdit(row: RosterRow): void {
-    this.editingRow = row;
-    this.editForm   = { ...row };
+  startEditRow(row: RosterRow): void {
+    this.rowEdit.start(row.id, row);
   }
-  closeEdit(): void { this.editingRow = null; this.editForm = {}; }
 
-  saveEdit(): void {
-    if (!this.editingRow) return;
-    Object.assign(this.editingRow, this.editForm);
-    this.closeEdit();
+  saveEditRow(): void {
+    if (!this.rowEdit.isOpen) return;
+    const original = this.rows.find(r => r.id === this.rowEdit.editing!.index)!;
+    Object.assign(original, this.rowEdit.form);
+    this.rowEdit.cancel();
   }
 
   trackByRosterId(_index: number, row: RosterRow): number { return row.id; }
