@@ -150,15 +150,50 @@
               </div>
             </div>
 
-          <button class="cm-gpo-header-btn cm-gpo-header-btn--disabled ms-auto d-inline-flex align-items-center text-nowrap" type="button" disabled>
-            <i class="bi bi-diagram-3-fill" aria-hidden="true"></i>
-            <span class="cm-gpo-header-btn__label">GPO Hierarchy</span>
-            <ng-container *ngIf="account.gpoL1">
-              <span class="cm-gpo-header-btn__sep">|</span>
-              <span class="cm-gpo-header-btn__l1">{{ account.gpoL1 }}</span>
-            </ng-container>
-            <i class="bi bi-chevron-down" aria-hidden="true"></i>
-          </button>
+          <div class="cm-edit-field d-flex flex-column ms-auto">
+            <label class="cm-edit-field__label text-uppercase">GPO Hierarchy</label>
+            <div class="cm-site-dropdown" [class.cm-site-dropdown--open]="gpoL1DropdownOpen" (click)="$event.stopPropagation()">
+
+              <!-- Trigger -->
+              <button type="button" class="cm-site-trigger d-flex align-items-center" (click)="openGpoL1Dropdown()">
+                <ng-container *ngIf="editingGpoPending.gpoL1">
+                  <span class="cm-site-trigger__name">{{ editingGpoPending.gpoL1 }}</span>
+                </ng-container>
+                <span *ngIf="!editingGpoPending.gpoL1" class="cm-site-trigger__placeholder">— Select GPO —</span>
+                <i class="bi bi-chevron-down cm-site-trigger__caret" aria-hidden="true"></i>
+              </button>
+
+              <!-- Panel -->
+              <div class="cm-site-dropdown__panel d-flex flex-column overflow-hidden" *ngIf="gpoL1DropdownOpen">
+                <div class="cm-site-dropdown__search d-flex align-items-center">
+                  <i class="bi bi-search cm-site-dropdown__search-icon" aria-hidden="true"></i>
+                  <input type="text"
+                    class="cm-site-dropdown__search-input cm-gpo-l1-search-input"
+                    [(ngModel)]="gpoL1SearchTerm"
+                    name="gpoL1Search"
+                    placeholder="Search GPO…"
+                    autocomplete="off">
+                </div>
+                <ul class="cm-site-dropdown__list">
+                  <li *ngIf="editingGpoPending.gpoL1"
+                    class="cm-site-dropdown__item cm-site-dropdown__item--clear"
+                    (mousedown)="selectGpoL1(null)">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> Clear
+                  </li>
+                  <li *ngFor="let l1 of filteredGpoL1Opts"
+                    class="cm-site-dropdown__item"
+                    [class.cm-site-dropdown__item--selected]="editingGpoPending.gpoL1 === l1"
+                    (mousedown)="selectGpoL1(l1)">
+                    {{ l1 }}
+                  </li>
+                  <li *ngIf="filteredGpoL1Opts.length === 0" class="cm-site-dropdown__empty">
+                    No GPOs match "{{ gpoL1SearchTerm }}"
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
           <button class="cm-name-icon-btn cm-name-icon-btn--save d-inline-flex align-items-center justify-content-center" (click)="saveEditName()" title="Save">
             <i class="bi bi-check-lg" aria-hidden="true"></i>
           </button>
@@ -183,7 +218,7 @@
                   <th class="py-2 text-nowrap">Group (L3)</th>
                   <th class="py-2 text-nowrap">Sub-Group (L4)</th>
                   <th class="py-2 text-nowrap">Practice (L5)</th>
-                  <th class="py-2 text-center px-3">Actions</th>
+                  <!-- <th class="py-2 text-center px-3">Actions</th> -->
                 </tr>
               </thead>
               <tbody>
@@ -240,33 +275,35 @@
                       </div>
                     </ng-container>
                   </td>
+                  <!-- Actions td — commented out, restore when ready
                   <td class="text-center px-3">
                     <button class="btn btn-sm btn-outline-primary px-2 py-1 d-inline-flex align-items-center gap-1"
                       (click)="startAssignGpo(account)"
                       [disabled]="editingNameAccount === account"
                       title="Assign GPO Hierarchy">
-                      <!-- ✅ Recommended: clipboard + text -->
-                      <!-- <i class="bi bi-clipboard-check" aria-hidden="true"></i> -->
+                      &lt;!&ndash; ✅ Recommended: clipboard + text &ndash;&gt;
+                      <i class="bi bi-clipboard-check" aria-hidden="true"></i> Assign
 
-                      <!-- Option 2: clipboard-check icon only -->
-                      <!-- <i class="bi bi-clipboard-check" aria-hidden="true"></i> -->
+                      &lt;!&ndash; Option 2: clipboard-check icon only &ndash;&gt;
+                      &lt;!&ndash; <i class="bi bi-clipboard-check" aria-hidden="true"></i> &ndash;&gt;
 
-                      <!-- Option 3: clipboard-check-fill (bolder) -->
-                      <!-- <i class="bi bi-clipboard-check-fill" aria-hidden="true"></i>  -->
+                      &lt;!&ndash; Option 3: clipboard-check-fill (bolder) &ndash;&gt;
+                      &lt;!&ndash; <i class="bi bi-clipboard-check-fill" aria-hidden="true"></i> Assign &ndash;&gt;
 
-                      <!-- Option 4: tag-fill (label/categorise feel) -->
-                      <!-- <i class="bi bi-tag-fill" aria-hidden="true"></i> -->
+                      &lt;!&ndash; Option 4: tag-fill (label/categorise feel) &ndash;&gt;
+                      &lt;!&ndash; <i class="bi bi-tag-fill" aria-hidden="true"></i> Assign &ndash;&gt;
 
-                      <!-- Option 5: person-check (assign-to-account feel) -->
-                      <!-- <i class="bi bi-person-check" aria-hidden="true"></i> -->
+                      &lt;!&ndash; Option 5: person-check (assign-to-account feel) &ndash;&gt;
+                      &lt;!&ndash; <i class="bi bi-person-check" aria-hidden="true"></i> Assign &ndash;&gt;
 
-                      <!-- Option 6: patch-check (badge approval feel) -->
-                      <!-- <i class="bi bi-patch-check" aria-hidden="true"></i> Assign -->
+                      &lt;!&ndash; Option 6: patch-check (badge approval feel) &ndash;&gt;
+                      &lt;!&ndash; <i class="bi bi-patch-check" aria-hidden="true"></i> Assign &ndash;&gt;
 
-                      <!-- Option 7: box-arrow-in-right (bring-in / import feel) -->
-                      <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                      &lt;!&ndash; Option 7: box-arrow-in-right (bring-in / import feel) &ndash;&gt;
+                      &lt;!&ndash; <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Assign &ndash;&gt;
                     </button>
                   </td>
+                  -->
                 </tr>
 
                 <!-- Assign row: cascading dropdowns driven by signals + computed options -->
@@ -310,6 +347,7 @@
                       <option *ngFor="let opt of gpoL5Opts()" [value]="opt">{{ opt }}</option>
                     </select>
                   </td>
+                  <!-- Assign actions td — commented out, restore when ready
                   <td class="cm-action-cell text-nowrap text-center px-3">
                     <button class="cm-row-btn cm-row-btn--save d-inline-flex align-items-center justify-content-center"
                       (click)="saveAssignGpo()" [disabled]="!gpoL1Sel()" title="Save">
@@ -320,6 +358,7 @@
                       <i class="bi bi-x-lg" aria-hidden="true"></i>
                     </button>
                   </td>
+                  -->
                 </tr>
 
               </tbody>
@@ -332,11 +371,13 @@
           <p class="cm-empty-section">No GPO hierarchy linked to this master.</p>
         </ng-container>
 
+        <!-- Assign GPO add-button — commented out, restore when Actions column is re-enabled
         <div class="cm-inline-add-bar" *ngIf="!account.gpoL1 && assigningGpoAccount !== account">
           <button class="cm-text-add-btn cm-text-add-btn--gpo d-inline-flex align-items-center" (click)="startAssignGpo(account)" type="button">
             <i class="bi bi-plus-lg" aria-hidden="true"></i> Assign GPO Hierarchy
           </button>
         </div>
+        -->
 
       </div>
 

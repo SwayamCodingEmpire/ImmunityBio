@@ -39,6 +39,16 @@ export interface MasterAccount {
   accredoAccounts: AccredoAccount[];
 }
 
+function emptyGpoMasterRow(): GpoMasterRow {
+  return {
+    gpoL1: '', gpoL1Start: '', gpoL1End: '',
+    gpoL2: '', gpoL2Start: '', gpoL2End: '',
+    gpoL3: '', gpoL3Start: '', gpoL3End: '',
+    gpoL4: '', gpoL4Start: '', gpoL4End: '',
+    gpoL5: '', gpoL5Start: '', gpoL5End: '',
+  };
+}
+
 export interface GpoMasterRow {
   gpoL1: string; gpoL1Start: string; gpoL1End: string;
   gpoL2: string; gpoL2Start: string; gpoL2End: string;
@@ -86,6 +96,11 @@ export class CustomerMatrixComponent {
   ibSiteDropdownOpen  = false;
   ibSiteSearchTerm    = '';
 
+  // GPO L1 dropdown state (used inside master-account edit mode)
+  gpoL1DropdownOpen  = false;
+  gpoL1SearchTerm    = '';
+  editingGpoPending: GpoMasterRow = emptyGpoMasterRow();
+
   get filteredIbSites(): IbCareSite[] {
     const q = this.ibSiteSearchTerm.trim().toLowerCase();
     return !q ? this.ibCareSites : this.ibCareSites.filter(
@@ -93,9 +108,16 @@ export class CustomerMatrixComponent {
     );
   }
 
+  get filteredGpoL1Opts(): string[] {
+    const q = this.gpoL1SearchTerm.trim().toLowerCase();
+    const opts = this.gpoL1Options();
+    return !q ? opts : opts.filter(l1 => l1.toLowerCase().includes(q));
+  }
+
   @HostListener('document:click')
   onDocumentClick(): void {
     this.ibSiteDropdownOpen = false;
+    this.gpoL1DropdownOpen  = false;
   }
 
   openIbSiteDropdown(): void {
@@ -109,6 +131,31 @@ export class CustomerMatrixComponent {
     setTimeout(() => {
       (document.querySelector('.cm-site-dropdown__search-input') as HTMLInputElement)?.focus();
     }, 30);
+  }
+
+  openGpoL1Dropdown(): void {
+    if (this.gpoL1DropdownOpen) {
+      this.gpoL1DropdownOpen = false;
+      this.gpoL1SearchTerm   = '';
+      return;
+    }
+    this.gpoL1DropdownOpen = true;
+    this.gpoL1SearchTerm   = '';
+    setTimeout(() => {
+      (document.querySelector('.cm-gpo-l1-search-input') as HTMLInputElement)?.focus();
+    }, 30);
+  }
+
+  selectGpoL1(l1: string | null): void {
+    if (!l1) {
+      this.editingGpoPending = emptyGpoMasterRow();
+    } else {
+      const match = this.gpoMasterRows.find(r => r.gpoL1 === l1);
+      this.editingGpoPending = match ? { ...match } : { ...emptyGpoMasterRow(), gpoL1: l1 };
+    }
+    this.gpoL1DropdownOpen = false;
+    this.gpoL1SearchTerm   = '';
+    event?.stopPropagation();
   }
 
   selectIbSite(site: IbCareSite | null): void {
@@ -537,6 +584,13 @@ export class CustomerMatrixComponent {
     this.editingNameValue    = account.masterAccountName;
     this.editingAccountType  = account.accountType;
     this.editingIbSiteValue  = this.ibCareSiteDisplay(account);
+    this.editingGpoPending   = {
+      gpoL1: account.gpoL1, gpoL1Start: account.gpoL1Start, gpoL1End: account.gpoL1End,
+      gpoL2: account.gpoL2, gpoL2Start: account.gpoL2Start, gpoL2End: account.gpoL2End,
+      gpoL3: account.gpoL3, gpoL3Start: account.gpoL3Start, gpoL3End: account.gpoL3End,
+      gpoL4: account.gpoL4, gpoL4Start: account.gpoL4Start, gpoL4End: account.gpoL4End,
+      gpoL5: account.gpoL5, gpoL5Start: account.gpoL5Start, gpoL5End: account.gpoL5End,
+    };
   }
 
   saveEditName(): void {
@@ -544,11 +598,20 @@ export class CustomerMatrixComponent {
       this.editingNameAccount.masterAccountName = this.editingNameValue.trim();
       this.editingNameAccount.accountType       = this.editingAccountType;
       this.applyIbSiteToAccount(this.editingNameAccount);
+      const a = this.editingNameAccount;
+      a.gpoL1 = this.editingGpoPending.gpoL1; a.gpoL1Start = this.editingGpoPending.gpoL1Start; a.gpoL1End = this.editingGpoPending.gpoL1End;
+      a.gpoL2 = this.editingGpoPending.gpoL2; a.gpoL2Start = this.editingGpoPending.gpoL2Start; a.gpoL2End = this.editingGpoPending.gpoL2End;
+      a.gpoL3 = this.editingGpoPending.gpoL3; a.gpoL3Start = this.editingGpoPending.gpoL3Start; a.gpoL3End = this.editingGpoPending.gpoL3End;
+      a.gpoL4 = this.editingGpoPending.gpoL4; a.gpoL4Start = this.editingGpoPending.gpoL4Start; a.gpoL4End = this.editingGpoPending.gpoL4End;
+      a.gpoL5 = this.editingGpoPending.gpoL5; a.gpoL5Start = this.editingGpoPending.gpoL5Start; a.gpoL5End = this.editingGpoPending.gpoL5End;
     }
     this.editingNameAccount = null;
     this.editingNameValue   = '';
     this.editingAccountType = '';
     this.editingIbSiteValue = '';
+    this.editingGpoPending  = emptyGpoMasterRow();
+    this.gpoL1DropdownOpen  = false;
+    this.gpoL1SearchTerm    = '';
   }
 
   cancelEditName(): void {
@@ -556,6 +619,9 @@ export class CustomerMatrixComponent {
     this.editingNameValue   = '';
     this.editingAccountType = '';
     this.editingIbSiteValue = '';
+    this.editingGpoPending  = emptyGpoMasterRow();
+    this.gpoL1DropdownOpen  = false;
+    this.gpoL1SearchTerm    = '';
   }
 
   // ── GPO level active/inactive ─────────────────────────────────
