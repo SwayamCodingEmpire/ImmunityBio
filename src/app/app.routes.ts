@@ -7,15 +7,16 @@ import { RosterPlacementComponent } from './pages/roster-placement/roster-placem
 import { UsersComponent } from './pages/users/users.component';
 import { CustomerMatrixComponent } from './pages/customer-matrix/customer-matrix.component';
 import { LoginComponent } from './pages/login/login.component';
+import { authGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'order-management', component: OrderManagementComponent },
-  { path: 'patient-enrollment', component: PatientEnrollmentComponent },
-  { path: 'gpo', component: GpoComponent },
-  { path: 'customer-matrix', component: CustomerMatrixComponent },
-  { path: 'zip-to-territory', component: ZipToTerritoryComponent },
-  { path: 'roster-placement', component: RosterPlacementComponent },
-  { path: 'users', component: UsersComponent },
+  { path: 'order-management', component: OrderManagementComponent, canActivate: [authGuard] },
+  { path: 'patient-enrollment', component: PatientEnrollmentComponent, canActivate: [authGuard] },
+  { path: 'gpo', component: GpoComponent, canActivate: [authGuard] },
+  { path: 'customer-matrix', component: CustomerMatrixComponent, canActivate: [authGuard] },
+  { path: 'zip-to-territory', component: ZipToTerritoryComponent, canActivate: [authGuard] },
+  { path: 'roster-placement', component: RosterPlacementComponent, canActivate: [authGuard] },
+  { path: 'users', component: UsersComponent, canActivate: [authGuard] },
 ];
