@@ -108,10 +108,23 @@ export class CustomerMatrixComponent {
     );
   }
 
-  get filteredGpoL1Opts(): string[] {
+  get filteredGpoRows(): GpoMasterRow[] {
     const q = this.gpoL1SearchTerm.trim().toLowerCase();
-    const opts = this.gpoL1Options();
-    return !q ? opts : opts.filter(l1 => l1.toLowerCase().includes(q));
+    if (!q) return this.gpoMasterRows;
+    return this.gpoMasterRows.filter(r =>
+      [r.gpoL1, r.gpoL2, r.gpoL3, r.gpoL4, r.gpoL5].some(v => v.toLowerCase().includes(q))
+    );
+  }
+
+  gpoRowSublevels(row: GpoMasterRow): string {
+    return [row.gpoL2, row.gpoL3, row.gpoL4, row.gpoL5]
+      .filter(Boolean).join(' › ');
+  }
+
+  isGpoRowSelected(row: GpoMasterRow): boolean {
+    const p = this.editingGpoPending;
+    return p.gpoL1 === row.gpoL1 && p.gpoL2 === row.gpoL2 &&
+           p.gpoL3 === row.gpoL3 && p.gpoL4 === row.gpoL4 && p.gpoL5 === row.gpoL5;
   }
 
   @HostListener('document:click')
@@ -146,13 +159,8 @@ export class CustomerMatrixComponent {
     }, 30);
   }
 
-  selectGpoL1(l1: string | null): void {
-    if (!l1) {
-      this.editingGpoPending = emptyGpoMasterRow();
-    } else {
-      const match = this.gpoMasterRows.find(r => r.gpoL1 === l1);
-      this.editingGpoPending = match ? { ...match } : { ...emptyGpoMasterRow(), gpoL1: l1 };
-    }
+  selectGpoRow(row: GpoMasterRow | null): void {
+    this.editingGpoPending = row ? { ...row } : emptyGpoMasterRow();
     this.gpoL1DropdownOpen = false;
     this.gpoL1SearchTerm   = '';
     event?.stopPropagation();

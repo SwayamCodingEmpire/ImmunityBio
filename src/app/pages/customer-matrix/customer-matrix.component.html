@@ -177,16 +177,19 @@
                 <ul class="cm-site-dropdown__list">
                   <li *ngIf="editingGpoPending.gpoL1"
                     class="cm-site-dropdown__item cm-site-dropdown__item--clear"
-                    (mousedown)="selectGpoL1(null)">
+                    (mousedown)="selectGpoRow(null)">
                     <i class="bi bi-x-circle" aria-hidden="true"></i> Clear
                   </li>
-                  <li *ngFor="let l1 of filteredGpoL1Opts"
-                    class="cm-site-dropdown__item"
-                    [class.cm-site-dropdown__item--selected]="editingGpoPending.gpoL1 === l1"
-                    (mousedown)="selectGpoL1(l1)">
-                    {{ l1 }}
+                  <li *ngFor="let row of filteredGpoRows"
+                    class="cm-site-dropdown__item d-flex flex-column"
+                    [class.cm-site-dropdown__item--selected]="isGpoRowSelected(row)"
+                    (mousedown)="selectGpoRow(row)">
+                    <span class="fw-semibold">{{ row.gpoL1 }}</span>
+                    <span *ngIf="gpoRowSublevels(row)" class="text-muted" style="font-size:.7rem">
+                      {{ gpoRowSublevels(row) }}
+                    </span>
                   </li>
-                  <li *ngIf="filteredGpoL1Opts.length === 0" class="cm-site-dropdown__empty">
+                  <li *ngIf="filteredGpoRows.length === 0" class="cm-site-dropdown__empty">
                     No GPOs match "{{ gpoL1SearchTerm }}"
                   </li>
                 </ul>
