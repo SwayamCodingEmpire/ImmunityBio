@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { InlineEdit } from '../../shared/inline-edit';
 
 interface ZipHistory {
   territoryId: string;
@@ -37,8 +38,7 @@ export class ZipToTerritoryComponent {
   pendingZip = '';
   pendingTerritory = '';
 
-  editingRow: ZipRow | null = null;
-  editForm: Partial<ZipRow> = {};
+  rowEdit = new InlineEdit<ZipRow>();
 
   private expandedZips = new Set<string>();
 
@@ -141,19 +141,14 @@ export class ZipToTerritoryComponent {
   trackByMdoZip(_index: number, row: ZipRow): string { return row.mdoZip; }
   trackByHistoryTerrId(_index: number, h: ZipHistory): string { return h.territoryId + h.startDate; }
 
-  openEdit(row: ZipRow): void {
-    this.editingRow = row;
-    this.editForm = { ...row };
+  startEditRow(row: ZipRow): void {
+    this.rowEdit.start(row.mdoZip, row);
   }
 
-  closeEdit(): void {
-    this.editingRow = null;
-    this.editForm = {};
-  }
-
-  saveEdit(): void {
-    if (!this.editingRow) return;
-    Object.assign(this.editingRow, this.editForm);
-    this.closeEdit();
+  saveEditRow(): void {
+    if (!this.rowEdit.isOpen) return;
+    const original = this.rows.find(r => r.mdoZip === this.rowEdit.editing!.key)!;
+    Object.assign(original, this.rowEdit.form);
+    this.rowEdit.cancel();
   }
 }

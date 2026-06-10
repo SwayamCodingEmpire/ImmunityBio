@@ -142,18 +142,20 @@
             </td>
             <td class="px-3 text-end text-nowrap">
               <!-- Shipment Issue Flag (#7) -->
-              <!-- <span class="om-tooltip-wrap" [attr.data-tip]="order.shipmentIssueFlag ? 'Issue: ' + order.shipmentIssueStatus : 'Flag Shipment Issue'">
+              <span class="om-tooltip-wrap" [attr.data-tip]="order.shipmentIssueFlag ? 'Issue: ' + order.shipmentIssueStatus : 'Flag Shipment Issue'">
                 <button class="ib-icon-btn me-1 om-issue-btn"
                   [class.om-issue-btn--active]="order.shipmentIssueFlag"
                   (click)="openIssueFlagModal(order)">
                   <i class="bi" [class.bi-flag-fill]="order.shipmentIssueFlag" [class.bi-flag]="!order.shipmentIssueFlag" aria-hidden="true"></i>
                 </button>
-              </span> -->
+              </span>
+              <!-- Track Shipment button — commented out
               <span class="om-tooltip-wrap" data-tip="Track Shipment">
                 <button class="ib-icon-btn me-1" aria-label="Track shipment" (click)="openTrackModal(order)">
                   <i class="bi bi-truck" aria-hidden="true"></i>
                 </button>
               </span>
+              -->
               <span class="om-tooltip-wrap" data-tip="Edit Order">
                 <button class="ib-icon-btn me-1" aria-label="Edit order" (click)="openEditModal(order)">
                   <i class="bi bi-pencil" aria-hidden="true"></i>
@@ -340,18 +342,18 @@
       <div class="om-v-timeline d-flex flex-column">
         <div *ngFor="let step of trackingSteps; let last = last; let i = index; trackBy: trackByIndex"
           class="om-v-timeline__item"
-          [class.om-v-timeline__item--completed]="step.state === 'completed' && !getStepFlag(trackingOrder.id, i)"
-          [class.om-v-timeline__item--current]="step.state === 'current' && !getStepFlag(trackingOrder.id, i)"
-          [class.om-v-timeline__item--issue]="step.state === 'issue' || !!getStepFlag(trackingOrder.id, i)"
-          [class.om-v-timeline__item--upcoming]="step.state === 'upcoming' && !getStepFlag(trackingOrder.id, i)"
+          [class.om-v-timeline__item--completed]="step.state === 'completed'"
+          [class.om-v-timeline__item--current]="step.state === 'current'"
+          [class.om-v-timeline__item--issue]="step.state === 'issue'"
+          [class.om-v-timeline__item--upcoming]="step.state === 'upcoming'"
           [class.om-v-timeline__item--last]="last">
 
           <div class="om-v-timeline__marker">
             <i class="bi"
-              [class.bi-check-lg]="step.state === 'completed' && !getStepFlag(trackingOrder.id, i)"
-              [class.bi-arrow-right]="step.state === 'current' && !getStepFlag(trackingOrder.id, i)"
-              [class.bi-exclamation-lg]="step.state === 'issue' || !!getStepFlag(trackingOrder.id, i)"
-              [class.bi-circle]="step.state === 'upcoming' && !getStepFlag(trackingOrder.id, i)" aria-hidden="true"></i>
+              [class.bi-check-lg]="step.state === 'completed'"
+              [class.bi-arrow-right]="step.state === 'current'"
+              [class.bi-exclamation-lg]="step.state === 'issue'"
+              [class.bi-circle]="step.state === 'upcoming'" aria-hidden="true"></i>
           </div>
 
           <div class="om-v-timeline__body">
@@ -360,63 +362,6 @@
               <span class="om-v-timeline__date fw-semibold text-nowrap">{{ step.date }}</span>
             </div>
             <p class="om-v-timeline__detail mb-0">{{ step.detail }}</p>
-
-            <!-- Flagged — collapsed display -->
-            <div *ngIf="getStepFlag(trackingOrder.id, i) && flaggingKey !== getFlagKey(trackingOrder.id, i)"
-                 class="om-step-flag-badge mt-2">
-              <span class="om-step-flag-badge__status">
-                <i class="bi bi-flag-fill me-1" aria-hidden="true"></i>{{ getStepFlag(trackingOrder.id, i)!.status }}
-              </span>
-              <span *ngIf="getStepFlag(trackingOrder.id, i)!.notes" class="om-step-flag-badge__notes">
-                "{{ getStepFlag(trackingOrder.id, i)!.notes }}"
-              </span>
-              <div class="om-step-flag-badge__actions d-flex">
-                <button class="om-flag-action-btn om-flag-action-btn--clear" (click)="clearFlag(trackingOrder.id, i)">
-                  <i class="bi bi-x me-1" aria-hidden="true"></i>Clear
-                </button>
-              </div>
-            </div>
-
-            <!-- Flag icon button — bottom right -->
-            <div *ngIf="flaggingKey !== getFlagKey(trackingOrder.id, i)" class="d-flex justify-content-end mt-1">
-              <button class="om-flag-trigger-btn"
-                [class.om-flag-trigger-btn--active]="!!getStepFlag(trackingOrder.id, i)"
-                (click)="openFlagForm(trackingOrder.id, i)"
-                [title]="getStepFlag(trackingOrder.id, i) ? 'Edit flag' : 'Flag issue'">
-                <i class="bi"
-                  [class.bi-flag-fill]="!!getStepFlag(trackingOrder.id, i)"
-                  [class.bi-flag]="!getStepFlag(trackingOrder.id, i)" aria-hidden="true"></i>
-              </button>
-            </div>
-
-            <!-- Inline flag form -->
-            <div *ngIf="flaggingKey === getFlagKey(trackingOrder.id, i)" class="om-flag-form mt-2">
-              <div class="om-flag-form__header">
-                <i class="bi bi-flag-fill me-1" aria-hidden="true"></i>Flag Issue
-              </div>
-              <div class="om-flag-form__body">
-                <div class="mb-2">
-                  <label class="om-flag-form__label">Issue Status</label>
-                  <select class="form-select form-select-sm" [(ngModel)]="flagForm.status" [name]="'flagStatus' + i">
-                    <option value="">Select status…</option>
-                    <option *ngFor="let opt of issueStatusOptions; trackBy: trackByIndex" [value]="opt">{{ opt }}</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label class="om-flag-form__label">Notes</label>
-                  <textarea class="form-control form-control-sm" rows="2"
-                    [(ngModel)]="flagForm.notes" [name]="'flagNotes' + i"
-                    placeholder="Describe the issue…"></textarea>
-                </div>
-                <div class="d-flex gap-2 justify-content-end">
-                  <button class="btn btn-sm ib-btn-secondary" (click)="closeFlagForm()">Cancel</button>
-                  <button class="btn btn-sm om-flag-save-btn" [disabled]="!flagForm.status"
-                    (click)="saveFlagForm(trackingOrder.id, i)">
-                    Save
-                  </button>
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>

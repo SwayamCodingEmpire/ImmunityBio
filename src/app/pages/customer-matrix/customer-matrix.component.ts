@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -37,6 +37,24 @@ export interface MasterAccount {
   gpoL5: string; gpoL5Start: string; gpoL5End: string;
   icsAccounts: IcsAccount[];
   accredoAccounts: AccredoAccount[];
+}
+
+function emptyGpoMasterRow(): GpoMasterRow {
+  return {
+    gpoL1: '', gpoL1Start: '', gpoL1End: '',
+    gpoL2: '', gpoL2Start: '', gpoL2End: '',
+    gpoL3: '', gpoL3Start: '', gpoL3End: '',
+    gpoL4: '', gpoL4Start: '', gpoL4End: '',
+    gpoL5: '', gpoL5Start: '', gpoL5End: '',
+  };
+}
+
+export interface GpoMasterRow {
+  gpoL1: string; gpoL1Start: string; gpoL1End: string;
+  gpoL2: string; gpoL2Start: string; gpoL2End: string;
+  gpoL3: string; gpoL3Start: string; gpoL3End: string;
+  gpoL4: string; gpoL4Start: string; gpoL4End: string;
+  gpoL5: string; gpoL5Start: string; gpoL5End: string;
 }
 
 function emptyIcs(): IcsAccount {
@@ -78,6 +96,11 @@ export class CustomerMatrixComponent {
   ibSiteDropdownOpen  = false;
   ibSiteSearchTerm    = '';
 
+  // GPO L1 dropdown state (used inside master-account edit mode)
+  gpoL1DropdownOpen  = false;
+  gpoL1SearchTerm    = '';
+  editingGpoPending: GpoMasterRow = emptyGpoMasterRow();
+
   get filteredIbSites(): IbCareSite[] {
     const q = this.ibSiteSearchTerm.trim().toLowerCase();
     return !q ? this.ibCareSites : this.ibCareSites.filter(
@@ -85,9 +108,29 @@ export class CustomerMatrixComponent {
     );
   }
 
+  get filteredGpoRows(): GpoMasterRow[] {
+    const q = this.gpoL1SearchTerm.trim().toLowerCase();
+    if (!q) return this.gpoMasterRows;
+    return this.gpoMasterRows.filter(r =>
+      [r.gpoL1, r.gpoL2, r.gpoL3, r.gpoL4, r.gpoL5].some(v => v.toLowerCase().includes(q))
+    );
+  }
+
+  gpoRowSublevels(row: GpoMasterRow): string {
+    return [row.gpoL2, row.gpoL3, row.gpoL4, row.gpoL5]
+      .filter(Boolean).join(' › ');
+  }
+
+  isGpoRowSelected(row: GpoMasterRow): boolean {
+    const p = this.editingGpoPending;
+    return p.gpoL1 === row.gpoL1 && p.gpoL2 === row.gpoL2 &&
+           p.gpoL3 === row.gpoL3 && p.gpoL4 === row.gpoL4 && p.gpoL5 === row.gpoL5;
+  }
+
   @HostListener('document:click')
   onDocumentClick(): void {
     this.ibSiteDropdownOpen = false;
+    this.gpoL1DropdownOpen  = false;
   }
 
   openIbSiteDropdown(): void {
@@ -101,6 +144,26 @@ export class CustomerMatrixComponent {
     setTimeout(() => {
       (document.querySelector('.cm-site-dropdown__search-input') as HTMLInputElement)?.focus();
     }, 30);
+  }
+
+  openGpoL1Dropdown(): void {
+    if (this.gpoL1DropdownOpen) {
+      this.gpoL1DropdownOpen = false;
+      this.gpoL1SearchTerm   = '';
+      return;
+    }
+    this.gpoL1DropdownOpen = true;
+    this.gpoL1SearchTerm   = '';
+    setTimeout(() => {
+      (document.querySelector('.cm-gpo-l1-search-input') as HTMLInputElement)?.focus();
+    }, 30);
+  }
+
+  selectGpoRow(row: GpoMasterRow | null): void {
+    this.editingGpoPending = row ? { ...row } : emptyGpoMasterRow();
+    this.gpoL1DropdownOpen = false;
+    this.gpoL1SearchTerm   = '';
+    event?.stopPropagation();
   }
 
   selectIbSite(site: IbCareSite | null): void {
@@ -126,15 +189,90 @@ export class CustomerMatrixComponent {
   editingNameValue = '';
   editingAccountType: 'Community' | 'Hospital' | 'Academic' | '' = '';
 
-  // GPO hierarchy modal editing
-  editingGpoAccount: MasterAccount | null = null;
-  editingGpoForm = {
-    gpoL1: '', gpoL1Start: '', gpoL1End: '',
-    gpoL2: '', gpoL2Start: '', gpoL2End: '',
-    gpoL3: '', gpoL3Start: '', gpoL3End: '',
-    gpoL4: '', gpoL4Start: '', gpoL4End: '',
-    gpoL5: '', gpoL5Start: '', gpoL5End: '',
-  };
+  // GPO hierarchy inline assign — signal-based
+  assigningGpoAccount: MasterAccount | null = null;
+
+  readonly gpoL1Sel = signal('');
+  readonly gpoL2Sel = signal('');
+  readonly gpoL3Sel = signal('');
+  readonly gpoL4Sel = signal('');
+  readonly gpoL5Sel = signal('');
+
+  // GPO Hierarchy Master data (source of truth for cascading options)
+  readonly gpoMasterRows: GpoMasterRow[] = [
+    {
+      gpoL1: 'Cornerstone',         gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'Urology Management Alliance (UMA)', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Minnesota Urology',   gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: '',                    gpoL4Start: '',            gpoL4End: '',
+      gpoL5: '',                    gpoL5Start: '',            gpoL5End: '',
+    },
+    {
+      gpoL1: 'UroGPO',              gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'US Urology Partners', gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Associated Medical Professionals', gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: '',                    gpoL4Start: '',            gpoL4End: '',
+      gpoL5: '',                    gpoL5Start: '',            gpoL5End: '',
+    },
+    {
+      gpoL1: 'Cencora GPO',         gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'OneOncology',         gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'United Urology Grp',  gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'Colorado Urology',    gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: 'Advanced Urology Pllc', gpoL5Start: '2025-01-01', gpoL5End: '',
+    },
+    {
+      gpoL1: 'UroGPO',              gpoL1Start: '2025-01-01', gpoL1End: '',
+      gpoL2: 'Urology Alliance',    gpoL2Start: '2025-01-01', gpoL2End: '',
+      gpoL3: 'Solaris',             gpoL3Start: '2025-01-01', gpoL3End: '',
+      gpoL4: 'Anne Arundel Urology', gpoL4Start: '2025-01-01', gpoL4End: '',
+      gpoL5: '',                    gpoL5Start: '',            gpoL5End: '',
+    },
+    {
+      gpoL1: 'UroGPO',              gpoL1Start: '2024-01-01', gpoL1End: '',
+      gpoL2: 'Urology Management Alliance (UMA)', gpoL2Start: '2024-01-01', gpoL2End: '',
+      gpoL3: 'Georgia Urology',     gpoL3Start: '2024-01-01', gpoL3End: '2025-12-31',
+      gpoL4: '',                    gpoL4Start: '',            gpoL4End: '',
+      gpoL5: '',                    gpoL5Start: '',            gpoL5End: '',
+    },
+  ];
+
+  // Computed options — auto-re-derive when upstream signals change
+  readonly gpoL1Options = computed(() =>
+    [...new Set(this.gpoMasterRows.map(r => r.gpoL1).filter(Boolean))]
+  );
+
+  readonly gpoL2Opts = computed(() =>
+    [...new Set(
+      this.gpoMasterRows
+        .filter(r => r.gpoL1 === this.gpoL1Sel())
+        .map(r => r.gpoL2).filter(Boolean)
+    )]
+  );
+
+  readonly gpoL3Opts = computed(() =>
+    [...new Set(
+      this.gpoMasterRows
+        .filter(r => r.gpoL1 === this.gpoL1Sel() && r.gpoL2 === this.gpoL2Sel())
+        .map(r => r.gpoL3).filter(Boolean)
+    )]
+  );
+
+  readonly gpoL4Opts = computed(() =>
+    [...new Set(
+      this.gpoMasterRows
+        .filter(r => r.gpoL1 === this.gpoL1Sel() && r.gpoL2 === this.gpoL2Sel() && r.gpoL3 === this.gpoL3Sel())
+        .map(r => r.gpoL4).filter(Boolean)
+    )]
+  );
+
+  readonly gpoL5Opts = computed(() =>
+    [...new Set(
+      this.gpoMasterRows
+        .filter(r => r.gpoL1 === this.gpoL1Sel() && r.gpoL2 === this.gpoL2Sel() && r.gpoL3 === this.gpoL3Sel() && r.gpoL4 === this.gpoL4Sel())
+        .map(r => r.gpoL5).filter(Boolean)
+    )]
+  );
 
   // Inline row editing
   editingIcsRow: { account: MasterAccount; index: number; form: IcsAccount } | null = null;
@@ -454,37 +592,7 @@ export class CustomerMatrixComponent {
     this.editingNameValue    = account.masterAccountName;
     this.editingAccountType  = account.accountType;
     this.editingIbSiteValue  = this.ibCareSiteDisplay(account);
-  }
-
-  saveEditName(): void {
-    if (this.editingNameAccount && this.editingNameValue.trim()) {
-      this.editingNameAccount.masterAccountName = this.editingNameValue.trim();
-      this.editingNameAccount.accountType       = this.editingAccountType;
-      this.applyIbSiteToAccount(this.editingNameAccount);
-    }
-    this.editingNameAccount = null;
-    this.editingNameValue   = '';
-    this.editingAccountType = '';
-    this.editingIbSiteValue = '';
-  }
-
-  cancelEditName(): void {
-    this.editingNameAccount = null;
-    this.editingNameValue   = '';
-    this.editingAccountType = '';
-    this.editingIbSiteValue = '';
-  }
-
-  // ── GPO level active/inactive ─────────────────────────────────
-  isLevelActive(endDate: string): boolean {
-    if (!endDate) return true;
-    return new Date(endDate) > new Date();
-  }
-
-  // ── GPO hierarchy modal editing ──────────────────────────────
-  openGpoEdit(account: MasterAccount): void {
-    this.editingGpoAccount = account;
-    this.editingGpoForm = {
+    this.editingGpoPending   = {
       gpoL1: account.gpoL1, gpoL1Start: account.gpoL1Start, gpoL1End: account.gpoL1End,
       gpoL2: account.gpoL2, gpoL2Start: account.gpoL2Start, gpoL2End: account.gpoL2End,
       gpoL3: account.gpoL3, gpoL3Start: account.gpoL3Start, gpoL3End: account.gpoL3End,
@@ -493,14 +601,103 @@ export class CustomerMatrixComponent {
     };
   }
 
-  saveEditGpo(): void {
-    if (!this.editingGpoAccount) return;
-    Object.assign(this.editingGpoAccount, this.editingGpoForm);
-    this.editingGpoAccount = null;
+  saveEditName(): void {
+    if (this.editingNameAccount && this.editingNameValue.trim()) {
+      this.editingNameAccount.masterAccountName = this.editingNameValue.trim();
+      this.editingNameAccount.accountType       = this.editingAccountType;
+      this.applyIbSiteToAccount(this.editingNameAccount);
+      const a = this.editingNameAccount;
+      a.gpoL1 = this.editingGpoPending.gpoL1; a.gpoL1Start = this.editingGpoPending.gpoL1Start; a.gpoL1End = this.editingGpoPending.gpoL1End;
+      a.gpoL2 = this.editingGpoPending.gpoL2; a.gpoL2Start = this.editingGpoPending.gpoL2Start; a.gpoL2End = this.editingGpoPending.gpoL2End;
+      a.gpoL3 = this.editingGpoPending.gpoL3; a.gpoL3Start = this.editingGpoPending.gpoL3Start; a.gpoL3End = this.editingGpoPending.gpoL3End;
+      a.gpoL4 = this.editingGpoPending.gpoL4; a.gpoL4Start = this.editingGpoPending.gpoL4Start; a.gpoL4End = this.editingGpoPending.gpoL4End;
+      a.gpoL5 = this.editingGpoPending.gpoL5; a.gpoL5Start = this.editingGpoPending.gpoL5Start; a.gpoL5End = this.editingGpoPending.gpoL5End;
+    }
+    this.editingNameAccount = null;
+    this.editingNameValue   = '';
+    this.editingAccountType = '';
+    this.editingIbSiteValue = '';
+    this.editingGpoPending  = emptyGpoMasterRow();
+    this.gpoL1DropdownOpen  = false;
+    this.gpoL1SearchTerm    = '';
   }
 
-  cancelEditGpo(): void {
-    this.editingGpoAccount = null;
+  cancelEditName(): void {
+    this.editingNameAccount = null;
+    this.editingNameValue   = '';
+    this.editingAccountType = '';
+    this.editingIbSiteValue = '';
+    this.editingGpoPending  = emptyGpoMasterRow();
+    this.gpoL1DropdownOpen  = false;
+    this.gpoL1SearchTerm    = '';
+  }
+
+  // ── GPO level active/inactive ─────────────────────────────────
+  isLevelActive(endDate: string): boolean {
+    if (!endDate) return true;
+    return new Date(endDate) > new Date();
+  }
+
+  // ── GPO hierarchy inline assign ───────────────────────────────
+  startAssignGpo(account: MasterAccount): void {
+    this.assigningGpoAccount = account;
+    this.gpoL1Sel.set(account.gpoL1);
+    this.gpoL2Sel.set(account.gpoL2);
+    this.gpoL3Sel.set(account.gpoL3);
+    this.gpoL4Sel.set(account.gpoL4);
+    this.gpoL5Sel.set(account.gpoL5);
+  }
+
+  setGpoL1(val: string): void {
+    this.gpoL1Sel.set(val);
+    this.gpoL2Sel.set('');
+    this.gpoL3Sel.set('');
+    this.gpoL4Sel.set('');
+    this.gpoL5Sel.set('');
+  }
+
+  setGpoL2(val: string): void {
+    this.gpoL2Sel.set(val);
+    this.gpoL3Sel.set('');
+    this.gpoL4Sel.set('');
+    this.gpoL5Sel.set('');
+  }
+
+  setGpoL3(val: string): void {
+    this.gpoL3Sel.set(val);
+    this.gpoL4Sel.set('');
+    this.gpoL5Sel.set('');
+  }
+
+  setGpoL4(val: string): void {
+    this.gpoL4Sel.set(val);
+    this.gpoL5Sel.set('');
+  }
+
+  saveAssignGpo(): void {
+    if (!this.assigningGpoAccount || !this.gpoL1Sel()) return;
+    const l1 = this.gpoL1Sel(), l2 = this.gpoL2Sel(), l3 = this.gpoL3Sel(),
+          l4 = this.gpoL4Sel(), l5 = this.gpoL5Sel();
+    const match = this.gpoMasterRows.find(r =>
+      r.gpoL1 === l1 &&
+      (!l2 || r.gpoL2 === l2) &&
+      (!l3 || r.gpoL3 === l3) &&
+      (!l4 || r.gpoL4 === l4) &&
+      (!l5 || r.gpoL5 === l5)
+    );
+    const a = this.assigningGpoAccount;
+    a.gpoL1 = l1; a.gpoL1Start = match?.gpoL1Start ?? ''; a.gpoL1End = match?.gpoL1End ?? '';
+    a.gpoL2 = l2; a.gpoL2Start = match?.gpoL2Start ?? ''; a.gpoL2End = match?.gpoL2End ?? '';
+    a.gpoL3 = l3; a.gpoL3Start = match?.gpoL3Start ?? ''; a.gpoL3End = match?.gpoL3End ?? '';
+    a.gpoL4 = l4; a.gpoL4Start = match?.gpoL4Start ?? ''; a.gpoL4End = match?.gpoL4End ?? '';
+    a.gpoL5 = l5; a.gpoL5Start = match?.gpoL5Start ?? ''; a.gpoL5End = match?.gpoL5End ?? '';
+    this.cancelAssignGpo();
+  }
+
+  cancelAssignGpo(): void {
+    this.assigningGpoAccount = null;
+    this.gpoL1Sel.set(''); this.gpoL2Sel.set('');
+    this.gpoL3Sel.set(''); this.gpoL4Sel.set(''); this.gpoL5Sel.set('');
   }
 
   // ── ICS row actions ───────────────────────────────────────────

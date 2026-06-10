@@ -55,10 +55,10 @@
             </tr>
           </thead>
           <tbody>
-            <ng-container *ngFor="let row of filteredRows">
+            <ng-container *ngFor="let row of filteredRows; trackBy: trackByMdoZip">
 
-              <!-- Main row -->
-              <tr [class.ztt-row-expanded]="isExpanded(row.mdoZip)">
+              <!-- View mode -->
+              <tr *ngIf="!rowEdit.isActive(row.mdoZip)" [class.ztt-row-expanded]="isExpanded(row.mdoZip)">
                 <td class="ztt-td-expand">
                   <button *ngIf="row.history.length > 0"
                     class="ztt-expand-btn"
@@ -82,8 +82,38 @@
                   </span>
                 </td>
                 <td class="text-center px-3">
-                  <button class="ib-icon-btn" title="Edit row" (click)="openEdit(row)">
+                  <button class="ib-icon-btn" title="Edit row" (click)="startEditRow(row)">
                     <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Edit mode -->
+              <tr *ngIf="rowEdit.isActive(row.mdoZip)" class="cm-row-editing">
+                <td class="ztt-td-expand">
+                  <button *ngIf="row.history.length > 0"
+                    class="ztt-expand-btn"
+                    [class.ztt-expand-btn--open]="isExpanded(row.mdoZip)"
+                    (click)="toggleHistory(row.mdoZip)"
+                    [title]="isExpanded(row.mdoZip) ? 'Hide history' : 'Show history'">
+                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                  </button>
+                </td>
+                <td class="px-3"><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.mdoZip" name="ztt_zip" autocomplete="off"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.territoryId" name="ztt_terr" maxlength="6" autocomplete="off"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.city" name="ztt_city" autocomplete="off"></td>
+                <td><input class="form-control form-control-sm cm-state-input" [(ngModel)]="rowEdit.form.state" name="ztt_state" maxlength="2" autocomplete="off"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.currTerr" name="ztt_curr" autocomplete="off"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.veevaAreaId" name="ztt_veeva" autocomplete="off"></td>
+                <td><input class="form-control form-control-sm" [(ngModel)]="rowEdit.form.tbm" name="ztt_tbm" autocomplete="off"></td>
+                <td><input type="date" class="form-control form-control-sm" [(ngModel)]="rowEdit.form.startDate" name="ztt_start"></td>
+                <td><input type="date" class="form-control form-control-sm" [(ngModel)]="rowEdit.form.endDate" name="ztt_end"></td>
+                <td class="cm-action-cell text-nowrap text-center px-3">
+                  <button class="cm-row-btn cm-row-btn--save d-inline-flex align-items-center justify-content-center" (click)="saveEditRow()" title="Save">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                  </button>
+                  <button class="cm-row-btn cm-row-btn--cancel d-inline-flex align-items-center justify-content-center" (click)="rowEdit.cancel()" title="Cancel">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
                   </button>
                 </td>
               </tr>
@@ -155,77 +185,3 @@
 </div>
 
 
-<!-- Edit Modal -->
-<div *ngIf="editingRow" class="ib-modal-overlay" (click)="closeEdit()">
-  <div role="dialog" aria-modal="true" class="ib-modal-shell ztt-modal" (click)="$event.stopPropagation()">
-
-    <div class="ib-modal-header">
-      <div class="d-flex flex-column gap-1">
-        <h5 class="ib-modal-title mb-0">Edit Mapping</h5>
-        <span class="text-muted small">ZIP {{ editingRow.mdoZip }} &mdash; {{ editingRow.city }}, {{ editingRow.state }}</span>
-      </div>
-      <button type="button" class="btn-close" (click)="closeEdit()"></button>
-    </div>
-
-    <div class="ib-modal-body">
-      <form #zttEditForm="ngForm">
-        <div class="row g-3">
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">MDO ZIP</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.mdoZip" name="mdoZip">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Territory ID</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.territoryId" name="territoryId" maxlength="6">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">City</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.city" name="city">
-          </div>
-
-          <div class="col-md-2">
-            <label class="form-label fw-bold small text-muted">State</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.state" name="state" maxlength="2">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Curr Terr</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.currTerr" name="currTerr">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Veeva Area ID</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.veevaAreaId" name="veevaAreaId">
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-muted">TBM</label>
-            <input type="text" class="form-control bg-light" [(ngModel)]="editForm.tbm" name="tbm">
-          </div>
-
-          <div class="col-12"><hr class="my-1"></div>
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">Start Date</label>
-            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.startDate" name="startDate">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label fw-bold small text-muted">End Date <span class="fw-normal text-muted">(blank = open)</span></label>
-            <input type="date" class="form-control bg-light" [(ngModel)]="editForm.endDate" name="endDate">
-          </div>
-
-        </div>
-      </form>
-    </div>
-
-    <div class="ztt-modal-footer d-flex gap-2 justify-content-end">
-      <button type="button" class="btn ib-btn-secondary" (click)="closeEdit()">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="saveEdit()">Save Changes</button>
-    </div>
-
-  </div>
-</div>
