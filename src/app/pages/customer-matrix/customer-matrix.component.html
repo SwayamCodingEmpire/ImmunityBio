@@ -171,7 +171,9 @@
 
       <!-- ── GPO Hierarchy panel (toggled from header button) ── -->
       <div class="cm-gpo-panel" *ngIf="isSectionOpen(account, 'gpo')">
-        <ng-container *ngIf="account.gpoL1; else noGpo">
+
+        <!-- Table: visible when GPO exists or user is actively assigning -->
+        <ng-container *ngIf="account.gpoL1 || assigningGpoAccount === account">
           <div class="table-responsive">
             <table class="table table-hover table-sm align-middle mb-0 ib-data-table cm-gpo-table">
               <thead class="ib-table-header">
@@ -185,7 +187,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
+
+                <!-- View row -->
+                <tr *ngIf="assigningGpoAccount !== account">
                   <td class="px-3">
                     <ng-container *ngIf="account.gpoL1">
                       <span class="ib-chip">{{ account.gpoL1 }}</span>
@@ -237,27 +241,103 @@
                     </ng-container>
                   </td>
                   <td class="text-center px-3">
-                    <button class="ib-icon-btn" (click)="openGpoEdit(account)" title="Edit GPO hierarchy"
+                    <button class="btn btn-sm btn-outline-primary px-2 py-1 d-inline-flex align-items-center gap-1"
+                      (click)="startAssignGpo(account)"
                       [disabled]="editingNameAccount === account"
-                      [class.ib-icon-btn--disabled]="editingNameAccount === account">
-                      <i class="bi bi-pencil" aria-hidden="true"></i>
+                      title="Assign GPO Hierarchy">
+                      <!-- ✅ Recommended: clipboard + text -->
+                      <!-- <i class="bi bi-clipboard-check" aria-hidden="true"></i> -->
+
+                      <!-- Option 2: clipboard-check icon only -->
+                      <!-- <i class="bi bi-clipboard-check" aria-hidden="true"></i> -->
+
+                      <!-- Option 3: clipboard-check-fill (bolder) -->
+                      <!-- <i class="bi bi-clipboard-check-fill" aria-hidden="true"></i>  -->
+
+                      <!-- Option 4: tag-fill (label/categorise feel) -->
+                      <!-- <i class="bi bi-tag-fill" aria-hidden="true"></i> -->
+
+                      <!-- Option 5: person-check (assign-to-account feel) -->
+                      <!-- <i class="bi bi-person-check" aria-hidden="true"></i> -->
+
+                      <!-- Option 6: patch-check (badge approval feel) -->
+                      <!-- <i class="bi bi-patch-check" aria-hidden="true"></i> Assign -->
+
+                      <!-- Option 7: box-arrow-in-right (bring-in / import feel) -->
+                      <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
                     </button>
                   </td>
                 </tr>
+
+                <!-- Assign row: cascading dropdowns driven by signals + computed options -->
+                <tr *ngIf="assigningGpoAccount === account" class="cm-row-editing">
+                  <td class="px-3">
+                    <select class="form-select form-select-sm"
+                      [ngModel]="gpoL1Sel()" (ngModelChange)="setGpoL1($event)" name="asgL1">
+                      <option value="">— GPO —</option>
+                      <option *ngFor="let opt of gpoL1Options()" [value]="opt">{{ opt }}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="form-select form-select-sm"
+                      [ngModel]="gpoL2Sel()" (ngModelChange)="setGpoL2($event)" name="asgL2"
+                      [disabled]="!gpoL1Sel()">
+                      <option value="">— Sub-GPO —</option>
+                      <option *ngFor="let opt of gpoL2Opts()" [value]="opt">{{ opt }}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="form-select form-select-sm"
+                      [ngModel]="gpoL3Sel()" (ngModelChange)="setGpoL3($event)" name="asgL3"
+                      [disabled]="!gpoL2Sel()">
+                      <option value="">— Group —</option>
+                      <option *ngFor="let opt of gpoL3Opts()" [value]="opt">{{ opt }}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="form-select form-select-sm"
+                      [ngModel]="gpoL4Sel()" (ngModelChange)="setGpoL4($event)" name="asgL4"
+                      [disabled]="!gpoL3Sel()">
+                      <option value="">— Sub-Group —</option>
+                      <option *ngFor="let opt of gpoL4Opts()" [value]="opt">{{ opt }}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="form-select form-select-sm"
+                      [ngModel]="gpoL5Sel()" (ngModelChange)="gpoL5Sel.set($event)" name="asgL5"
+                      [disabled]="!gpoL4Sel()">
+                      <option value="">— Practice —</option>
+                      <option *ngFor="let opt of gpoL5Opts()" [value]="opt">{{ opt }}</option>
+                    </select>
+                  </td>
+                  <td class="cm-action-cell text-nowrap text-center px-3">
+                    <button class="cm-row-btn cm-row-btn--save d-inline-flex align-items-center justify-content-center"
+                      (click)="saveAssignGpo()" [disabled]="!gpoL1Sel()" title="Save">
+                      <i class="bi bi-check-lg" aria-hidden="true"></i>
+                    </button>
+                    <button class="cm-row-btn cm-row-btn--cancel d-inline-flex align-items-center justify-content-center"
+                      (click)="cancelAssignGpo()" title="Cancel">
+                      <i class="bi bi-x-lg" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+
               </tbody>
             </table>
           </div>
         </ng-container>
 
-        <ng-template #noGpo>
+        <!-- Empty state: no GPO and not currently assigning -->
+        <ng-container *ngIf="!account.gpoL1 && assigningGpoAccount !== account">
           <p class="cm-empty-section">No GPO hierarchy linked to this master.</p>
-        </ng-template>
+        </ng-container>
 
-        <div class="cm-inline-add-bar" *ngIf="!account.gpoL1">
-          <button class="cm-text-add-btn cm-text-add-btn--gpo d-inline-flex align-items-center" (click)="openGpoEdit(account)" type="button">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add GPO Hierarchy
+        <div class="cm-inline-add-bar" *ngIf="!account.gpoL1 && assigningGpoAccount !== account">
+          <button class="cm-text-add-btn cm-text-add-btn--gpo d-inline-flex align-items-center" (click)="startAssignGpo(account)" type="button">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Assign GPO Hierarchy
           </button>
         </div>
+
       </div>
 
       <!-- ── ICS Accounts section ────────────────────────────── -->
@@ -475,174 +555,4 @@
 </div>
 
 
-<!-- ── GPO Hierarchy Edit Modal ────────────────────────────────── -->
-<div *ngIf="editingGpoAccount" class="ib-modal-overlay" (click)="cancelEditGpo()">
-  <div role="dialog" aria-modal="true" class="ib-modal-shell cm-gpo-modal d-flex flex-column" (click)="$event.stopPropagation()">
-
-    <div class="ib-modal-header">
-      <div class="d-flex flex-column gap-1">
-        <h5 class="ib-modal-title mb-0">{{ editingGpoAccount?.gpoL1 ? 'Edit' : 'Add' }} GPO Hierarchy</h5>
-        <span class="text-muted small">{{ editingGpoAccount.masterAccountName }}</span>
-      </div>
-      <button type="button" class="btn-close" (click)="cancelEditGpo()"></button>
-    </div>
-
-    <div class="ib-modal-body">
-      <form #gpoEditForm="ngForm">
-
-        <!-- L1 -->
-        <div class="cm-gpo-level-row">
-          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
-              <span class="cm-gpo-level-pill">L1</span>
-              <span class="cm-gpo-level-title fw-bold text-uppercase">GPO</span>
-            </div>
-            <span class="cm-gpo-status-pill"
-              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL1End)"
-              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL1End)">
-              ● {{ isLevelActive(editingGpoForm.gpoL1End) ? 'ACTIVE' : 'INACTIVE' }}
-            </span>
-          </div>
-          <div class="row g-3">
-            <div class="col-6">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
-              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL1" name="gpoL1" autocomplete="off">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL1Start" name="gpoL1Start">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL1End" name="gpoL1End">
-            </div>
-          </div>
-        </div>
-
-        <!-- L2 -->
-        <div class="cm-gpo-level-row">
-          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
-              <span class="cm-gpo-level-pill cm-gpo-level-pill--l2">L2</span>
-              <span class="cm-gpo-level-title fw-bold text-uppercase">SUB-GPO (NETWORK)</span>
-            </div>
-            <span class="cm-gpo-status-pill"
-              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL2End)"
-              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL2End)">
-              ● {{ isLevelActive(editingGpoForm.gpoL2End) ? 'ACTIVE' : 'INACTIVE' }}
-            </span>
-          </div>
-          <div class="row g-3">
-            <div class="col-6">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
-              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL2" name="gpoL2" autocomplete="off">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL2Start" name="gpoL2Start">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL2End" name="gpoL2End">
-            </div>
-          </div>
-        </div>
-
-        <!-- L3 -->
-        <div class="cm-gpo-level-row">
-          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
-              <span class="cm-gpo-level-pill cm-gpo-level-pill--l3">L3</span>
-              <span class="cm-gpo-level-title fw-bold text-uppercase">GROUP</span>
-            </div>
-            <span class="cm-gpo-status-pill"
-              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL3End)"
-              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL3End)">
-              ● {{ isLevelActive(editingGpoForm.gpoL3End) ? 'ACTIVE' : 'INACTIVE' }}
-            </span>
-          </div>
-          <div class="row g-3">
-            <div class="col-6">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
-              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL3" name="gpoL3" autocomplete="off">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL3Start" name="gpoL3Start">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL3End" name="gpoL3End">
-            </div>
-          </div>
-        </div>
-
-        <!-- L4 -->
-        <div class="cm-gpo-level-row">
-          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
-              <span class="cm-gpo-level-pill cm-gpo-level-pill--l4">L4</span>
-              <span class="cm-gpo-level-title fw-bold text-uppercase">SUB-GROUP</span>
-            </div>
-            <span class="cm-gpo-status-pill"
-              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL4End)"
-              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL4End)">
-              ● {{ isLevelActive(editingGpoForm.gpoL4End) ? 'ACTIVE' : 'INACTIVE' }}
-            </span>
-          </div>
-          <div class="row g-3">
-            <div class="col-6">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
-              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL4" name="gpoL4" autocomplete="off">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL4Start" name="gpoL4Start">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL4End" name="gpoL4End">
-            </div>
-          </div>
-        </div>
-
-        <!-- L5 -->
-        <div class="cm-gpo-level-row cm-gpo-level-row--last">
-          <div class="cm-gpo-level-row__header d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
-              <span class="cm-gpo-level-pill cm-gpo-level-pill--l5">L5</span>
-              <span class="cm-gpo-level-title fw-bold text-uppercase">PRACTICE</span>
-            </div>
-            <span class="cm-gpo-status-pill"
-              [class.cm-gpo-status-pill--active]="isLevelActive(editingGpoForm.gpoL5End)"
-              [class.cm-gpo-status-pill--inactive]="!isLevelActive(editingGpoForm.gpoL5End)">
-              ● {{ isLevelActive(editingGpoForm.gpoL5End) ? 'ACTIVE' : 'INACTIVE' }}
-            </span>
-          </div>
-          <div class="row g-3">
-            <div class="col-6">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">VALUE</label>
-              <input type="text" class="form-control" [(ngModel)]="editingGpoForm.gpoL5" name="gpoL5" autocomplete="off">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">START DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL5Start" name="gpoL5Start">
-            </div>
-            <div class="col-3">
-              <label class="cm-gpo-field-label d-block fw-bold text-uppercase">END DATE</label>
-              <input type="date" class="form-control" [(ngModel)]="editingGpoForm.gpoL5End" name="gpoL5End">
-            </div>
-          </div>
-        </div>
-
-      </form>
-    </div>
-
-    <div class="cm-gpo-modal-footer d-flex justify-content-end">
-      <button type="button" class="btn ib-btn-secondary" (click)="cancelEditGpo()">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="saveEditGpo()">Save Changes</button>
-    </div>
-
-  </div>
-</div>
 
